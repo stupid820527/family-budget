@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0F1923">
+<title>家庭財務 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0F1923;--surface:#162230;--card:#1C2D3E;--border:#243548;
+  --accent:#3DD9B3;--warn:#F5A623;--danger:#E85555;--blue:#4A9EFF;--purple:#A78BFA;
+  --txt:#E8EDF2;--txt2:#8BA0B8;--txt3:#4A6580;
+  --radius:16px;--radius-s:10px;--safe-b:env(safe-area-inset-bottom,0px);
+}
+body{font-family:-apple-system,'Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);
+     height:100vh;height:100dvh;overflow:hidden;-webkit-font-smoothing:antialiased}
+.app{display:flex;flex-direction:column;height:100vh;height:100dvh;max-width:480px;margin:0 auto}
+.pages{flex:1;overflow-y:auto;overflow-x:hidden;padding-bottom:calc(72px + var(--safe-b));scrollbar-width:none}
+.pages::-webkit-scrollbar{display:none}
+.page{display:none;padding:16px 16px 0;animation:fadeIn .2s ease}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;
+     background:rgba(15,25,35,0.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+     border-top:1px solid var(--border);padding:8px 0 calc(8px + var(--safe-b));
+     display:flex;z-index:100}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;
+          cursor:pointer;border:none;background:none;color:var(--txt3);font-size:10px;
+          font-weight:600;letter-spacing:.02em;transition:color .15s}
+.nav-btn.active{color:var(--accent)}
+.nav-btn .icon{font-size:22px;line-height:1}
+.card{background:var(--card);border-radius:var(--radius);padding:16px;
+      margin-bottom:12px;border:1px solid var(--border)}
+.card-title{font-size:11px;font-weight:700;color:var(--txt3);
+            text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px}
+.month-bar{display:flex;overflow-x:auto;gap:6px;padding:2px 0 10px;scrollbar-width:none}
+.month-bar::-webkit-scrollbar{display:none}
+.m-btn{flex-shrink:0;min-width:44px;padding:7px 12px;border-radius:20px;
+        border:1.5px solid var(--border);font-size:12px;font-weight:600;
+        cursor:pointer;background:none;color:var(--txt3);transition:all .15s}
+.m-btn.active{background:var(--accent);color:#0F1923;border-color:var(--accent)}
+.m-btn.has-data{border-color:rgba(61,217,179,.4);color:var(--accent)}
+.hero{background:linear-gradient(135deg,var(--surface),#1a2f44);
+      border-radius:var(--radius);padding:20px;margin-bottom:12px;
+      border:1px solid var(--border);position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;top:-40px;right:-40px;width:160px;height:160px;
+              background:radial-gradient(circle,rgba(61,217,179,.08),transparent 70%)}
+.hero-label{font-size:11px;color:var(--txt3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
+.hero-value{font-size:36px;font-weight:800;letter-spacing:-.03em;line-height:1.1}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.stat-card{background:var(--card);border-radius:var(--radius-s);padding:14px;border:1px solid var(--border)}
+.stat-label{font-size:10px;color:var(--txt3);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.stat-value{font-size:20px;font-weight:700;line-height:1}
+.green{color:var(--accent)}.red{color:var(--danger)}.gold{color:var(--warn)}.blue{color:var(--blue)}
+.cat-item{cursor:pointer;border-radius:var(--radius-s);overflow:hidden;margin-bottom:6px;border:1px solid var(--border)}
+.cat-head{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--card);transition:background .1s}
+.cat-head:active{background:var(--surface)}
+.cat-item.open .cat-head{background:var(--surface)}
+.cat-icon-wrap{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.cat-body{flex:1;min-width:0}
+.cat-name{font-size:13px;font-weight:700}
+.cat-meta{display:flex;align-items:center;gap:8px;margin-top:3px}
+.cat-amt{font-size:15px;font-weight:800}
+.cat-budget{font-size:10px;color:var(--txt3)}
+.cat-pct{margin-left:auto;font-size:11px;color:var(--txt3)}
+.progress{height:3px;background:var(--border);border-radius:2px;margin-top:5px;overflow:hidden}
+.progress-fill{height:100%;border-radius:2px;transition:width .5s}
+.chevron{font-size:14px;color:var(--txt3);flex-shrink:0;transition:transform .2s;margin-left:4px}
+.cat-item.open .chevron{transform:rotate(90deg)}
+.detail-wrap{max-height:0;overflow:hidden;transition:max-height .3s ease}
+.detail-wrap.open{max-height:1200px}
+.detail-hdr{display:flex;justify-content:space-between;padding:8px 14px;
+             font-size:11px;color:var(--txt3);background:var(--surface);border-top:1px solid var(--border)}
+.detail-row{display:flex;align-items:center;gap:8px;padding:9px 14px;
+             border-top:1px solid var(--border);background:var(--surface)}
+.d-date{font-size:11px;color:var(--txt3);width:36px;flex-shrink:0;font-weight:600}
+.d-desc{flex:1;font-size:12px;color:var(--txt);min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.d-card{font-size:10px;color:var(--txt3);flex-shrink:0;max-width:50px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.d-amt{font-size:13px;font-weight:700;flex-shrink:0;text-align:right;min-width:52px}
+.d-amt.big{color:var(--danger)}
+.empty{text-align:center;padding:40px 20px;color:var(--txt3);font-size:13px}
+.chart-wrap{height:240px;position:relative;margin:4px 0 12px}
+.updated-tag{font-size:10px;background:rgba(61,217,179,.15);color:var(--accent);
+              padding:3px 8px;border-radius:10px;margin-left:8px;font-weight:600}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="pages" id="pages">
+    <!-- 總覽 -->
+    <div class="page active" id="pg-overview">
+      <div class="month-bar" id="ovMonths"></div>
+      <div class="hero">
+        <div class="hero-label">本月總支出</div>
+        <div class="hero-value red" id="ov-total">—</div>
+        <div style="font-size:13px;color:var(--txt2);margin-top:6px" id="ov-sub">選擇月份查看</div>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-label">月預算上限</div><div class="stat-value gold" id="ov-budget">—</div></div>
+        <div class="stat-card"><div class="stat-label">超支／剩餘</div><div class="stat-value" id="ov-diff">—</div></div>
+        <div class="stat-card"><div class="stat-label">最大支出</div><div class="stat-value" id="ov-top">—</div></div>
+        <div class="stat-card"><div class="stat-label">消費筆數</div><div class="stat-value blue" id="ov-count">—</div></div>
+      </div>
+      <div style="font-size:11px;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:.07em;margin:16px 0 10px">各類別概覽</div>
+      <div id="ovCats"></div>
+    </div>
+    <!-- 支出 -->
+    <div class="page" id="pg-expense">
+      <div class="month-bar" id="expMonths"></div>
+      <div class="card">
+        <div class="card-title">支出比例 <span class="updated-tag">✅ 6/13已更新</span></div>
+        <div class="chart-wrap"><canvas id="pieChart" style="cursor:pointer"></canvas></div>
+      </div>
+      <div id="catList"></div>
+    </div>
+    <!-- 收入 -->
+    <div class="page" id="pg-income">
+      <div class="month-bar" id="incMonths"></div>
+      <div class="card" style="margin-bottom:12px">
+        <div class="card-title">本月收入合計</div>
+        <div style="font-size:28px;font-weight:800;color:var(--accent)" id="inc-total">—</div>
+      </div>
+      <div id="incList"></div>
+    </div>
+    <!-- 資產 -->
+    <div class="page" id="pg-asset">
+      <div class="card">
+        <div class="card-title">家庭總資產</div>
+        <div style="font-size:28px;font-weight:800;color:#A78BFA" id="asset-total">請填入帳戶餘額</div>
+        <div style="font-size:12px;color:var(--txt3);margin-top:4px">9個帳戶加總</div>
+      </div>
+      <div style="font-size:11px;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:.07em;margin:16px 0 10px">各帳戶餘額 — 每月2號更新</div>
+      <div class="card" id="assetInputs"></div>
+    </div>
+    <!-- 保險 -->
+    <div class="page" id="pg-insurance">
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px" id="insGrid"></div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div class="card-title" style="margin:0">本月保費合計</div>
+          <div style="font-size:20px;font-weight:700;color:var(--warn)" id="ins-total">—</div>
+        </div>
+        <div id="insDetail"></div>
+      </div>
+    </div>
+  </div>
+  <nav class="nav">
+    <button class="nav-btn active" onclick="sw('overview',this)"><span class="icon">📊</span>總覽</button>
+    <button class="nav-btn" onclick="sw('expense',this)"><span class="icon">💸</span>支出</button>
+    <button class="nav-btn" onclick="sw('income',this)"><span class="icon">💰</span>收入</button>
+    <button class="nav-btn" onclick="sw('asset',this)"><span class="icon">🏦</span>資產</button>
+    <button class="nav-btn" onclick="sw('insurance',this)"><span class="icon">🛡️</span>保險</button>
+  </nav>
+</div>
+<script>
+const MD={"1": {"🛡️ 保險": {"total": 15128, "items": [{"date": "01/01", "desc": "全家保費", "amt": 15128, "card": "—"}]}}, "2": {"🛡️ 保險": {"total": 17719, "items": [{"date": "02/01", "desc": "全家保費", "amt": 17719, "card": "—"}]}}, "3": {"🛡️ 保險": {"total": 13204, "items": [{"date": "03/01", "desc": "全家保費", "amt": 13204, "card": "—"}]}}, "4": {"🛡️ 保險": {"total": 22852, "items": [{"date": "04/01", "desc": "全家保費", "amt": 22852, "card": "—"}]}}, "5": {"🍽️ 飲食": {"total": 33346, "items": [{"date": "05-10", "desc": "花枝漿(台豬)  1*579=579 LEGO MCLAREN賽車  ", "amt": 4352, "card": "現金"}, {"date": "05-26", "desc": "全家低溫取貨[約3-7個工作天 離島不配送]填寫門市名稱、服務編號及確", "amt": 1999, "card": "現金"}, {"date": "05-03", "desc": "藍莓  1*128=128 巨型蟹味棒披薩  1*399=399 黑毛", "amt": 1819, "card": "現金"}, {"date": "05-03", "desc": "NARA Thai  1*1771=1771  2026年5月3日 1", "amt": 1771, "card": "現金"}, {"date": "05-30", "desc": "義式料理  1*1740=1740  2026年5月30日 16:06", "amt": 1740, "card": "現金"}, {"date": "05-12", "desc": "芙菲小圓餅(原味)  1*135=135 芙菲小圓餅(巧克力)  1*", "amt": 1214, "card": "現金"}, {"date": "05-31", "desc": "上海手工湯包7入  1*160=141 嚴選綜合燒賣10入  1*32", "amt": 1053, "card": "現金"}, {"date": "05-17", "desc": "壽司盤  1*40=40 茶碗蒸  4*60=240 100元黑長盤 ", "amt": 940, "card": "現金"}, {"date": "05-26", "desc": "鮮乳坊100%生乳保久乳*24入組  1*888=888  2026年", "amt": 888, "card": "現金"}, {"date": "05-23", "desc": "禮拜六晚餐", "amt": 865, "card": "現金"}, {"date": "05-30", "desc": "藍莓  1*98=98 奇異果﹙金色﹚﹙包裝﹚  1*98=98 國產", "amt": 809, "card": "現金"}, {"date": "05-06", "desc": "咖哩水餃  20*7=140 咖哩水餃  10*7=70 韓式辣味鍋貼", "amt": 728, "card": "現金"}, {"date": "05-07", "desc": "四盎司分享盒_期間限?  1*150=150 可樂-中  1*38=3", "amt": 725, "card": "現金"}, {"date": "05-14", "desc": "○紅油抄手燃麵套餐  1*149=149 和風翡翠  1*0=0 墨香", "amt": 553, "card": "現金"}, {"date": "05-18", "desc": "A印花貼紙張  2*0=0 金針菇  2*12=24 豬里肌火鍋肉片 ", "amt": 527, "card": "現金"}, {"date": "05-04", "desc": "十塊麥克雞塊  1*109=109 馬鈴薯餅  2*37=74 零卡可", "amt": 519, "card": "現金"}, {"date": "05-30", "desc": "土木公社", "amt": 504, "card": "現金"}, {"date": "05-08", "desc": "蚵嗲  2*50=100 蚵仔煎  3*70=210 蝦猴酥（鹿港) ", "amt": 500, "card": "現金"}, {"date": "05-03", "desc": "A印花貼紙張  2*0=0 國產馬鈴薯  1*45=45 讚岐烏龍麵 ", "amt": 490, "card": "現金"}, {"date": "05-24", "desc": "飲食", "amt": 480, "card": "現金"}, {"date": "05-24", "desc": "飲食", "amt": 480, "card": "現金"}, {"date": "05-26", "desc": "A印花貼紙張  2*0=0 熟麩高纖吐司  1*45=45 燕麥優酪乳", "amt": 451, "card": "現金"}, {"date": "05-06", "desc": "特上鵝肉飯  1*65=65 香蔥鵝油乾拌麵線  1*40=40 鮮嫩", "amt": 435, "card": "現金"}, {"date": "05-12", "desc": "經典原味鍋  1*210=210 海鮮豆腐鍋(附蛋)  1*210=2", "amt": 420, "card": "現金"}, {"date": "05-04", "desc": "鮮蝦抄手燃麵  1*105=105 鮮蝦抄手燃麵  1*105=105", "amt": 390, "card": "現金"}, {"date": "05-12", "desc": "餐費  1*365=365  2026年5月12日 12:05:36 ", "amt": 365, "card": "現金"}, {"date": "05-09", "desc": "日本Unicharm消臭大師尿尿後消臭貓砂-綠茶香5L  1*219=", "amt": 345, "card": "現金"}, {"date": "05-05", "desc": "晶英-泡菜豬肉豆腐煲燴飯  1*99=99 大阪王將-肉煎餃子  1*", "amt": 324, "card": "現金"}, {"date": "05-30", "desc": "日式點心  1*315=315  2026年5月30日 17:35:4", "amt": 315, "card": "現金"}, {"date": "05-10", "desc": "香烤雞肉堡６吋  1*125=125 嫩切雞肉堡６吋  1*110=1", "amt": 311, "card": "現金"}, {"date": "05-16", "desc": "泡菜", "amt": 300, "card": "現金"}, {"date": "05-15", "desc": "鹹酥雞", "amt": 290, "card": "現金"}, {"date": "05-14", "desc": "(吊)21Plus剝皮辣椒雞胸肉  1*69=69 (吊)21Plus", "amt": 286, "card": "現金"}, {"date": "05-18", "desc": "OPEN小將杯裝穀物高鈣乳飲品  2*39=78 高纖黑糖地瓜麵包  ", "amt": 286, "card": "現金"}, {"date": "05-30", "desc": "S_里肌豬排吐司  1*80=80 S_F 德式香腸鬆餅餐  1*19", "amt": 279, "card": "現金"}, {"date": "05-25", "desc": "大漢非基改涼拌豆腐  1*16=16 中華非基因改超嫩豆腐  1*17", "amt": 257, "card": "現金"}, {"date": "05-16", "desc": "早餐245*1=245  2026年5月16日 06:50:28 弦弦", "amt": 245, "card": "現金"}, {"date": "05-11", "desc": "購物袋-大袋PPI  1*1=1 (吊)博客蒜香黑胡椒雞胸肉  2*5", "amt": 244, "card": "現金"}, {"date": "05-30", "desc": "S_玉米蛋餅  1*40=40 S_(大)皇家奶茶  1*30=30 ", "amt": 235, "card": "現金"}, {"date": "05-19", "desc": "(吊)博客蒜香黑胡椒雞胸肉  2*59=118 *(E)蜜蜂故事館蜂蜜", "amt": 230, "card": "現金"}, {"date": "05-31", "desc": "黃昏市場 南瓜2個50 小白菜20 大陸妹30 姑兩包60", "amt": 215, "card": "現金"}, {"date": "05-16", "desc": "麵包", "amt": 210, "card": "現金"}, {"date": "05-17", "desc": "日式點心  1*200=200  2026年5月17日 13:34:5", "amt": 200, "card": "現金"}, {"date": "05-20", "desc": "餐-十塊雞M  1*109=109 零卡可-中  1*38=38 配-", "amt": 190, "card": "現金"}, {"date": "05-30", "desc": "蒸蛋飯", "amt": 190, "card": "現金"}, {"date": "05-14", "desc": "波霸紅-大  4*45=180 塑膠袋-4杯袋  1*2=2  202", "amt": 182, "card": "現金"}, {"date": "05-20", "desc": "OPEN小將杯裝穀物高鈣乳飲品  2*39=78 (A)統一陽光無加糖", "amt": 171, "card": "現金"}, {"date": "05-09", "desc": "購物袋-大袋PPI  1*1=1 (A)統一陽光無加糖高纖豆漿400m", "amt": 170, "card": "現金"}, {"date": "05-07", "desc": "(吊)21xBEING Fit桃木燻雞胸  1*59=59 (吊)21", "amt": 168, "card": "現金"}, {"date": "05-10", "desc": "焦糖水冰沙豆花  1*60=60 焦糖水冰沙豆花  1*95=95  ", "amt": 155, "card": "現金"}, {"date": "05-08", "desc": "伊右衛門焙茶  1*45=45 舒味思萊姆氣泡水  2*35=70 樂", "amt": 153, "card": "現金"}, {"date": "05-15", "desc": "LP33無加糖機能優酪乳PE200ml  2*28=56 (A)統一陽", "amt": 150, "card": "現金"}, {"date": "05-03", "desc": "MISTER  DONUT  1*126=126  2026年5月3日", "amt": 126, "card": "現金"}, {"date": "05-05", "desc": "(A)統一陽光無加糖高纖豆漿400ml  3*25=75 LP33無加", "amt": 125, "card": "現金"}, {"date": "05-16", "desc": "LP33無加糖機能優酪乳PE200ml  2*28=56 韓式芝麻QQ", "amt": 122, "card": "現金"}, {"date": "05-08", "desc": "(A)統一陽光無加糖高纖豆漿400ml  2*25=50 OPEN小將", "amt": 120, "card": "現金"}, {"date": "05-12", "desc": "(A)統一陽光無加糖高纖豆漿400ml  2*25=50 OPEN小將", "amt": 120, "card": "現金"}, {"date": "05-17", "desc": "飲品相關  1*120=120  2026年5月17日 13:15:5", "amt": 120, "card": "現金"}, {"date": "05-04", "desc": "紅油口水雞  1*110=110  2026年5月4日 17:08:4", "amt": 110, "card": "現金"}, {"date": "05-25", "desc": "統一無加糖高纖豆  1*25=25 統一無加糖高纖豆  1*25=25", "amt": 100, "card": "現金"}, {"date": "05-31", "desc": "板豆腐一包 豆包一包", "amt": 100, "card": "現金"}, {"date": "05-04", "desc": "鍋煮風味麥茶  4*30=120 促銷折扣  1*-24=-24  2", "amt": 96, "card": "現金"}, {"date": "05-21", "desc": "金蘋果蘋果牛奶乳飲品175ml  2*22=44 (A)統一陽光無加糖", "amt": 94, "card": "現金"}, {"date": "05-21", "desc": "冰", "amt": 85, "card": "現金"}, {"date": "05-28", "desc": "冰寶", "amt": 85, "card": "現金"}, {"date": "05-29", "desc": "豆花", "amt": 85, "card": "現金"}, {"date": "05-03", "desc": "飲品  1*80=80  2026年5月3日 13:20:00 漢神購", "amt": 80, "card": "現金"}, {"date": "05-06", "desc": "綜合麻辣  1*70=70  2026年5月6日 16:56:43 穀", "amt": 70, "card": "現金"}, {"date": "05-13", "desc": "*(E)蜜蜂故事館蜂蜜水  1*40=40 (A)*瑞穗全脂鮮乳230", "amt": 67, "card": "現金"}, {"date": "05-01", "desc": "康提紅茶(XL)  2*30=60  2026年5月1日 19:42:", "amt": 60, "card": "現金"}, {"date": "05-11", "desc": "黃金麥茶(XL)  1*30=30 麥香紅茶(XL)  1*30=30", "amt": 60, "card": "現金"}, {"date": "05-18", "desc": "康提紅茶(XL)  1*30=30 黃金麥茶(XL)  1*30=30", "amt": 60, "card": "現金"}, {"date": "05-23", "desc": "麥香紅茶(XL)  1*30=30 黃金麥茶(XL)  1*30=30", "amt": 60, "card": "現金"}, {"date": "05-24", "desc": "康提紅茶(XL)  1*30=30 黃金麥茶(XL)  1*30=30", "amt": 60, "card": "現金"}, {"date": "05-30", "desc": "康提紅茶(XL)  1*30=30 黃金麥茶(XL)  1*30=30", "amt": 60, "card": "現金"}, {"date": "05-09", "desc": "外送費  1*25=25 服務費和其他費用  1*28=28  202", "amt": 53, "card": "現金"}, {"date": "05-06", "desc": "LP33無加糖機能優酪乳PE200ml  2*28=56 活力補給 L", "amt": 50, "card": "現金"}, {"date": "05-06", "desc": "黃金麥茶(XL)  1*15=15 康提紅茶(XL)  1*15=15", "amt": 30, "card": "現金"}, {"date": "05-13", "desc": "什麼丸意兒休閒雞  1*15=15 什麼丸意兒休閒雞  1*15=15", "amt": 30, "card": "現金"}]}, "🛍️ 娛樂血拚": {"total": 64261, "items": [{"date": "05-17", "desc": "遊戲主機/軟件/控制器手把/周邊配件  1*15580=15580 遊", "amt": 20399, "card": "現金"}, {"date": "05-16", "desc": "心藝", "amt": 15000, "card": "現金"}, {"date": "05-17", "desc": "其他（家用/3C）  1*15790=15790 已開發票券類金額  ", "amt": 14790, "card": "現金"}, {"date": "05-17", "desc": "綜合服飾配件  1*8305=8305  2026年5月17日 13:", "amt": 8305, "card": "現金"}, {"date": "05-17", "desc": "綜合服飾配件  1*2295=2295  2026年5月17日 12:", "amt": 2295, "card": "現金"}, {"date": "05-01", "desc": "服飾  1*1970=1970  2026年5月1日 22:32:44", "amt": 1970, "card": "現金"}, {"date": "05-31", "desc": "【C】小釣手訓練營 x 2  1*1100=1100  2026年5月", "amt": 1100, "card": "現金"}, {"date": "05-29", "desc": "童泳帽-梅粉紅  1*75=75 KITTY手臂圈(2入)  1*11", "amt": 362, "card": "現金"}, {"date": "05-30", "desc": "置物櫃", "amt": 40, "card": "現金"}]}, "🚗 汽車": {"total": 2009, "items": [{"date": "05-23", "desc": "汽車", "amt": 1548, "card": "現金"}, {"date": "05-12", "desc": "停車場收入  1*210=210  2026年5月12日 14:00:", "amt": 210, "card": "現金"}, {"date": "05-01", "desc": "九八無鉛汽油  4.75*35.9=171  2026年5月1日 19", "amt": 171, "card": "現金"}, {"date": "05-30", "desc": "Parking  1*80=80  2026年5月30日 10:00:", "amt": 80, "card": "現金"}]}, "🏠 居家開銷": {"total": 9803, "items": [{"date": "05-20", "desc": "吸塵器清潔", "amt": 2330, "card": "現金"}, {"date": "05-26", "desc": "(買一送一)(金)大麻籽煥白乳液100ml  1*890=890 (買", "amt": 2163, "card": "現金"}, {"date": "05-27", "desc": "UCOM 真空抗菌小V盒(六種尺寸)  任選3件7折-91APP金流 ", "amt": 1548, "card": "現金"}, {"date": "05-21", "desc": "電費", "amt": 1533, "card": "現金"}, {"date": "05-27", "desc": "UCOM 真空抗菌小V盒(六種尺寸)  任選3件7折-91APP金流 ", "amt": 1394, "card": "現金"}, {"date": "05-27", "desc": "UCOM 真空抗菌小V盒(六種尺寸)  任選3件7折-91APP金流 ", "amt": 580, "card": "現金"}, {"date": "05-10", "desc": "美妝保健  1*150=150  2026年5月10日 14:01:0", "amt": 150, "card": "現金"}, {"date": "05-03", "desc": "妙管家Mr. Gas安  3*35=105  2026年5月3日 17", "amt": 105, "card": "現金"}]}, "🏥 看醫生": {"total": 1000, "items": [{"date": "05-29", "desc": "牙齒檢查小孩", "amt": 750, "card": "現金"}, {"date": "05-15", "desc": "看醫生", "amt": 250, "card": "現金"}]}, "📱 網路訂閱": {"total": 2438, "items": [{"date": "05-25", "desc": "﹝專案總額﹞  1*1199=1199  2026年5月25日 23:", "amt": 1199, "card": "現金"}, {"date": "05-24", "desc": "YouTube  1*456=456  2026年5月24日 16:3", "amt": 479, "card": "現金"}, {"date": "05-20", "desc": "Subscription  1*460=460  2026年5月20日", "amt": 460, "card": "現金"}, {"date": "05-25", "desc": "Digital Storage  1*300=300  2026年5月", "amt": 300, "card": "現金"}]}, "💬 其他": {"total": 500, "items": [{"date": "05-23", "desc": "聖母回嗯花", "amt": 500, "card": "現金"}]}, "👶 小孩學習": {"total": 15260, "items": [{"date": "05-30", "desc": "街舞課四個月", "amt": 15260, "card": "現金"}]}, "🧸 小孩日用品": {"total": 885, "items": [{"date": "05-31", "desc": "滿意褲型-寶可夢晚安褲-女XL-XXL22(箱*3)  1*399=3", "amt": 885, "card": "現金"}]}, "🛡️ 保險": {"total": 17478, "items": [{"date": "05/01", "desc": "全家保費", "amt": 17478, "card": "—"}]}}, "6": {"🏠 居家開銷": {"total": 1762, "items": [{"date": "06-01", "desc": "捕蚊燈 補蚊燈 電蚊拍", "amt": 1402, "card": "現金"}, {"date": "06/11", "desc": "洗鞋子", "amt": 360, "card": "現金"}]}, "🍽️ 飲食": {"total": 4588, "items": [{"date": "06-07", "desc": "炸醬麵 五福豬鍋巴飯", "amt": 1419, "card": "現金"}, {"date": "06-06", "desc": "燒烤", "amt": 490, "card": "現金"}, {"date": "06-07", "desc": "兒樂", "amt": 480, "card": "現金"}, {"date": "06-03", "desc": "卡貝樂無鹽奶油", "amt": 421, "card": "現金"}, {"date": "06-07", "desc": "麵茶粉粉QQ 自選麵", "amt": 280, "card": "現金"}, {"date": "06-07", "desc": "原萃鍋煮麥茶", "amt": 253, "card": "現金"}, {"date": "06/11", "desc": "", "amt": 170, "card": "現金"}, {"date": "06-03", "desc": "飲品", "amt": 165, "card": "現金"}, {"date": "06-07", "desc": "芭樂紅茶 蘋果鮮紅茶", "amt": 160, "card": "現金"}, {"date": "06-07", "desc": "肉鬆+地瓜", "amt": 160, "card": "現金"}, {"date": "06-04", "desc": "蛋蛋", "amt": 122, "card": "現金"}, {"date": "06/11", "desc": "冰寶", "amt": 85, "card": "現金"}, {"date": "06/10", "desc": "ＬＰ３３無加糖機能優酪乳  2*28=56 一配蜂蜜牛奶球  1*25", "amt": 81, "card": "現金"}, {"date": "06/08", "desc": "i16 pro max秒貼版 【魔比歐】iphone 17 秒貼 亮面", "amt": 69, "card": "現金"}, {"date": "06/08", "desc": "ＬＰ３３無加糖機能優酪乳  1*28=28 ＦＭＣ蜂蜜水  1*40=", "amt": 68, "card": "現金"}, {"date": "06-02", "desc": "康提紅茶 黃金麥茶", "amt": 60, "card": "現金"}, {"date": "06-07", "desc": "康提紅茶", "amt": 60, "card": "現金"}, {"date": "06-02", "desc": "粉圓", "amt": 45, "card": "現金"}]}, "🚗 汽車": {"total": 1554, "items": [{"date": "06-04", "desc": "車子加油", "amt": 1389, "card": "現金"}, {"date": "06/10", "desc": "九五無鉛汽油  4.88*33.9=165  2026年6月10日 1", "amt": 165, "card": "現金"}]}, "📱 網路訂閱": {"total": 1691, "items": [{"date": "06-06", "desc": "電話費我的", "amt": 1001, "card": "現金"}, {"date": "06-06", "desc": "Subscription 3rd Party", "amt": 690, "card": "現金"}]}, "🛡️ 保險": {"total": 8081, "items": [{"date": "06/01", "desc": "全家保費", "amt": 8081, "card": "—"}]}, "🏥 看醫生": {"total": 360, "items": [{"date": "06/13", "desc": "哥哥複診", "amt": 180, "card": "現金"}, {"date": "06/10", "desc": "", "amt": 180, "card": "現金"}]}, "🧸 小孩日用品": {"total": 7337, "items": [{"date": "06/09", "desc": "運費  1*150=150 印花冰冰被_(規格:小頑兔藍兔)  1*9", "amt": 6149, "card": "現金"}, {"date": "06/10", "desc": "童襪　　　　　　  1*59=59 童襪　　　　　　  1*59=59", "amt": 1188, "card": "現金"}]}}, "7": {"🛡️ 保險": {"total": 8378, "items": [{"date": "07/01", "desc": "全家保費", "amt": 8378, "card": "—"}]}}, "8": {"🛡️ 保險": {"total": 8250, "items": [{"date": "08/01", "desc": "全家保費", "amt": 8250, "card": "—"}]}}, "9": {"🛡️ 保險": {"total": 8581, "items": [{"date": "09/01", "desc": "全家保費", "amt": 8581, "card": "—"}]}}, "10": {"🛡️ 保險": {"total": 8313, "items": [{"date": "10/01", "desc": "全家保費", "amt": 8313, "card": "—"}]}}, "11": {"🛡️ 保險": {"total": 11391, "items": [{"date": "11/01", "desc": "全家保費", "amt": 11391, "card": "—"}]}}, "12": {"🛡️ 保險": {"total": 24943, "items": [{"date": "12/01", "desc": "全家保費", "amt": 24943, "card": "—"}]}}};
+const BU={"🍽️ 飲食": 20000, "🏠 居家開銷": 10000, "🚗 汽車": 4000, "🛍️ 娛樂血拚": 8000, "🏥 看醫生": 1000, "📚 終身學習": 3000, "🛡️ 保險": 14000, "👶 小孩學習": 27600, "📱 網路訂閱": 3500, "🧸 小孩日用品": 5000, "💬 其他": 1000};
+const TB=Object.values(BU).reduce((a,b)=>a+b,0);
+const CC={"🍽️ 飲食":"#FF8C42","🏠 居家開銷":"#3DD9B3","🚗 汽車":"#E85555","🛍️ 娛樂血拚":"#A78BFA","🏥 看醫生":"#4A9EFF","📚 終身學習":"#34D399","🛡️ 保險":"#F5A623","👶 小孩學習":"#F472B6","📱 網路訂閱":"#60A5FA","🧸 小孩日用品":"#FB7185","💬 其他":"#94A3B8"};
+const MZ=["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"];
+const INS=[{m:1,t:15128},{m:2,t:17719},{m:3,t:13204},{m:4,t:22852},{m:5,t:17478},{m:6,t:8081},{m:7,t:8378},{m:8,t:8250},{m:9,t:8581},{m:10,t:8313},{m:11,t:11391},{m:12,t:24943}];
+const ACCS=[{n:"我的郵局",o:"老婆",c:"#3DD9B3"},{n:"老公郵局",o:"老公",c:"#60A5FA"},{n:"我的元大",o:"老婆(證券)",c:"#F5A623"},{n:"老公兆豐",o:"老公(證券)",c:"#A78BFA"},{n:"我的台新",o:"老婆 Richart",c:"#F472B6"},{n:"我的華南",o:"老婆",c:"#34D399"},{n:"我的永豐",o:"老婆",c:"#FB923C"},{n:"老公永豐",o:"老公 LINE Pay",c:"#38BDF8"},{n:"我的國泰",o:"老婆 Costco",c:"#C084FC"}];
+
+function fmt(n){return "NT$"+Math.round(n||0).toLocaleString("zh-TW");}
+function sc(s){if(!s||s==="現金"||s==="—")return s||"現金";const m={台新:"台新",國泰:"國泰",永豐:"永豐",中信:"中信",富邦:"富邦",郵局:"郵局"};for(const[k,v]of Object.entries(m))if(s.includes(k))return v;return s.slice(0,4);}
+
+let cur="overview",curM=6,pieChart=null,openCat=null;
+
+function buildMonths(id,onSel,initM){
+  const el=document.getElementById(id);el.innerHTML="";
+  MZ.forEach((m,i)=>{
+    const btn=document.createElement("button");btn.className="m-btn";btn.textContent=m;
+    const mData=MD[String(i+1)]||{};
+    if(Object.values(mData).some(v=>v.items&&v.items.length>1))btn.classList.add("has-data");
+    if(i+1===initM)btn.classList.add("active");
+    btn.onclick=()=>{el.querySelectorAll(".m-btn").forEach(b=>b.classList.remove("active"));btn.classList.add("active");btn.scrollIntoView({behavior:"smooth",block:"nearest",inline:"center"});onSel(i+1);};
+    el.appendChild(btn);
+  });
+}
+
+function renderOverview(m){
+  const mData=MD[String(m)]||{};
+  const cats=Object.entries(mData).sort((a,b)=>b[1].total-a[1].total);
+  const total=cats.reduce((s,[,v])=>s+v.total,0);
+  const count=cats.reduce((s,[,v])=>s+(v.items?.length||0),0);
+  const diff=TB-total;const topCat=cats[0];
+  document.getElementById("ov-total").textContent=total?fmt(total):"無資料";
+  document.getElementById("ov-budget").textContent=fmt(TB);
+  const de=document.getElementById("ov-diff");de.textContent=(diff>=0?"＋":"")+fmt(diff);de.className="stat-value "+(diff>=0?"green":"red");
+  document.getElementById("ov-top").textContent=topCat?topCat[0].slice(0,4):"—";
+  document.getElementById("ov-count").textContent=count?count+"筆":"—";
+  document.getElementById("ov-sub").textContent=total?"月預算使用 "+(total/TB*100).toFixed(0)+"%":"本月尚無記錄";
+  const el=document.getElementById("ovCats");el.innerHTML="";
+  cats.forEach(([cat,cd])=>{
+    const b=BU[cat]||0,pct=b?cd.total/b:0,color=CC[cat]||"#ccc",barCol=pct>=1?"var(--danger)":pct>=.8?"var(--warn)":"var(--accent)";
+    const d=document.createElement("div");d.className="card";d.style.cssText="padding:12px 14px;margin-bottom:8px";
+    d.innerHTML=`<div style="display:flex;align-items:center;gap:10px">
+      <div style="width:34px;height:34px;border-radius:10px;background:${color}22;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">${cat.slice(0,2)}</div>
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:13px;font-weight:700">${cat.slice(2).trim()}</span>
+          <span style="font-size:14px;font-weight:700;color:${pct>=1?"var(--danger)":color}">${fmt(cd.total)}</span>
+        </div>
+        ${b?`<div class="progress" style="margin-top:6px"><div class="progress-fill" style="width:${Math.min(100,pct*100).toFixed(1)}%;background:${barCol}"></div></div><div style="font-size:10px;color:var(--txt3);margin-top:3px">預算${fmt(b)}｜剩餘<span style="color:${pct>=1?"var(--danger)":"var(--accent)"}">${fmt(b-cd.total)}</span></div>`:""}
+      </div></div>`;
+    el.appendChild(d);
+  });
+}
+
+function renderExpense(m){
+  const mData=MD[String(m)]||{};
+  const cats=Object.entries(mData).sort((a,b)=>b[1].total-a[1].total);
+  const total=cats.reduce((s,[,v])=>s+v.total,0);
+  if(pieChart)pieChart.destroy();
+  if(total){
+    const ctx=document.getElementById("pieChart").getContext("2d");
+    pieChart=new Chart(ctx,{type:"pie",data:{labels:cats.map(([c])=>c.slice(0,2)+" "+c.slice(2).trim()),datasets:[{data:cats.map(([,v])=>v.total),backgroundColor:cats.map(([c])=>CC[c]||"#ccc"),borderColor:"#162230",borderWidth:2,hoverOffset:12}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label(c){return " "+fmt(c.raw)+"（"+(c.raw/total*100).toFixed(1)+"%）";}}}},
+    onClick(e,items){if(!items.length)return;toggleCat(cats[items[0].index][0],true);}}});
+  }
+  openCat=null;
+  const listEl=document.getElementById("catList");listEl.innerHTML="";
+  if(!total){listEl.innerHTML='<div class="empty">本月尚無支出記錄</div>';return;}
+  cats.forEach(([cat,cd])=>{
+    const b=BU[cat]||0,pct=b?cd.total/b:0,color=CC[cat]||"#ccc",barCol=pct>=1?"var(--danger)":pct>=.8?"var(--warn)":"var(--accent)",key=encodeURIComponent(cat);
+    const wrap=document.createElement("div");wrap.className="cat-item";wrap.id="cat-"+key;
+    wrap.innerHTML=`<div class="cat-head" onclick="toggleCat('${cat.replace(/'/g,"\'")}',false)">
+      <div class="cat-icon-wrap" style="background:${color}22">${cat.slice(0,2)}</div>
+      <div class="cat-body">
+        <div class="cat-name">${cat.slice(2).trim()}</div>
+        <div class="cat-meta"><span class="cat-amt" style="color:${pct>=1?"var(--danger)":color}">${fmt(cd.total)}</span>${b?`<span class="cat-budget">預算${fmt(b)}</span>`:""}<span class="cat-pct">${(cd.total/total*100).toFixed(1)}%</span></div>
+        ${b?`<div class="progress"><div class="progress-fill" style="width:${Math.min(100,pct*100).toFixed(1)}%;background:${barCol}"></div></div>`:""}
+      </div><span class="chevron">›</span></div>
+      <div class="detail-wrap" id="panel-${key}">
+        <div class="detail-hdr"><span>${(cd.items||[]).length}筆</span><strong>${fmt(cd.total)}</strong></div>
+        ${(cd.items||[]).map(it=>`<div class="detail-row"><span class="d-date">${it.date}</span><span class="d-desc">${it.desc||"（無說明）"}</span><span class="d-card">${sc(it.card)}</span><span class="d-amt${it.amt>=5000?" big":""}">${fmt(it.amt)}</span></div>`).join("")}
+      </div>`;
+    listEl.appendChild(wrap);
+  });
+}
+
+function toggleCat(cat,scroll){
+  const key=encodeURIComponent(cat);const item=document.getElementById("cat-"+key);const panel=document.getElementById("panel-"+key);
+  if(openCat===cat){openCat=null;item?.classList.remove("open");panel?.classList.remove("open");}
+  else{if(openCat){const ok=encodeURIComponent(openCat);document.getElementById("cat-"+ok)?.classList.remove("open");document.getElementById("panel-"+ok)?.classList.remove("open");}
+    openCat=cat;item?.classList.add("open");panel?.classList.add("open");
+    if(scroll&&item)setTimeout(()=>item.scrollIntoView({behavior:"smooth",block:"center"}),200);}
+}
+
+function renderIncome(m){
+  document.getElementById("inc-total").textContent="—（薪水未填入）";
+  document.getElementById("incList").innerHTML=`<div class="card"><div class="card-title">股利、薪資等</div><div style="font-size:13px;color:var(--txt3)">請在 Excel「💰 收入記錄」填入薪水與股利，App 下次更新時自動同步。</div></div>`;
+}
+
+function initAsset(){
+  const saved=JSON.parse(localStorage.getItem("assets")||"{}");
+  const el=document.getElementById("assetInputs");el.innerHTML="";
+  let total=0;
+  ACCS.forEach((acc,i)=>{
+    const v=parseFloat(saved[i]||0);if(!isNaN(v)&&v>0)total+=v;
+    const row=document.createElement("div");row.style.cssText="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)";
+    row.innerHTML=`<div style="width:10px;height:10px;border-radius:50%;background:${acc.c};flex-shrink:0"></div>
+      <div style="flex:1"><div style="font-size:13px;font-weight:600">${acc.n}</div><div style="font-size:10px;color:var(--txt3)">${acc.o}</div></div>
+      <input id="a-${i}" type="number" inputmode="numeric" placeholder="餘額"
+             style="background:var(--surface);border:1.5px solid var(--border);border-radius:8px;color:var(--txt);font-size:14px;text-align:center;padding:6px 8px;width:110px;outline:none"
+             value="${saved[i]||""}" oninput="updateAssetTot()">`;
+    el.appendChild(row);
+  });
+  const btn=document.createElement("button");
+  btn.style.cssText="margin-top:12px;background:var(--accent);color:#0F1923;border:none;border-radius:var(--radius-s);padding:12px;font-size:14px;font-weight:700;width:100%;cursor:pointer";
+  btn.textContent="💾  儲存帳戶餘額";btn.onclick=saveAsset;el.appendChild(btn);
+  document.getElementById("asset-total").textContent=total>0?fmt(total):"請填入帳戶餘額";
+}
+function updateAssetTot(){let t=0;ACCS.forEach((_,i)=>{const v=parseFloat(document.getElementById("a-"+i)?.value||0);if(!isNaN(v))t+=v;});document.getElementById("asset-total").textContent=t>0?fmt(t):"請填入帳戶餘額";}
+function saveAsset(){const d={};ACCS.forEach((_,i)=>{const v=document.getElementById("a-"+i)?.value;if(v)d[i]=parseFloat(v);});localStorage.setItem("assets",JSON.stringify(d));document.getElementById("asset-total").style.color="#3DD9B3";}
+
+function initInsurance(){
+  const grid=document.getElementById("insGrid");grid.innerHTML="";
+  INS.forEach((ins,i)=>{
+    const cell=document.createElement("div");
+    const hi=ins.t>20000;const med_=ins.t>10000;
+    cell.style.cssText=`background:var(--card);border-radius:var(--radius-s);padding:8px;text-align:center;border:1px solid ${i===5?"var(--accent)":"var(--border)"};cursor:pointer`;
+    cell.innerHTML=`<div style="font-size:12px;font-weight:700">${MZ[i]}</div><div style="font-size:10px;color:${hi?"var(--danger)":med_?"var(--warn)":"var(--txt3)"};margin-top:3px">${ins.t?(ins.t/1000).toFixed(0)+"K":"—"}</div>`;
+    cell.onclick=()=>{grid.querySelectorAll("div").forEach(c=>c.style.borderColor="var(--border)");cell.style.borderColor="var(--accent)";renderIns(i+1);};
+    grid.appendChild(cell);
+  });
+  renderIns(6);
+}
+function renderIns(m){
+  const ins=INS.find(i=>i.m===m);
+  document.getElementById("ins-total").textContent=ins?fmt(ins.t):"—";
+  document.getElementById("insDetail").innerHTML=`<div style="font-size:13px;color:var(--txt2)">詳細保費明細請查閱 Excel「🛡️ 保險月曆」。</div>`;
+}
+
+function selM(m){
+  curM=m;
+  ["ovMonths","expMonths","incMonths"].forEach(id=>{const el=document.getElementById(id);if(!el)return;el.querySelectorAll(".m-btn").forEach((b,i)=>b.classList.toggle("active",i===m-1));});
+  if(cur==="overview")renderOverview(m);
+  else if(cur==="expense")renderExpense(m);
+  else if(cur==="income")renderIncome(m);
+}
+
+function sw(name,btn){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"));
+  document.getElementById("pg-"+name).classList.add("active");
+  btn.classList.add("active");document.getElementById("pages").scrollTop=0;cur=name;
+  if(name==="overview")renderOverview(curM);
+  else if(name==="expense")renderExpense(curM);
+  else if(name==="income")renderIncome(curM);
+  else if(name==="asset")initAsset();
+  else if(name==="insurance")initInsurance();
+}
+
+["ovMonths","expMonths","incMonths"].forEach(id=>buildMonths(id,m=>selM(m),curM));
+renderOverview(curM);
+</script>
+</body>
+</html>
