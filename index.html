@@ -9,10 +9,8 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
   --navy:#1B4F72;--blue:#2E86C1;
-  --green:#1E8449;--lgreen:#D5F5E3;
-  --red:#C0392B;--lred:#FADBD8;
-  --gold:#9A7D0A;
-  --grey:#F2F3F4;--dark:#212F3D;
+  --green:#1E8449;--red:#C0392B;--lred:#FADBD8;
+  --gold:#9A7D0A;--grey:#F2F3F4;--dark:#212F3D;
   --radius:14px;--shadow:0 2px 14px rgba(0,0,0,0.09);
 }
 body{font-family:'Noto Sans TC',system-ui,sans-serif;background:#EEF2F7;color:var(--dark);min-height:100vh;padding-bottom:40px}
@@ -62,35 +60,44 @@ body{font-family:'Noto Sans TC',system-ui,sans-serif;background:#EEF2F7;color:va
 .cat-item.open .arrow{transform:rotate(90deg)}
 .over-badge{background:var(--lred);color:var(--red);font-size:10px;font-weight:700;padding:2px 6px;border-radius:8px;flex-shrink:0;margin-left:4px}
 
+/* Detail panel */
 .detail-panel{background:#F5F8FF;overflow:hidden;max-height:0;transition:max-height .35s ease;border-bottom:1px solid #E8EEF8}
-.detail-panel.open{max-height:3000px}
+.detail-panel.open{max-height:9999px}
 .detail-header{display:flex;justify-content:space-between;padding:9px 14px 7px;font-size:11px;color:#888;border-bottom:1px solid #E8EEF8;background:#EEF3FC}
 .detail-header strong{color:var(--navy)}
-.detail-row{display:flex;align-items:center;gap:8px;padding:9px 14px;border-bottom:1px solid #EEF0F5}
-.detail-row:last-child{border-bottom:none}
+
+/* Each transaction row — tap to expand note */
+.tx-row{border-bottom:1px solid #EEF0F5}
+.tx-row:last-child{border-bottom:none}
+.tx-main{display:flex;align-items:center;gap:8px;padding:10px 14px;cursor:pointer}
+.tx-main:active{background:#EEF3FF}
 .d-date{font-size:11px;color:#AAA;flex-shrink:0;width:38px;font-weight:600}
-.d-desc{flex:1;font-size:12px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.d-desc{flex:1;font-size:12px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--dark)}
 .d-acct{font-size:10px;color:#BBB;flex-shrink:0;max-width:44px;overflow:hidden;text-overflow:ellipsis;text-align:right}
 .d-amt{font-size:13px;font-weight:700;flex-shrink:0;text-align:right;min-width:60px}
 .d-amt.big{color:var(--red)}
+.expand-arrow{font-size:11px;color:#CCC;flex-shrink:0;transition:transform .2s;margin-left:2px}
+.tx-row.expanded .expand-arrow{transform:rotate(90deg)}
+
+/* Full note panel */
+.tx-note{max-height:0;overflow:hidden;transition:max-height .3s ease;background:#EEF5FF}
+.tx-row.expanded .tx-note{max-height:400px}
+.tx-note-inner{padding:10px 14px 12px;font-size:11px;color:#555;line-height:1.7;white-space:pre-wrap;word-break:break-all;border-top:1px dashed #D0DFF0}
+
 .empty{text-align:center;padding:40px 20px;color:#BBB;font-size:13px}
 .empty-icon{font-size:36px;margin-bottom:8px}
 
 /* Upload zone */
-.upload-zone{border:2px dashed #C5D8E8;border-radius:14px;padding:24px;text-align:center;cursor:pointer;transition:all .2s;background:#F8FBFF;margin-bottom:13px}
+.upload-zone{border:2px dashed #C5D8E8;border-radius:14px;padding:22px;text-align:center;cursor:pointer;transition:all .2s;background:#F8FBFF;margin-bottom:13px}
 .upload-zone:hover,.upload-zone.drag{border-color:var(--blue);background:#EBF5FF}
-.upload-zone .uz-icon{font-size:32px;margin-bottom:8px}
-.upload-zone .uz-title{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:4px}
-.upload-zone .uz-sub{font-size:11px;color:#888}
+.uz-icon{font-size:30px;margin-bottom:6px}
+.uz-title{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:3px}
+.uz-sub{font-size:11px;color:#888}
 #fileInput{display:none}
 
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1B4F72;color:#fff;font-size:12px;font-weight:600;padding:10px 20px;border-radius:20px;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
 .toast.show{opacity:1}
 
-.skel{background:linear-gradient(90deg,#eee 25%,#f5f5f5 50%,#eee 75%);background-size:200% 100%;animation:sk 1.2s infinite;border-radius:8px;height:14px;margin-bottom:10px}
-@keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
-
-/* Settings drawer */
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:flex-end;justify-content:center}
 .overlay.open{display:flex}
 .drawer{background:#fff;border-radius:20px 20px 0 0;padding:24px 20px 44px;width:100%;max-width:520px}
@@ -98,15 +105,14 @@ body{font-family:'Noto Sans TC',system-ui,sans-serif;background:#EEF2F7;color:va
 .drawer label{font-size:11px;font-weight:700;color:#888;display:block;margin-bottom:5px;margin-top:14px}
 .drawer input{width:100%;border:1.5px solid #DDE3ED;border-radius:10px;padding:10px 13px;font-size:12px;outline:none}
 .drawer input:focus{border-color:var(--blue)}
-.drawer .hint{font-size:10px;color:#AAA;margin-top:4px;line-height:1.5}
-.drawer .btn-row{display:flex;gap:8px;margin-top:18px}
-.drawer .btn{flex:1;padding:12px;border-radius:12px;border:none;font-size:14px;font-weight:700;cursor:pointer}
+.drawer .hint{font-size:10px;color:#AAA;margin-top:4px;line-height:1.6}
+.btn-row{display:flex;gap:8px;margin-top:18px}
+.btn{flex:1;padding:12px;border-radius:12px;border:none;font-size:14px;font-weight:700;cursor:pointer}
 .btn-primary{background:var(--navy);color:#fff}
 .btn-cancel{background:var(--grey);color:#666}
 
-/* URL source indicator */
-.src-badge{font-size:10px;background:#E8F5E9;color:#2E7D32;padding:2px 8px;border-radius:8px;font-weight:600}
-.src-badge.file{background:#FFF3E0;color:#E65100}
+.skel{background:linear-gradient(90deg,#eee 25%,#f5f5f5 50%,#eee 75%);background-size:200% 100%;animation:sk 1.2s infinite;border-radius:8px;height:14px;margin-bottom:10px}
+@keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
 </style>
 </head>
 <body>
@@ -117,12 +123,12 @@ body{font-family:'Noto Sans TC',system-ui,sans-serif;background:#EEF2F7;color:va
       <div class="header-title">🏠 家庭支出分析
         <span class="upd-badge" id="updBadge">—</span>
       </div>
-      <div class="header-sub">天天記帳 CSV 或 Google Sheets 即時同步</div>
+      <div class="header-sub">天天記帳 CSV · 點明細可展開完整備註</div>
     </div>
     <div style="display:flex;align-items:center">
       <div class="year-badge">2026</div>
       <button class="icon-btn" onclick="openSettings()" title="設定">⚙️</button>
-      <button class="icon-btn" id="refreshBtn" onclick="refreshData()" title="重新整理">↺</button>
+      <button class="icon-btn" id="refreshBtn" onclick="refreshSheet()" title="從 Sheets 更新">↺</button>
     </div>
   </div>
 </div>
@@ -130,14 +136,14 @@ body{font-family:'Noto Sans TC',system-ui,sans-serif;background:#EEF2F7;color:va
 <div class="month-bar" id="monthBar"></div>
 
 <div class="content">
-  <!-- Upload zone (天天記帳 CSV) -->
-  <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()"
+  <div class="upload-zone" id="uploadZone"
+       onclick="document.getElementById('fileInput').click()"
        ondragover="event.preventDefault();this.classList.add('drag')"
        ondragleave="this.classList.remove('drag')"
        ondrop="handleDrop(event)">
     <div class="uz-icon">📂</div>
     <div class="uz-title">上傳天天記帳 CSV</div>
-    <div class="uz-sub">點擊選擇檔案，或直接拖曳到這裡<br>每週匯出後上傳，資料自動合併</div>
+    <div class="uz-sub">每週匯出後拖曳或點擊上傳，資料自動累積合併</div>
     <input type="file" id="fileInput" accept=".csv" onchange="handleFile(this.files[0])">
   </div>
 
@@ -152,14 +158,13 @@ body{font-family:'Noto Sans TC',system-ui,sans-serif;background:#EEF2F7;color:va
 
   <div class="card">
     <div class="card-title">支出比例</div>
-    <div class="chart-hint">👆 點色塊查看每筆明細</div>
+    <div class="chart-hint">👆 點色塊查看該類別每筆明細</div>
     <div class="chart-wrap"><canvas id="pieChart"></canvas></div>
   </div>
 
   <div class="card" style="padding:0;overflow:hidden">
-    <div style="padding:12px 14px 8px;display:flex;align-items:center;justify-content:space-between">
-      <div class="card-title" style="margin-bottom:0">各類別明細</div>
-      <span id="srcBadge" class="src-badge" style="display:none"></span>
+    <div style="padding:12px 14px 8px">
+      <div class="card-title" style="margin-bottom:0">各類別明細 <span style="font-size:10px;color:#CCC;font-weight:400">（點每筆可展開完整備註）</span></div>
     </div>
     <div class="cat-list" id="catList">
       <div style="padding:20px">
@@ -169,13 +174,16 @@ body{font-family:'Noto Sans TC',system-ui,sans-serif;background:#EEF2F7;color:va
   </div>
 </div>
 
-<!-- Settings drawer -->
 <div class="overlay" id="overlay" onclick="if(event.target===this)closeSettings()">
   <div class="drawer">
     <h3>⚙️ 設定</h3>
-    <label>Google Sheets CSV 網址（選填）</label>
+    <label>Google Sheets CSV 網址（選填，設定後 ↺ 可雲端更新）</label>
     <input id="sheetUrl" type="url" placeholder="https://docs.google.com/spreadsheets/d/e/.../pub?...&output=csv">
-    <div class="hint">設定後每次開啟網頁自動從雲端抓資料。<br>取得方式：Sheets → 檔案 → 共用 → 發佈到網路 → CSV → 複製網址</div>
+    <div class="hint">Sheets → 檔案 → 共用 → 發佈到網路 → CSV → 複製網址</div>
+    <label>清除所有本機資料</label>
+    <div class="btn-row" style="margin-top:8px">
+      <button class="btn btn-cancel" onclick="clearData()" style="background:#FFF0F0;color:var(--red)">🗑 清除資料</button>
+    </div>
     <div class="btn-row">
       <button class="btn btn-cancel" onclick="closeSettings()">取消</button>
       <button class="btn btn-primary" onclick="saveSettings()">儲存</button>
@@ -186,381 +194,251 @@ body{font-family:'Noto Sans TC',system-ui,sans-serif;background:#EEF2F7;color:va
 <div class="toast" id="toast"></div>
 
 <script>
-// ═══════════════════════════════════════════════════════
-//  類別對應表：天天記帳 → 網站顯示名稱
-// ═══════════════════════════════════════════════════════
+// ── 類別對應 ──────────────────────────────────────────
 const CAT_MAP = {
-  '飲食':      '🍽️ 飲食',
-  '居家開銷':  '🏠 居家開銷',
-  '汽車':      '🚗 汽車',
-  '娛樂血拼':  '🛍️ 娛樂血拚',
-  '娛樂血拚':  '🛍️ 娛樂血拚',
-  '看醫生':    '🏥 看醫生',
-  '終身學習':  '📚 終身學習',
-  '保險':      '🛡️ 保險',
-  '小孩學習':  '👶 小孩學習',
-  '網路訂閱':  '📱 網路訂閱',
-  '小孩日用品':'🧸 小孩日用品',
-  '其他':      '💬 其他',
-  // 已有 emoji 的直接使用
-  '🍽️ 飲食':   '🍽️ 飲食',
-  '🏠 居家開銷':'🏠 居家開銷',
-  '🚗 汽車':   '🚗 汽車',
-  '🛍️ 娛樂血拚':'🛍️ 娛樂血拚',
-  '🏥 看醫生': '🏥 看醫生',
-  '📚 終身學習':'📚 終身學習',
-  '🛡️ 保險':   '🛡️ 保險',
-  '👶 小孩學習':'👶 小孩學習',
-  '📱 網路訂閱':'📱 網路訂閱',
-  '🧸 小孩日用品':'🧸 小孩日用品',
-  '💬 其他':   '💬 其他',
+  '飲食':'🍽️ 飲食','居家開銷':'🏠 居家開銷','汽車':'🚗 汽車',
+  '娛樂血拼':'🛍️ 娛樂血拚','娛樂血拚':'🛍️ 娛樂血拚',
+  '看醫生':'🏥 看醫生','終身學習':'📚 終身學習','保險':'🛡️ 保險',
+  '小孩學習':'👶 小孩學習','網路訂閱':'📱 網路訂閱',
+  '小孩日用品':'🧸 小孩日用品','其他':'💬 其他',
 };
-
 const BUDGETS = {
   '🍽️ 飲食':24000,'🏠 居家開銷':8000,'🚗 汽車':4000,
   '🛍️ 娛樂血拚':8000,'🏥 看醫生':1500,'📚 終身學習':3000,
   '🛡️ 保險':14000,'👶 小孩學習':27600,'📱 網路訂閱':3500,
-  '🧸 小孩日用品':5000,'💬 其他':1000
+  '🧸 小孩日用品':5000,'💬 其他':1000,
 };
 const TOTAL_BUDGET = Object.values(BUDGETS).reduce((a,b)=>a+b,0);
 const CAT_COLORS = {
   '🍽️ 飲食':'#FF8C42','🏠 居家開銷':'#4ECDC4','🚗 汽車':'#E74C3C',
   '🛍️ 娛樂血拚':'#9B59B6','🏥 看醫生':'#3498DB','📚 終身學習':'#27AE60',
   '🛡️ 保險':'#F39C12','👶 小孩學習':'#E91E8C','📱 網路訂閱':'#1ABC9C',
-  '🧸 小孩日用品':'#E84393','💬 其他':'#95A5A6'
+  '🧸 小孩日用品':'#E84393','💬 其他':'#95A5A6',
 };
 const MONTHS_ZH = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+const STORE_KEY = 'fbv3_data';
+const SHEET_KEY = 'fbv3_sheet';
 const PROXIES = [
   u=>`https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
   u=>`https://corsproxy.io/?${encodeURIComponent(u)}`,
 ];
-const STORE_KEY = 'family_budget_v2';
-const SHEET_KEY = 'family_budget_sheet_url';
 
-// ═══════════════════════════════════════════════════════
-//  State
-// ═══════════════════════════════════════════════════════
-let MONTHLY_DATA = {}; // { "6": { "🍽️ 飲食": { total, items[] } } }
-let currentMonth = new Date().getMonth() + 1;
-let pieChart = null, openCat = null;
-let dataSource = ''; // 'file' | 'sheet' | 'cache'
+// ── State ─────────────────────────────────────────────
+let DATA = {};   // { "6": { "🍽️ 飲食": { total, items[] } } }
+let curMonth = new Date().getMonth()+1;
+let pie = null, openCat = null;
 
-// ═══════════════════════════════════════════════════════
-//  CSV Parser — 天天記帳格式
-//  欄位：日期,類別,大類別,金額,貨幣,成員,帳戶,標籤,備註,收支區分,...
-// ═══════════════════════════════════════════════════════
-function parseTianTianCSV(text) {
+// ── 天天記帳 CSV 解析 ─────────────────────────────────
+// 欄位：日期,類別,大類別,金額,貨幣,成員,帳戶,標籤,備註,收支區分,...
+function parseTianTian(text) {
+  const out = {};
   const rows = text.split(/\r?\n/);
-  const result = {};
-
-  for (let i = 1; i < rows.length; i++) {
-    const cols = splitRow(rows[i]);
-    if (cols.length < 10) continue;
-
-    const rawDate = cols[0]?.trim();   // 20260626
-    const rawCat  = cols[1]?.trim();   // 飲食
-    const rawAmt  = cols[3]?.trim().replace(/,/g,'');
-    const rawAcct = cols[6]?.trim() || '現金';
-    const rawNote = cols[8]?.trim() || '';
-    const type    = cols[9]?.trim();   // 支 or 收
-
-    if (type !== '支') continue;       // 只取支出
-    if (!rawDate || !rawCat || !rawAmt) continue;
-
-    // Parse date YYYYMMDD
-    const y = rawDate.slice(0,4), m = rawDate.slice(4,6), d = rawDate.slice(6,8);
-    if (!y || !m || !d) continue;
-    const month = parseInt(m, 10);
-    const day   = parseInt(d, 10);
-    if (isNaN(month) || isNaN(day)) continue;
-
-    const amt = parseFloat(rawAmt);
-    if (isNaN(amt) || amt <= 0) continue;
-
-    // Map category
-    const cat = CAT_MAP[rawCat] || ('💬 ' + rawCat);
-    const mKey = String(month);
-    const dateStr = `${m}/${String(day).padStart(2,'0')}`;
-
-    if (!result[mKey]) result[mKey] = {};
-    if (!result[mKey][cat]) result[mKey][cat] = { total:0, items:[] };
-    result[mKey][cat].total += amt;
-    result[mKey][cat].items.push({ date:dateStr, desc:rawNote, amt, card:rawAcct });
+  for (let i=1; i<rows.length; i++) {
+    const c = splitRow(rows[i]);
+    if (c.length < 10) continue;
+    const rawDate=c[0]?.trim(), cat=c[1]?.trim();
+    const amt=parseFloat((c[3]||'').replace(/,/g,''));
+    const acct=(c[6]||'現金').trim();
+    const note=(c[8]||'').trim();
+    const type=(c[9]||'').trim();
+    if (type!=='支' || !rawDate || !cat || isNaN(amt) || amt<=0) continue;
+    // date: YYYYMMDD
+    const y=rawDate.slice(0,4), mo=rawDate.slice(4,6), d=rawDate.slice(6,8);
+    const month=parseInt(mo,10); if(isNaN(month)) continue;
+    const mapped = CAT_MAP[cat] || ('💬 '+cat);
+    const mKey=String(month);
+    if(!out[mKey]) out[mKey]={};
+    if(!out[mKey][mapped]) out[mKey][mapped]={total:0,items:[]};
+    out[mKey][mapped].total+=amt;
+    out[mKey][mapped].items.push({date:`${mo}/${d}`,desc:note,amt,card:acct});
   }
-
-  // Sort newest first
-  for (const m of Object.values(result))
-    for (const c of Object.values(m))
-      c.items.sort((a,b) => b.date.localeCompare(a.date));
-
-  return result;
-}
-
-// ═══════════════════════════════════════════════════════
-//  CSV Parser — Google Sheets 每週記帳格式
-//  欄位：A=日期 B=大類 C=品項說明 D=金額 E=帳戶
-// ═══════════════════════════════════════════════════════
-function parseSheetsCSV(text) {
-  const rows = text.split(/\r?\n/);
-  const result = {};
-  const SKIP = new Set(['日期','週小計','大類','品項說明','']);
-
-  for (let i = 1; i < rows.length; i++) {
-    const cols = splitRow(rows[i]);
-    if (cols.length < 4) continue;
-
-    const rawA = cols[0]?.trim();
-    const rawB = cols[1]?.trim();
-    const rawC = cols[2]?.trim() || '';
-    const rawD = cols[3]?.trim().replace(/,/g,'');
-    const rawE = cols[4]?.trim() || '現金';
-
-    if (SKIP.has(rawA) || SKIP.has(rawB)) continue;
-    if (rawA.includes('第') && rawA.includes('週')) continue;
-    if (rawA.includes('週小計')) continue;
-
-    const dateObj = parseDate(rawA);
-    if (!dateObj) continue;
-    const amt = parseFloat(rawD);
-    if (isNaN(amt) || amt <= 0) continue;
-    if (!rawB || rawB.length < 2) continue;
-
-    const cat  = CAT_MAP[rawB] || rawB;
-    const month = dateObj.getMonth() + 1;
-    const mKey  = String(month);
-    const mm    = String(month).padStart(2,'0');
-    const dd    = String(dateObj.getDate()).padStart(2,'0');
-
-    if (!result[mKey]) result[mKey] = {};
-    if (!result[mKey][cat]) result[mKey][cat] = { total:0, items:[] };
-    result[mKey][cat].total += amt;
-    result[mKey][cat].items.push({ date:`${mm}/${dd}`, desc:rawC, amt, card:rawE });
-  }
-
-  for (const m of Object.values(result))
-    for (const c of Object.values(m))
-      c.items.sort((a,b) => b.date.localeCompare(a.date));
-
-  return result;
-}
-
-function mergeData(base, incoming) {
-  // Merge incoming into base, deduplicating by date+desc+amt
-  const result = JSON.parse(JSON.stringify(base));
-  for (const [mKey, mData] of Object.entries(incoming)) {
-    if (!result[mKey]) result[mKey] = {};
-    for (const [cat, catData] of Object.entries(mData)) {
-      if (!result[mKey][cat]) { result[mKey][cat] = catData; continue; }
-      // Add only non-duplicate items
-      const existing = new Set(result[mKey][cat].items.map(i=>`${i.date}|${i.desc}|${i.amt}`));
-      for (const item of catData.items) {
-        const key = `${item.date}|${item.desc}|${item.amt}`;
-        if (!existing.has(key)) {
-          result[mKey][cat].items.push(item);
-          result[mKey][cat].total += item.amt;
-          existing.add(key);
-        }
-      }
-      result[mKey][cat].items.sort((a,b) => b.date.localeCompare(a.date));
-    }
-  }
-  return result;
-}
-
-function splitRow(line) {
-  const out=[]; let cur='', inQ=false;
-  for (let i=0; i<line.length; i++) {
-    const ch = line[i];
-    if (ch==='"') { inQ=!inQ; continue; }
-    if (ch===',' && !inQ) { out.push(cur); cur=''; continue; }
-    cur += ch;
-  }
-  out.push(cur);
+  for(const m of Object.values(out))
+    for(const c of Object.values(m))
+      c.items.sort((a,b)=>b.date.localeCompare(a.date));
   return out;
 }
 
-function parseDate(s) {
-  if (!s) return null;
-  let m = s.match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/);
-  if (m) return new Date(+m[1], +m[2]-1, +m[3]);
-  m = s.match(/(\d{4})年(\d{1,2})月(\d{1,2})日/);
-  if (m) return new Date(+m[1], +m[2]-1, +m[3]);
-  const n = parseInt(s);
-  if (!isNaN(n) && n>40000 && n<60000) return new Date(Math.round((n-25569)*86400000));
+function splitRow(line){
+  const out=[]; let cur='',inQ=false;
+  for(let i=0;i<line.length;i++){
+    const ch=line[i];
+    if(ch==='"'){inQ=!inQ;continue;}
+    if(ch===','&&!inQ){out.push(cur);cur='';continue;}
+    cur+=ch;
+  }
+  out.push(cur); return out;
+}
+
+function mergeData(base, inc){
+  const res=JSON.parse(JSON.stringify(base));
+  for(const[mKey,mData] of Object.entries(inc)){
+    if(!res[mKey]) res[mKey]={};
+    for(const[cat,cd] of Object.entries(mData)){
+      if(!res[mKey][cat]){res[mKey][cat]=cd;continue;}
+      const seen=new Set(res[mKey][cat].items.map(i=>`${i.date}|${i.amt}|${i.desc.slice(0,20)}`));
+      for(const it of cd.items){
+        const k=`${it.date}|${it.amt}|${it.desc.slice(0,20)}`;
+        if(!seen.has(k)){res[mKey][cat].items.push(it);res[mKey][cat].total+=it.amt;seen.add(k);}
+      }
+      res[mKey][cat].items.sort((a,b)=>b.date.localeCompare(a.date));
+    }
+  }
+  return res;
+}
+
+// ── File upload ───────────────────────────────────────
+function handleDrop(e){
+  e.preventDefault();
+  document.getElementById('uploadZone').classList.remove('drag');
+  const f=e.dataTransfer.files[0]; if(f) handleFile(f);
+}
+function handleFile(file){
+  if(!file) return;
+  const r=new FileReader();
+  r.onload=e=>{
+    try{
+      const newData=parseTianTian(e.target.result);
+      const months=Object.keys(newData);
+      if(!months.length){showToast('⚠️ 未解析到支出資料');return;}
+      const saved=JSON.parse(localStorage.getItem(STORE_KEY)||'{}');
+      DATA=mergeData(saved,newData);
+      localStorage.setItem(STORE_KEY,JSON.stringify(DATA));
+      const total=Object.values(newData).flatMap(m=>Object.values(m)).reduce((s,c)=>s+c.items.length,0);
+      document.getElementById('updBadge').textContent=`📂 ${file.name.slice(0,18)}`;
+      buildMonthBar();
+      selectMonth(Math.max(...months.map(Number)));
+      showToast(`✅ 已載入 ${total} 筆，${months.join('、')} 月`);
+    }catch(err){showToast('❌ 解析失敗：'+err.message);}
+  };
+  r.readAsText(file,'utf-8');
+}
+
+// ── Google Sheets ─────────────────────────────────────
+async function refreshSheet(){
+  const url=localStorage.getItem(SHEET_KEY);
+  if(!url){showToast('請先在 ⚙️ 設定 Sheets 網址');return;}
+  document.getElementById('refreshBtn').textContent='…';
+  try{
+    let text='';
+    for(const proxy of PROXIES){
+      try{const res=await fetch(proxy(url),{cache:'no-cache'});if(res.ok){text=await res.text();if(text.length>50)break;}}catch(e){}
+    }
+    if(!text) throw new Error('無法連線');
+    // Sheets CSV: A=日期 B=大類 C=品項 D=金額 E=帳戶
+    const newData=parseSheetsCSV(text);
+    const saved=JSON.parse(localStorage.getItem(STORE_KEY)||'{}');
+    DATA=mergeData(saved,newData);
+    localStorage.setItem(STORE_KEY,JSON.stringify(DATA));
+    const now=new Date();
+    document.getElementById('updBadge').textContent=`☁️ ${now.getMonth()+1}/${now.getDate()} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+    buildMonthBar(); selectMonth(curMonth);
+    showToast('✅ 已從 Google Sheets 更新');
+  }catch(e){showToast('❌ '+e.message);}
+  finally{document.getElementById('refreshBtn').textContent='↺';}
+}
+
+function parseSheetsCSV(text){
+  const out={}, rows=text.split(/\r?\n/);
+  const SKIP=new Set(['日期','週小計','大類','品項說明','']);
+  for(let i=1;i<rows.length;i++){
+    const c=splitRow(rows[i]);
+    if(c.length<4)continue;
+    const rawA=c[0]?.trim(),rawB=c[1]?.trim(),rawC=c[2]?.trim()||'',rawD=(c[3]||'').replace(/,/g,''),rawE=(c[4]||'現金').trim();
+    if(SKIP.has(rawA)||SKIP.has(rawB))continue;
+    if(rawA.includes('第')&&rawA.includes('週'))continue;
+    const d=parseDate(rawA); if(!d)continue;
+    const amt=parseFloat(rawD); if(isNaN(amt)||amt<=0)continue;
+    const cat=CAT_MAP[rawB]||rawB;
+    const mKey=String(d.getMonth()+1);
+    const mm=String(d.getMonth()+1).padStart(2,'0'),dd=String(d.getDate()).padStart(2,'0');
+    if(!out[mKey])out[mKey]={};
+    if(!out[mKey][cat])out[mKey][cat]={total:0,items:[]};
+    out[mKey][cat].total+=amt;
+    out[mKey][cat].items.push({date:`${mm}/${dd}`,desc:rawC,amt,card:rawE});
+  }
+  for(const m of Object.values(out)) for(const c of Object.values(m)) c.items.sort((a,b)=>b.date.localeCompare(a.date));
+  return out;
+}
+
+function parseDate(s){
+  if(!s)return null;
+  let m=s.match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/);
+  if(m)return new Date(+m[1],+m[2]-1,+m[3]);
+  const n=parseInt(s);
+  if(!isNaN(n)&&n>40000&&n<60000)return new Date(Math.round((n-25569)*86400000));
   return null;
 }
 
-// ═══════════════════════════════════════════════════════
-//  File upload handler
-// ═══════════════════════════════════════════════════════
-function handleDrop(e) {
-  e.preventDefault();
-  document.getElementById('uploadZone').classList.remove('drag');
-  const file = e.dataTransfer.files[0];
-  if (file) handleFile(file);
-}
+function pad(n){return String(n).padStart(2,'0');}
 
-function handleFile(file) {
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    try {
-      const text = e.target.result;
-      const newData = parseTianTianCSV(text);
-      const months = Object.keys(newData);
-      if (!months.length) { showToast('⚠️ 未解析到任何支出資料'); return; }
-
-      // Merge with existing data
-      MONTHLY_DATA = mergeData(MONTHLY_DATA, newData);
-
-      // Save to localStorage
-      const saved = JSON.parse(localStorage.getItem(STORE_KEY)||'{}');
-      const merged = mergeData(saved, newData);
-      localStorage.setItem(STORE_KEY, JSON.stringify(merged));
-
-      const latestMonth = Math.max(...months.map(Number));
-      dataSource = 'file';
-      updateUI(`📂 ${file.name.slice(0,20)}`);
-      buildMonthBar();
-      selectMonth(latestMonth);
-      showToast(`✅ 已載入 ${months.join('、')} 月資料，共 ${Object.values(newData).flatMap(m=>Object.values(m)).reduce((s,c)=>s+c.items.length,0)} 筆`);
-    } catch(err) {
-      showToast('❌ 解析失敗：' + err.message);
-    }
-  };
-  reader.readAsText(file, 'utf-8');
-}
-
-// ═══════════════════════════════════════════════════════
-//  Google Sheets fetch
-// ═══════════════════════════════════════════════════════
-async function fetchSheet(url) {
-  for (const proxy of PROXIES) {
-    try {
-      const res = await fetch(proxy(url), {cache:'no-cache'});
-      if (!res.ok) continue;
-      const text = await res.text();
-      if (text && text.length > 50) return text;
-    } catch(e) { /* try next */ }
-  }
-  throw new Error('無法連線');
-}
-
-async function refreshData() {
-  const url = localStorage.getItem(SHEET_KEY);
-  if (!url) { showToast('尚未設定 Google Sheets 網址'); return; }
-
-  document.getElementById('refreshBtn').textContent = '…';
-  try {
-    const text = await fetchSheet(url);
-    const newData = parseSheetsCSV(text);
-    MONTHLY_DATA = mergeData(
-      JSON.parse(localStorage.getItem(STORE_KEY)||'{}'),
-      newData
-    );
-    localStorage.setItem(STORE_KEY, JSON.stringify(MONTHLY_DATA));
-    dataSource = 'sheet';
-    const now = new Date();
-    updateUI(`☁️ ${now.getMonth()+1}/${now.getDate()} ${pad(now.getHours())}:${pad(now.getMinutes())}`);
-    buildMonthBar();
-    selectMonth(currentMonth);
-    showToast('✅ 已從 Google Sheets 更新');
-  } catch(e) {
-    showToast('❌ ' + e.message);
-  } finally {
-    document.getElementById('refreshBtn').textContent = '↺';
-  }
-}
-
-function pad(n){ return String(n).padStart(2,'0'); }
-
-// ═══════════════════════════════════════════════════════
-//  Settings
-// ═══════════════════════════════════════════════════════
-function openSettings(){
-  document.getElementById('sheetUrl').value = localStorage.getItem(SHEET_KEY)||'';
-  document.getElementById('overlay').classList.add('open');
-}
-function closeSettings(){ document.getElementById('overlay').classList.remove('open'); }
+// ── Settings ──────────────────────────────────────────
+function openSettings(){document.getElementById('sheetUrl').value=localStorage.getItem(SHEET_KEY)||'';document.getElementById('overlay').classList.add('open');}
+function closeSettings(){document.getElementById('overlay').classList.remove('open');}
 function saveSettings(){
-  const url = document.getElementById('sheetUrl').value.trim();
-  if (url) localStorage.setItem(SHEET_KEY, url);
-  else localStorage.removeItem(SHEET_KEY);
-  closeSettings();
-  showToast('✅ 設定已儲存');
+  const u=document.getElementById('sheetUrl').value.trim();
+  if(u)localStorage.setItem(SHEET_KEY,u); else localStorage.removeItem(SHEET_KEY);
+  closeSettings(); showToast('✅ 設定已儲存');
+}
+function clearData(){
+  if(!confirm('確定清除所有本機記帳資料？'))return;
+  localStorage.removeItem(STORE_KEY);
+  DATA={}; buildMonthBar(); selectMonth(curMonth);
+  closeSettings(); showToast('已清除');
 }
 
-// ═══════════════════════════════════════════════════════
-//  Toast
-// ═══════════════════════════════════════════════════════
-let toastTimer;
-function showToast(msg, dur=3000){
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(()=>t.classList.remove('show'), dur);
+// ── Toast ─────────────────────────────────────────────
+let _tt;
+function showToast(msg,dur=3000){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('show'),dur);
 }
 
-// ═══════════════════════════════════════════════════════
-//  UI helpers
-// ═══════════════════════════════════════════════════════
-function updateUI(badgeText){
-  document.getElementById('updBadge').textContent = badgeText;
-  const sb = document.getElementById('srcBadge');
-  sb.style.display = 'inline';
-  if (dataSource==='file'){ sb.className='src-badge file'; sb.textContent='📂 本機 CSV'; }
-  else if (dataSource==='sheet'){ sb.className='src-badge'; sb.textContent='☁️ Google Sheets'; }
-  else { sb.className='src-badge'; sb.textContent='💾 快取'; }
-}
-
+// ── UI ────────────────────────────────────────────────
 function buildMonthBar(){
-  const bar = document.getElementById('monthBar');
-  bar.innerHTML = '';
-  MONTHS_ZH.forEach((label,i)=>{
-    const m = i+1;
-    const btn = document.createElement('button');
-    btn.className = 'm-btn';
-    btn.textContent = label;
-    const hasData = Object.values(MONTHLY_DATA[String(m)]||{}).some(c=>c.items.length>0);
-    if (hasData) btn.classList.add('has-data');
-    if (m === currentMonth) btn.classList.add('active');
-    btn.onclick = ()=>selectMonth(m);
+  const bar=document.getElementById('monthBar');
+  bar.innerHTML='';
+  MONTHS_ZH.forEach((lbl,i)=>{
+    const m=i+1, btn=document.createElement('button');
+    btn.className='m-btn'; btn.textContent=lbl;
+    if(Object.values(DATA[String(m)]||{}).some(c=>c.items.length)) btn.classList.add('has-data');
+    if(m===curMonth) btn.classList.add('active');
+    btn.onclick=()=>selectMonth(m);
     bar.appendChild(btn);
   });
 }
 
 function selectMonth(m){
-  currentMonth = m;
+  curMonth=m;
   document.querySelectorAll('.m-btn').forEach((b,i)=>b.classList.toggle('active',i===m-1));
   document.querySelectorAll('.m-btn')[m-1]?.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
-  openCat = null;
-  render();
+  openCat=null; render();
 }
 
-function fmt(n){ return 'NT$'+Math.round(n).toLocaleString('zh-TW'); }
+function fmt(n){return 'NT$'+Math.round(n).toLocaleString('zh-TW');}
 
 function render(){
-  const mData = MONTHLY_DATA[String(currentMonth)]||{};
-  const cats  = Object.entries(mData).sort((a,b)=>b[1].total-a[1].total);
-  const total = cats.reduce((s,[,v])=>s+v.total,0);
-  const diff  = TOTAL_BUDGET-total;
+  const mData=DATA[String(curMonth)]||{};
+  const cats=Object.entries(mData).sort((a,b)=>b[1].total-a[1].total);
+  const total=cats.reduce((s,[,v])=>s+v.total,0);
+  const diff=TOTAL_BUDGET-total;
 
-  document.getElementById('sumTotal').textContent  = total?fmt(total):'—';
-  document.getElementById('sumBudget').textContent = fmt(TOTAL_BUDGET);
-  const diffEl = document.getElementById('sumDiff');
-  if(total){ diffEl.textContent=(diff>=0?'＋':'')+fmt(diff); diffEl.className='s-value '+(diff>=0?'green':'red'); }
-  else { diffEl.textContent='—'; diffEl.className='s-value'; }
+  document.getElementById('sumTotal').textContent=total?fmt(total):'—';
+  document.getElementById('sumBudget').textContent=fmt(TOTAL_BUDGET);
+  const de=document.getElementById('sumDiff');
+  if(total){de.textContent=(diff>=0?'＋':'')+fmt(diff);de.className='s-value '+(diff>=0?'green':'red');}
+  else{de.textContent='—';de.className='s-value';}
 
-  if(pieChart){ pieChart.destroy(); pieChart=null; }
-  const listEl = document.getElementById('catList');
+  if(pie){pie.destroy();pie=null;}
+  const listEl=document.getElementById('catList');
 
   if(!total){
-    listEl.innerHTML='<div class="empty"><div class="empty-icon">📭</div>本月尚無資料<br><small style="color:#CCC;margin-top:6px;display:block">上傳天天記帳 CSV 或設定 Google Sheets</small></div>';
+    listEl.innerHTML='<div class="empty"><div class="empty-icon">📭</div>本月尚無資料<br><small style="color:#CCC;margin-top:6px;display:block">上傳天天記帳 CSV 即可</small></div>';
     return;
   }
 
-  const ctx = document.getElementById('pieChart').getContext('2d');
-  pieChart = new Chart(ctx,{
+  const ctx=document.getElementById('pieChart').getContext('2d');
+  pie=new Chart(ctx,{
     type:'pie',
     data:{
       labels:cats.map(([c])=>c.slice(0,2)+' '+c.slice(2).trim()),
@@ -568,29 +446,29 @@ function render(){
     },
     options:{responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:false},tooltip:{callbacks:{label(ctx){return ` ${fmt(ctx.raw)}（${(ctx.raw/total*100).toFixed(1)}%）`;}}}}  ,
-      onClick(evt,items){if(items.length)toggleCat(cats[items[0].index][0],true);}
+      onClick(e,items){if(items.length)toggleCat(cats[items[0].index][0],true);}
     }
   });
 
   listEl.innerHTML='';
-  cats.forEach(([cat,catData])=>{
-    const budget=BUDGETS[cat]||0, pct=budget>0?catData.total/budget:0;
+  cats.forEach(([cat,cd])=>{
+    const budget=BUDGETS[cat]||0, pct=budget>0?cd.total/budget:0;
     const color=CAT_COLORS[cat]||'#ccc';
     const barColor=pct>=1?'#E74C3C':pct>=.8?'#F39C12':'#27AE60';
-    const isOpen=openCat===cat, over=budget>0&&catData.total>budget;
+    const isOpen=openCat===cat, over=budget>0&&cd.total>budget;
+    const key=encodeURIComponent(cat);
 
     const item=document.createElement('div');
     item.className='cat-item'+(isOpen?' open':'');
-    item.id='cat-'+encodeURIComponent(cat);
-    item.style.borderLeftColor=color;
+    item.id='cat-'+key; item.style.borderLeftColor=color;
     item.innerHTML=`
       <div class="cat-icon">${cat.slice(0,2)}</div>
       <div class="cat-info">
         <div class="cat-name">${cat.slice(2).trim()}${over?'<span class="over-badge">超支</span>':''}</div>
         <div class="cat-row2">
-          <span class="cat-amt" style="color:${over?'#E74C3C':color}">${fmt(catData.total)}</span>
+          <span class="cat-amt" style="color:${over?'#E74C3C':color}">${fmt(cd.total)}</span>
           ${budget?`<span class="cat-budget-info">預算${fmt(budget)}</span>`:''}
-          <span class="cat-pct-badge">${(catData.total/total*100).toFixed(1)}%</span>
+          <span class="cat-pct-badge">${(cd.total/total*100).toFixed(1)}%</span>
         </div>
         ${budget?`<div class="progress-bar"><div class="progress-fill" style="width:${Math.min(100,pct*100).toFixed(1)}%;background:${barColor}"></div></div>`:''}
       </div>
@@ -598,21 +476,54 @@ function render(){
     item.addEventListener('click',()=>toggleCat(cat,false));
     listEl.appendChild(item);
 
+    // Detail panel with expandable notes
     const panel=document.createElement('div');
     panel.className='detail-panel'+(isOpen?' open':'');
-    panel.id='panel-'+encodeURIComponent(cat);
-    const items=catData.items||[];
-    panel.innerHTML=items.length
-      ?`<div class="detail-header"><span>共 <strong>${items.length}</strong> 筆</span><strong>${fmt(items.reduce((s,r)=>s+r.amt,0))}</strong></div>
-        ${items.map(it=>`<div class="detail-row">
-          <span class="d-date">${it.date}</span>
-          <span class="d-desc">${it.desc||'（無說明）'}</span>
-          <span class="d-acct">${it.card||''}</span>
-          <span class="d-amt${it.amt>=5000?' big':''}">${fmt(it.amt)}</span>
-        </div>`).join('')}`
-      :'<div style="padding:12px 14px;font-size:12px;color:#AAA">無詳細記錄</div>';
+    panel.id='panel-'+key;
+
+    if(cd.items.length){
+      const hdr=`<div class="detail-header"><span>共 <strong>${cd.items.length}</strong> 筆</span><strong>${fmt(cd.items.reduce((s,r)=>s+r.amt,0))}</strong></div>`;
+      const txRows=cd.items.map((it,idx)=>{
+        // Shorten desc for one-line preview (strip long receipt text after first meaningful part)
+        const preview=shortDesc(it.desc);
+        const hasLong=it.desc && it.desc.length>preview.length+2;
+        return `<div class="tx-row" id="tx-${key}-${idx}">
+          <div class="tx-main" onclick="toggleNote('${key}',${idx})">
+            <span class="d-date">${it.date}</span>
+            <span class="d-desc">${preview||'（無說明）'}</span>
+            <span class="d-acct">${it.card||''}</span>
+            <span class="d-amt${it.amt>=5000?' big':''}">${fmt(it.amt)}</span>
+            ${hasLong?'<span class="expand-arrow">›</span>':''}
+          </div>
+          ${hasLong?`<div class="tx-note"><div class="tx-note-inner">${escHtml(it.desc)}</div></div>`:''}
+        </div>`;
+      }).join('');
+      panel.innerHTML=hdr+txRows;
+    } else {
+      panel.innerHTML='<div style="padding:12px 14px;font-size:12px;color:#AAA">無詳細記錄</div>';
+    }
     listEl.appendChild(panel);
   });
+}
+
+function shortDesc(desc){
+  if(!desc) return '';
+  // If it contains receipt-style content (multiple × signs or long chain), show first meaningful part
+  // Keep up to first newline or first "  " double-space or first "#電子發票" marker
+  let s=desc.split(/\s{2,}|#電子發票|2026年\d+月/)[0].trim();
+  // Also cap at 30 chars
+  if(s.length>32) s=s.slice(0,32)+'…';
+  return s;
+}
+
+function escHtml(s){
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function toggleNote(catKey, idx){
+  const row=document.getElementById(`tx-${catKey}-${idx}`);
+  if(!row) return;
+  row.classList.toggle('expanded');
 }
 
 function toggleCat(cat,scroll){
@@ -628,26 +539,19 @@ function toggleCat(cat,scroll){
   }
 }
 
-// ═══════════════════════════════════════════════════════
-//  Init — load from localStorage cache first
-// ═══════════════════════════════════════════════════════
+// ── Init ─────────────────────────────────────────────
 (function init(){
-  const cached = localStorage.getItem(STORE_KEY);
-  if (cached) {
-    try {
-      MONTHLY_DATA = JSON.parse(cached);
-      dataSource = 'cache';
-      const months = Object.keys(MONTHLY_DATA).map(Number).filter(m=>Object.values(MONTHLY_DATA[String(m)]||{}).some(c=>c.items.length>0));
-      if (months.length) currentMonth = Math.max(...months);
-      updateUI('💾 快取資料');
-    } catch(e) { MONTHLY_DATA = {}; }
+  try{ DATA=JSON.parse(localStorage.getItem(STORE_KEY)||'{}'); }catch(e){ DATA={}; }
+  const months=Object.keys(DATA).map(Number).filter(m=>Object.values(DATA[String(m)]||{}).some(c=>c.items.length));
+  if(months.length){
+    curMonth=Math.max(...months);
+    document.getElementById('updBadge').textContent='💾 快取';
   }
   buildMonthBar();
-  selectMonth(currentMonth);
-
-  // Auto-fetch from Sheets if URL is set
-  const sheetUrl = localStorage.getItem(SHEET_KEY);
-  if (sheetUrl) refreshData();
+  selectMonth(curMonth);
+  // Auto-refresh from Sheets if configured
+  const url=localStorage.getItem(SHEET_KEY);
+  if(url) refreshSheet();
 })();
 </script>
 </body>
