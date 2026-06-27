@@ -8,28 +8,28 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
-  --navy:#1B4F72;--blue:#2E86C1;--lblue:#D6EAF8;
-  --green:#1E8449;--lgreen:#D5F5E3;--dgreen:#0B5345;
+  --navy:#1B4F72;--blue:#2E86C1;
+  --green:#1E8449;--lgreen:#D5F5E3;
   --red:#C0392B;--lred:#FADBD8;
-  --gold:#9A7D0A;--lgold:#FEF9E7;
+  --gold:#9A7D0A;
   --grey:#F2F3F4;--dark:#212F3D;
   --radius:14px;--shadow:0 2px 14px rgba(0,0,0,0.09);
 }
-body{font-family:'Noto Sans TC',system-ui,sans-serif;background:#EEF2F7;color:var(--dark);min-height:100vh;padding-bottom:30px}
+body{font-family:'Noto Sans TC',system-ui,sans-serif;background:#EEF2F7;color:var(--dark);min-height:100vh;padding-bottom:40px}
 
-.header{background:linear-gradient(135deg,#1B4F72,#2E86C1);color:#fff;padding:18px 20px 14px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,0.2)}
+.header{background:linear-gradient(135deg,#1B4F72,#2E86C1);color:#fff;padding:18px 20px 14px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.2)}
 .header-row{display:flex;align-items:center;justify-content:space-between}
-.header-title{font-size:18px;font-weight:800}
-.header-sub{font-size:11px;opacity:.75;margin-top:3px}
-.year-badge{background:rgba(255,255,255,0.2);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700}
-.update-badge{font-size:10px;background:rgba(255,255,255,.18);border-radius:12px;padding:2px 8px;margin-left:6px;opacity:.9}
-.refresh-btn{background:rgba(255,255,255,0.18);border:none;color:#fff;font-size:13px;padding:6px 10px;border-radius:20px;cursor:pointer;margin-left:8px}
-.refresh-btn:active{background:rgba(255,255,255,0.35)}
+.header-title{font-size:18px;font-weight:800;display:flex;align-items:center;gap:8px}
+.upd-badge{font-size:10px;background:rgba(255,255,255,.18);border-radius:12px;padding:2px 9px}
+.header-sub{font-size:11px;opacity:.7;margin-top:3px}
+.year-badge{background:rgba(255,255,255,.2);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700}
+.icon-btn{background:rgba(255,255,255,.18);border:none;color:#fff;font-size:14px;padding:6px 11px;border-radius:20px;cursor:pointer;margin-left:6px}
+.icon-btn:active{background:rgba(255,255,255,.35)}
 
-.month-bar{display:flex;overflow-x:auto;gap:6px;padding:12px 16px;background:#fff;border-bottom:1px solid #E0E6ED;position:sticky;top:58px;z-index:99;scrollbar-width:none}
+.month-bar{display:flex;overflow-x:auto;gap:6px;padding:12px 16px;background:#fff;border-bottom:1px solid #E0E6ED;position:sticky;top:62px;z-index:99;scrollbar-width:none}
 .month-bar::-webkit-scrollbar{display:none}
 .m-btn{flex-shrink:0;min-width:44px;padding:7px 12px;border-radius:20px;border:1.5px solid #DDE3ED;font-size:12px;font-weight:600;cursor:pointer;background:#fff;color:#666;transition:all .15s}
-.m-btn.active{background:var(--navy);color:#fff;border-color:var(--navy);box-shadow:0 2px 8px rgba(27,79,114,0.3)}
+.m-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
 .m-btn.has-data{border-color:#aac4dc;color:var(--navy)}
 
 .content{padding:14px 14px 0;max-width:520px;margin:0 auto}
@@ -43,46 +43,70 @@ body{font-family:'Noto Sans TC',system-ui,sans-serif;background:#EEF2F7;color:va
 .s-value.red{color:var(--red)}.s-value.green{color:var(--green)}.s-value.gold{color:var(--gold)}
 
 .chart-hint{font-size:11px;color:#999;text-align:center;margin-bottom:10px}
-.chart-wrap{position:relative;height:250px}
+.chart-wrap{position:relative;height:240px}
 
 .cat-list{display:flex;flex-direction:column}
 .cat-item{padding:13px 14px;cursor:pointer;border-left:4px solid transparent;display:flex;align-items:center;gap:11px;border-bottom:1px solid #F0F4F8;transition:background .1s}
 .cat-item:last-child{border-bottom:none}
-.cat-item.open{background:#FAFBFF;border-bottom:none}
+.cat-item.open{background:#FAFBFF}
 .cat-icon{font-size:20px;flex-shrink:0;width:32px;text-align:center}
 .cat-info{flex:1;min-width:0}
-.cat-name{font-size:13px;font-weight:700;color:var(--dark)}
+.cat-name{font-size:13px;font-weight:700}
 .cat-row2{display:flex;align-items:center;gap:8px;margin-top:3px}
 .cat-amt{font-size:15px;font-weight:800}
 .cat-budget-info{font-size:10px;color:#AAA}
 .cat-pct-badge{margin-left:auto;background:var(--grey);border-radius:10px;padding:2px 7px;font-size:11px;font-weight:600;color:#666;flex-shrink:0}
 .progress-bar{height:4px;background:#EEE;border-radius:2px;overflow:hidden;margin-top:5px}
-.progress-fill{height:100%;border-radius:2px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+.progress-fill{height:100%;border-radius:2px;transition:width .5s}
 .arrow{font-size:13px;color:#CCC;transition:transform .2s;flex-shrink:0;margin-left:4px}
 .cat-item.open .arrow{transform:rotate(90deg)}
-.over-badge{background:var(--lred);color:var(--red);font-size:10px;font-weight:700;padding:2px 6px;border-radius:8px;flex-shrink:0}
+.over-badge{background:var(--lred);color:var(--red);font-size:10px;font-weight:700;padding:2px 6px;border-radius:8px;flex-shrink:0;margin-left:4px}
 
 .detail-panel{background:#F5F8FF;overflow:hidden;max-height:0;transition:max-height .35s ease;border-bottom:1px solid #E8EEF8}
-.detail-panel.open{max-height:2000px}
+.detail-panel.open{max-height:3000px}
 .detail-header{display:flex;justify-content:space-between;padding:9px 14px 7px;font-size:11px;color:#888;border-bottom:1px solid #E8EEF8;background:#EEF3FC}
 .detail-header strong{color:var(--navy)}
 .detail-row{display:flex;align-items:center;gap:8px;padding:9px 14px;border-bottom:1px solid #EEF0F5}
 .detail-row:last-child{border-bottom:none}
 .d-date{font-size:11px;color:#AAA;flex-shrink:0;width:38px;font-weight:600}
-.d-desc{flex:1;font-size:12px;color:var(--dark);min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.d-card{font-size:10px;color:#BBB;flex-shrink:0;max-width:50px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:right}
-.d-amt{font-size:13px;font-weight:700;color:var(--dark);flex-shrink:0;text-align:right;min-width:60px}
+.d-desc{flex:1;font-size:12px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.d-acct{font-size:10px;color:#BBB;flex-shrink:0;max-width:44px;overflow:hidden;text-overflow:ellipsis;text-align:right}
+.d-amt{font-size:13px;font-weight:700;flex-shrink:0;text-align:right;min-width:60px}
 .d-amt.big{color:var(--red)}
-
 .empty{text-align:center;padding:40px 20px;color:#BBB;font-size:13px}
 .empty-icon{font-size:36px;margin-bottom:8px}
 
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#222;color:#fff;font-size:12px;font-weight:600;padding:10px 20px;border-radius:20px;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none}
+/* Upload zone */
+.upload-zone{border:2px dashed #C5D8E8;border-radius:14px;padding:24px;text-align:center;cursor:pointer;transition:all .2s;background:#F8FBFF;margin-bottom:13px}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--blue);background:#EBF5FF}
+.upload-zone .uz-icon{font-size:32px;margin-bottom:8px}
+.upload-zone .uz-title{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:4px}
+.upload-zone .uz-sub{font-size:11px;color:#888}
+#fileInput{display:none}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1B4F72;color:#fff;font-size:12px;font-weight:600;padding:10px 20px;border-radius:20px;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
 .toast.show{opacity:1}
 
-/* loading skeleton */
-.skel{background:linear-gradient(90deg,#eee 25%,#f5f5f5 50%,#eee 75%);background-size:200% 100%;animation:skel 1.2s infinite;border-radius:8px;height:16px;margin-bottom:8px}
-@keyframes skel{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.skel{background:linear-gradient(90deg,#eee 25%,#f5f5f5 50%,#eee 75%);background-size:200% 100%;animation:sk 1.2s infinite;border-radius:8px;height:14px;margin-bottom:10px}
+@keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* Settings drawer */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:flex-end;justify-content:center}
+.overlay.open{display:flex}
+.drawer{background:#fff;border-radius:20px 20px 0 0;padding:24px 20px 44px;width:100%;max-width:520px}
+.drawer h3{font-size:15px;font-weight:800;margin-bottom:14px}
+.drawer label{font-size:11px;font-weight:700;color:#888;display:block;margin-bottom:5px;margin-top:14px}
+.drawer input{width:100%;border:1.5px solid #DDE3ED;border-radius:10px;padding:10px 13px;font-size:12px;outline:none}
+.drawer input:focus{border-color:var(--blue)}
+.drawer .hint{font-size:10px;color:#AAA;margin-top:4px;line-height:1.5}
+.drawer .btn-row{display:flex;gap:8px;margin-top:18px}
+.drawer .btn{flex:1;padding:12px;border-radius:12px;border:none;font-size:14px;font-weight:700;cursor:pointer}
+.btn-primary{background:var(--navy);color:#fff}
+.btn-cancel{background:var(--grey);color:#666}
+
+/* URL source indicator */
+.src-badge{font-size:10px;background:#E8F5E9;color:#2E7D32;padding:2px 8px;border-radius:8px;font-weight:600}
+.src-badge.file{background:#FFF3E0;color:#E65100}
 </style>
 </head>
 <body>
@@ -90,12 +114,15 @@ body{font-family:'Noto Sans TC',system-ui,sans-serif;background:#EEF2F7;color:va
 <div class="header">
   <div class="header-row">
     <div>
-      <div class="header-title">🏠 家庭支出分析<span class="update-badge" id="updBadge"></span></div>
-      <div class="header-sub">點圓餅圖或類別查看每筆明細</div>
+      <div class="header-title">🏠 家庭支出分析
+        <span class="upd-badge" id="updBadge">—</span>
+      </div>
+      <div class="header-sub">天天記帳 CSV 或 Google Sheets 即時同步</div>
     </div>
     <div style="display:flex;align-items:center">
       <div class="year-badge">2026</div>
-      <button class="refresh-btn" onclick="loadData(true)" title="重新載入">↺</button>
+      <button class="icon-btn" onclick="openSettings()" title="設定">⚙️</button>
+      <button class="icon-btn" id="refreshBtn" onclick="refreshData()" title="重新整理">↺</button>
     </div>
   </div>
 </div>
@@ -103,25 +130,55 @@ body{font-family:'Noto Sans TC',system-ui,sans-serif;background:#EEF2F7;color:va
 <div class="month-bar" id="monthBar"></div>
 
 <div class="content">
+  <!-- Upload zone (天天記帳 CSV) -->
+  <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()"
+       ondragover="event.preventDefault();this.classList.add('drag')"
+       ondragleave="this.classList.remove('drag')"
+       ondrop="handleDrop(event)">
+    <div class="uz-icon">📂</div>
+    <div class="uz-title">上傳天天記帳 CSV</div>
+    <div class="uz-sub">點擊選擇檔案，或直接拖曳到這裡<br>每週匯出後上傳，資料自動合併</div>
+    <input type="file" id="fileInput" accept=".csv" onchange="handleFile(this.files[0])">
+  </div>
+
   <div class="card">
     <div class="card-title">本月財務摘要</div>
     <div class="summary-grid">
       <div class="s-item"><div class="s-label">總支出</div><div class="s-value red" id="sumTotal">—</div></div>
-      <div class="s-item"><div class="s-label">月預算上限</div><div class="s-value gold" id="sumBudget">—</div></div>
+      <div class="s-item"><div class="s-label">月預算</div><div class="s-value gold" id="sumBudget">—</div></div>
       <div class="s-item"><div class="s-label">超支／剩餘</div><div class="s-value" id="sumDiff">—</div></div>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title">支出比例圓餅圖</div>
-    <div class="chart-hint">👆 點色塊查看該類別每筆消費</div>
+    <div class="card-title">支出比例</div>
+    <div class="chart-hint">👆 點色塊查看每筆明細</div>
     <div class="chart-wrap"><canvas id="pieChart"></canvas></div>
   </div>
 
   <div class="card" style="padding:0;overflow:hidden">
-    <div style="padding:12px 14px 8px"><div class="card-title" style="margin-bottom:0">各類別明細</div></div>
+    <div style="padding:12px 14px 8px;display:flex;align-items:center;justify-content:space-between">
+      <div class="card-title" style="margin-bottom:0">各類別明細</div>
+      <span id="srcBadge" class="src-badge" style="display:none"></span>
+    </div>
     <div class="cat-list" id="catList">
-      <div style="padding:20px"><div class="skel"></div><div class="skel" style="width:70%"></div><div class="skel" style="width:85%"></div></div>
+      <div style="padding:20px">
+        <div class="skel"></div><div class="skel" style="width:70%"></div><div class="skel" style="width:85%"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Settings drawer -->
+<div class="overlay" id="overlay" onclick="if(event.target===this)closeSettings()">
+  <div class="drawer">
+    <h3>⚙️ 設定</h3>
+    <label>Google Sheets CSV 網址（選填）</label>
+    <input id="sheetUrl" type="url" placeholder="https://docs.google.com/spreadsheets/d/e/.../pub?...&output=csv">
+    <div class="hint">設定後每次開啟網頁自動從雲端抓資料。<br>取得方式：Sheets → 檔案 → 共用 → 發佈到網路 → CSV → 複製網址</div>
+    <div class="btn-row">
+      <button class="btn btn-cancel" onclick="closeSettings()">取消</button>
+      <button class="btn btn-primary" onclick="saveSettings()">儲存</button>
     </div>
   </div>
 </div>
@@ -130,21 +187,35 @@ body{font-family:'Noto Sans TC',system-ui,sans-serif;background:#EEF2F7;color:va
 
 <script>
 // ═══════════════════════════════════════════════════════
-//  設定：Google Sheets CSV 網址（已固定，無需手動輸入）
+//  類別對應表：天天記帳 → 網站顯示名稱
 // ═══════════════════════════════════════════════════════
-const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSWdOhR75-v479u3tmyPbkrnQDco54PbkjRiDNDEnQpC-h5wB1oMd2WmfRBO0QmPw/pub?gid=164480810&single=true&output=csv';
+const CAT_MAP = {
+  '飲食':      '🍽️ 飲食',
+  '居家開銷':  '🏠 居家開銷',
+  '汽車':      '🚗 汽車',
+  '娛樂血拼':  '🛍️ 娛樂血拚',
+  '娛樂血拚':  '🛍️ 娛樂血拚',
+  '看醫生':    '🏥 看醫生',
+  '終身學習':  '📚 終身學習',
+  '保險':      '🛡️ 保險',
+  '小孩學習':  '👶 小孩學習',
+  '網路訂閱':  '📱 網路訂閱',
+  '小孩日用品':'🧸 小孩日用品',
+  '其他':      '💬 其他',
+  // 已有 emoji 的直接使用
+  '🍽️ 飲食':   '🍽️ 飲食',
+  '🏠 居家開銷':'🏠 居家開銷',
+  '🚗 汽車':   '🚗 汽車',
+  '🛍️ 娛樂血拚':'🛍️ 娛樂血拚',
+  '🏥 看醫生': '🏥 看醫生',
+  '📚 終身學習':'📚 終身學習',
+  '🛡️ 保險':   '🛡️ 保險',
+  '👶 小孩學習':'👶 小孩學習',
+  '📱 網路訂閱':'📱 網路訂閱',
+  '🧸 小孩日用品':'🧸 小孩日用品',
+  '💬 其他':   '💬 其他',
+};
 
-// CORS proxy — Google Sheets 發布 CSV 有 CORS 限制需要代理
-// 主要用 allorigins，失敗自動換備用
-const PROXIES = [
-  u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
-  u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
-  u => `https://thingproxy.freeboard.io/fetch/${u}`,
-];
-
-// ═══════════════════════════════════════════════════════
-//  預算設定（對應設定 sheet）
-// ═══════════════════════════════════════════════════════
 const BUDGETS = {
   '🍽️ 飲食':24000,'🏠 居家開銷':8000,'🚗 汽車':4000,
   '🛍️ 娛樂血拚':8000,'🏥 看醫生':1500,'📚 終身學習':3000,
@@ -159,70 +230,149 @@ const CAT_COLORS = {
   '🧸 小孩日用品':'#E84393','💬 其他':'#95A5A6'
 };
 const MONTHS_ZH = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+const PROXIES = [
+  u=>`https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+  u=>`https://corsproxy.io/?${encodeURIComponent(u)}`,
+];
+const STORE_KEY = 'family_budget_v2';
+const SHEET_KEY = 'family_budget_sheet_url';
 
 // ═══════════════════════════════════════════════════════
-//  CSV 解析
-//  每週記帳欄位：A=日期 B=大類 C=品項說明 D=金額 E=帳戶 F=備註
+//  State
 // ═══════════════════════════════════════════════════════
-function parseCSV(text) {
+let MONTHLY_DATA = {}; // { "6": { "🍽️ 飲食": { total, items[] } } }
+let currentMonth = new Date().getMonth() + 1;
+let pieChart = null, openCat = null;
+let dataSource = ''; // 'file' | 'sheet' | 'cache'
+
+// ═══════════════════════════════════════════════════════
+//  CSV Parser — 天天記帳格式
+//  欄位：日期,類別,大類別,金額,貨幣,成員,帳戶,標籤,備註,收支區分,...
+// ═══════════════════════════════════════════════════════
+function parseTianTianCSV(text) {
   const rows = text.split(/\r?\n/);
-  const data = {}; // { "6": { "🍽️ 飲食": { total, items[] } } }
+  const result = {};
 
-  // Known non-data values to skip
-  const SKIP_A = new Set(['日期','週小計','品項說明','']);
-  const SKIP_B = new Set(['大類','','週小計','金額','帳戶']);
-
-  for (let i = 0; i < rows.length; i++) {
+  for (let i = 1; i < rows.length; i++) {
     const cols = splitRow(rows[i]);
-    if (cols.length < 3) continue;
+    if (cols.length < 10) continue;
 
-    const rawA = cols[0]?.trim() ?? '';
-    const rawB = cols[1]?.trim() ?? '';
-    const rawC = cols[2]?.trim() ?? '';
-    const rawD = cols[3]?.trim().replace(/,/g,'') ?? '';
-    const rawE = cols[4]?.trim() ?? '現金';
+    const rawDate = cols[0]?.trim();   // 20260626
+    const rawCat  = cols[1]?.trim();   // 飲食
+    const rawAmt  = cols[3]?.trim().replace(/,/g,'');
+    const rawAcct = cols[6]?.trim() || '現金';
+    const rawNote = cols[8]?.trim() || '';
+    const type    = cols[9]?.trim();   // 支 or 收
 
-    // Skip header / summary rows
-    if (SKIP_A.has(rawA) || SKIP_B.has(rawB)) continue;
+    if (type !== '支') continue;       // 只取支出
+    if (!rawDate || !rawCat || !rawAmt) continue;
+
+    // Parse date YYYYMMDD
+    const y = rawDate.slice(0,4), m = rawDate.slice(4,6), d = rawDate.slice(6,8);
+    if (!y || !m || !d) continue;
+    const month = parseInt(m, 10);
+    const day   = parseInt(d, 10);
+    if (isNaN(month) || isNaN(day)) continue;
+
+    const amt = parseFloat(rawAmt);
+    if (isNaN(amt) || amt <= 0) continue;
+
+    // Map category
+    const cat = CAT_MAP[rawCat] || ('💬 ' + rawCat);
+    const mKey = String(month);
+    const dateStr = `${m}/${String(day).padStart(2,'0')}`;
+
+    if (!result[mKey]) result[mKey] = {};
+    if (!result[mKey][cat]) result[mKey][cat] = { total:0, items:[] };
+    result[mKey][cat].total += amt;
+    result[mKey][cat].items.push({ date:dateStr, desc:rawNote, amt, card:rawAcct });
+  }
+
+  // Sort newest first
+  for (const m of Object.values(result))
+    for (const c of Object.values(m))
+      c.items.sort((a,b) => b.date.localeCompare(a.date));
+
+  return result;
+}
+
+// ═══════════════════════════════════════════════════════
+//  CSV Parser — Google Sheets 每週記帳格式
+//  欄位：A=日期 B=大類 C=品項說明 D=金額 E=帳戶
+// ═══════════════════════════════════════════════════════
+function parseSheetsCSV(text) {
+  const rows = text.split(/\r?\n/);
+  const result = {};
+  const SKIP = new Set(['日期','週小計','大類','品項說明','']);
+
+  for (let i = 1; i < rows.length; i++) {
+    const cols = splitRow(rows[i]);
+    if (cols.length < 4) continue;
+
+    const rawA = cols[0]?.trim();
+    const rawB = cols[1]?.trim();
+    const rawC = cols[2]?.trim() || '';
+    const rawD = cols[3]?.trim().replace(/,/g,'');
+    const rawE = cols[4]?.trim() || '現金';
+
+    if (SKIP.has(rawA) || SKIP.has(rawB)) continue;
     if (rawA.includes('第') && rawA.includes('週')) continue;
-    if (rawB.includes('第') && rawB.includes('週')) continue;
-    if (rawA.includes('週小計') || rawB.includes('週小計')) continue;
+    if (rawA.includes('週小計')) continue;
 
     const dateObj = parseDate(rawA);
     if (!dateObj) continue;
-
     const amt = parseFloat(rawD);
     if (isNaN(amt) || amt <= 0) continue;
-
-    // Category must look like an emoji category
     if (!rawB || rawB.length < 2) continue;
 
+    const cat  = CAT_MAP[rawB] || rawB;
     const month = dateObj.getMonth() + 1;
     const mKey  = String(month);
     const mm    = String(month).padStart(2,'0');
     const dd    = String(dateObj.getDate()).padStart(2,'0');
 
-    if (!data[mKey]) data[mKey] = {};
-    if (!data[mKey][rawB]) data[mKey][rawB] = { total:0, items:[] };
-
-    data[mKey][rawB].total += amt;
-    data[mKey][rawB].items.push({ date:`${mm}/${dd}`, desc:rawC, amt, card:rawE });
+    if (!result[mKey]) result[mKey] = {};
+    if (!result[mKey][cat]) result[mKey][cat] = { total:0, items:[] };
+    result[mKey][cat].total += amt;
+    result[mKey][cat].items.push({ date:`${mm}/${dd}`, desc:rawC, amt, card:rawE });
   }
 
-  // Sort items newest first within each category
-  for (const m of Object.values(data))
+  for (const m of Object.values(result))
     for (const c of Object.values(m))
       c.items.sort((a,b) => b.date.localeCompare(a.date));
 
-  return data;
+  return result;
+}
+
+function mergeData(base, incoming) {
+  // Merge incoming into base, deduplicating by date+desc+amt
+  const result = JSON.parse(JSON.stringify(base));
+  for (const [mKey, mData] of Object.entries(incoming)) {
+    if (!result[mKey]) result[mKey] = {};
+    for (const [cat, catData] of Object.entries(mData)) {
+      if (!result[mKey][cat]) { result[mKey][cat] = catData; continue; }
+      // Add only non-duplicate items
+      const existing = new Set(result[mKey][cat].items.map(i=>`${i.date}|${i.desc}|${i.amt}`));
+      for (const item of catData.items) {
+        const key = `${item.date}|${item.desc}|${item.amt}`;
+        if (!existing.has(key)) {
+          result[mKey][cat].items.push(item);
+          result[mKey][cat].total += item.amt;
+          existing.add(key);
+        }
+      }
+      result[mKey][cat].items.sort((a,b) => b.date.localeCompare(a.date));
+    }
+  }
+  return result;
 }
 
 function splitRow(line) {
-  const out = []; let cur = '', inQ = false;
-  for (let i = 0; i < line.length; i++) {
+  const out=[]; let cur='', inQ=false;
+  for (let i=0; i<line.length; i++) {
     const ch = line[i];
-    if (ch === '"') { inQ = !inQ; continue; }
-    if (ch === ',' && !inQ) { out.push(cur); cur = ''; continue; }
+    if (ch==='"') { inQ=!inQ; continue; }
+    if (ch===',' && !inQ) { out.push(cur); cur=''; continue; }
     cur += ch;
   }
   out.push(cur);
@@ -231,168 +381,209 @@ function splitRow(line) {
 
 function parseDate(s) {
   if (!s) return null;
-  // "2026/01/05" or "2026-01-05"
   let m = s.match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/);
   if (m) return new Date(+m[1], +m[2]-1, +m[3]);
-  // Google Sheets sometimes exports as "2026年1月5日"
   m = s.match(/(\d{4})年(\d{1,2})月(\d{1,2})日/);
   if (m) return new Date(+m[1], +m[2]-1, +m[3]);
-  // Excel serial number
   const n = parseInt(s);
-  if (!isNaN(n) && n > 40000 && n < 60000)
-    return new Date(Math.round((n - 25569) * 86400000));
+  if (!isNaN(n) && n>40000 && n<60000) return new Date(Math.round((n-25569)*86400000));
   return null;
 }
 
 // ═══════════════════════════════════════════════════════
-//  Data loading with proxy fallback
+//  File upload handler
 // ═══════════════════════════════════════════════════════
-let MONTHLY_DATA = {};
-let currentMonth = new Date().getMonth() + 1;
-let pieChart = null, openCat = null;
-
-function showToast(msg, dur=2500) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), dur);
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('uploadZone').classList.remove('drag');
+  const file = e.dataTransfer.files[0];
+  if (file) handleFile(file);
 }
 
-async function fetchWithFallback(url) {
-  for (let i = 0; i < PROXIES.length; i++) {
+function handleFile(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
     try {
-      const proxyUrl = PROXIES[i](url);
-      const res = await fetch(proxyUrl, { cache: 'no-cache' });
+      const text = e.target.result;
+      const newData = parseTianTianCSV(text);
+      const months = Object.keys(newData);
+      if (!months.length) { showToast('⚠️ 未解析到任何支出資料'); return; }
+
+      // Merge with existing data
+      MONTHLY_DATA = mergeData(MONTHLY_DATA, newData);
+
+      // Save to localStorage
+      const saved = JSON.parse(localStorage.getItem(STORE_KEY)||'{}');
+      const merged = mergeData(saved, newData);
+      localStorage.setItem(STORE_KEY, JSON.stringify(merged));
+
+      const latestMonth = Math.max(...months.map(Number));
+      dataSource = 'file';
+      updateUI(`📂 ${file.name.slice(0,20)}`);
+      buildMonthBar();
+      selectMonth(latestMonth);
+      showToast(`✅ 已載入 ${months.join('、')} 月資料，共 ${Object.values(newData).flatMap(m=>Object.values(m)).reduce((s,c)=>s+c.items.length,0)} 筆`);
+    } catch(err) {
+      showToast('❌ 解析失敗：' + err.message);
+    }
+  };
+  reader.readAsText(file, 'utf-8');
+}
+
+// ═══════════════════════════════════════════════════════
+//  Google Sheets fetch
+// ═══════════════════════════════════════════════════════
+async function fetchSheet(url) {
+  for (const proxy of PROXIES) {
+    try {
+      const res = await fetch(proxy(url), {cache:'no-cache'});
       if (!res.ok) continue;
       const text = await res.text();
       if (text && text.length > 50) return text;
     } catch(e) { /* try next */ }
   }
-  throw new Error('所有代理均失敗');
+  throw new Error('無法連線');
 }
 
-async function loadData(manual=false) {
-  const badge = document.getElementById('updBadge');
-  badge.textContent = ' 載入中…';
-  if (manual) showToast('🔄 更新中…');
+async function refreshData() {
+  const url = localStorage.getItem(SHEET_KEY);
+  if (!url) { showToast('尚未設定 Google Sheets 網址'); return; }
 
+  document.getElementById('refreshBtn').textContent = '…';
   try {
-    const text = await fetchWithFallback(CSV_URL);
-    MONTHLY_DATA = parseCSV(text);
-
-    const now = new Date();
-    badge.textContent = ` ${now.getMonth()+1}/${now.getDate()} ${pad(now.getHours())}:${pad(now.getMinutes())} 更新`;
-
-    buildMonthBar();
-
-    // Auto-select the latest month that has data
-    const months = Object.keys(MONTHLY_DATA).map(Number).filter(m =>
-      Object.values(MONTHLY_DATA[String(m)]).some(c => c.items.length > 0)
+    const text = await fetchSheet(url);
+    const newData = parseSheetsCSV(text);
+    MONTHLY_DATA = mergeData(
+      JSON.parse(localStorage.getItem(STORE_KEY)||'{}'),
+      newData
     );
-    if (months.length) currentMonth = Math.max(...months);
-    selectMonth(currentMonth);
-
-    if (manual) showToast('✅ 資料已更新');
-  } catch(e) {
-    badge.textContent = ' 載入失敗';
-    document.getElementById('catList').innerHTML =
-      `<div class="empty"><div class="empty-icon">⚠️</div>無法連線到 Google Sheets<br><small style="color:#CCC;margin-top:6px;display:block">${e.message}</small><br><button onclick="loadData(true)" style="margin-top:10px;padding:8px 20px;background:var(--navy);color:#fff;border:none;border-radius:20px;cursor:pointer;font-weight:600">重試</button></div>`;
+    localStorage.setItem(STORE_KEY, JSON.stringify(MONTHLY_DATA));
+    dataSource = 'sheet';
+    const now = new Date();
+    updateUI(`☁️ ${now.getMonth()+1}/${now.getDate()} ${pad(now.getHours())}:${pad(now.getMinutes())}`);
     buildMonthBar();
-    if (manual) showToast('❌ 載入失敗，請稍後重試');
+    selectMonth(currentMonth);
+    showToast('✅ 已從 Google Sheets 更新');
+  } catch(e) {
+    showToast('❌ ' + e.message);
+  } finally {
+    document.getElementById('refreshBtn').textContent = '↺';
   }
 }
 
 function pad(n){ return String(n).padStart(2,'0'); }
 
 // ═══════════════════════════════════════════════════════
-//  UI
+//  Settings
 // ═══════════════════════════════════════════════════════
-function buildMonthBar() {
+function openSettings(){
+  document.getElementById('sheetUrl').value = localStorage.getItem(SHEET_KEY)||'';
+  document.getElementById('overlay').classList.add('open');
+}
+function closeSettings(){ document.getElementById('overlay').classList.remove('open'); }
+function saveSettings(){
+  const url = document.getElementById('sheetUrl').value.trim();
+  if (url) localStorage.setItem(SHEET_KEY, url);
+  else localStorage.removeItem(SHEET_KEY);
+  closeSettings();
+  showToast('✅ 設定已儲存');
+}
+
+// ═══════════════════════════════════════════════════════
+//  Toast
+// ═══════════════════════════════════════════════════════
+let toastTimer;
+function showToast(msg, dur=3000){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), dur);
+}
+
+// ═══════════════════════════════════════════════════════
+//  UI helpers
+// ═══════════════════════════════════════════════════════
+function updateUI(badgeText){
+  document.getElementById('updBadge').textContent = badgeText;
+  const sb = document.getElementById('srcBadge');
+  sb.style.display = 'inline';
+  if (dataSource==='file'){ sb.className='src-badge file'; sb.textContent='📂 本機 CSV'; }
+  else if (dataSource==='sheet'){ sb.className='src-badge'; sb.textContent='☁️ Google Sheets'; }
+  else { sb.className='src-badge'; sb.textContent='💾 快取'; }
+}
+
+function buildMonthBar(){
   const bar = document.getElementById('monthBar');
   bar.innerHTML = '';
-  MONTHS_ZH.forEach((label, i) => {
-    const m = i + 1;
+  MONTHS_ZH.forEach((label,i)=>{
+    const m = i+1;
     const btn = document.createElement('button');
     btn.className = 'm-btn';
     btn.textContent = label;
-    const mData = MONTHLY_DATA[String(m)] || {};
-    const hasReal = Object.values(mData).some(c => c.items.length > 0);
-    if (hasReal) btn.classList.add('has-data');
+    const hasData = Object.values(MONTHLY_DATA[String(m)]||{}).some(c=>c.items.length>0);
+    if (hasData) btn.classList.add('has-data');
     if (m === currentMonth) btn.classList.add('active');
-    btn.onclick = () => selectMonth(m);
+    btn.onclick = ()=>selectMonth(m);
     bar.appendChild(btn);
   });
 }
 
-function selectMonth(m) {
+function selectMonth(m){
   currentMonth = m;
-  document.querySelectorAll('.m-btn').forEach((b,i) => b.classList.toggle('active', i===m-1));
+  document.querySelectorAll('.m-btn').forEach((b,i)=>b.classList.toggle('active',i===m-1));
   document.querySelectorAll('.m-btn')[m-1]?.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
   openCat = null;
   render();
 }
 
-function fmt(n){ return 'NT$' + Math.round(n).toLocaleString('zh-TW'); }
+function fmt(n){ return 'NT$'+Math.round(n).toLocaleString('zh-TW'); }
 
-function render() {
-  const mData = MONTHLY_DATA[String(currentMonth)] || {};
-  const cats  = Object.entries(mData).sort((a,b) => b[1].total - a[1].total);
-  const total = cats.reduce((s,[,v]) => s+v.total, 0);
-  const diff  = TOTAL_BUDGET - total;
+function render(){
+  const mData = MONTHLY_DATA[String(currentMonth)]||{};
+  const cats  = Object.entries(mData).sort((a,b)=>b[1].total-a[1].total);
+  const total = cats.reduce((s,[,v])=>s+v.total,0);
+  const diff  = TOTAL_BUDGET-total;
 
-  document.getElementById('sumTotal').textContent  = total ? fmt(total) : '—';
+  document.getElementById('sumTotal').textContent  = total?fmt(total):'—';
   document.getElementById('sumBudget').textContent = fmt(TOTAL_BUDGET);
   const diffEl = document.getElementById('sumDiff');
-  if (total) {
-    diffEl.textContent = (diff>=0?'＋':'') + fmt(diff);
-    diffEl.className   = 's-value ' + (diff>=0?'green':'red');
-  } else {
-    diffEl.textContent = '—';
-    diffEl.className   = 's-value';
-  }
+  if(total){ diffEl.textContent=(diff>=0?'＋':'')+fmt(diff); diffEl.className='s-value '+(diff>=0?'green':'red'); }
+  else { diffEl.textContent='—'; diffEl.className='s-value'; }
 
-  if (pieChart) { pieChart.destroy(); pieChart = null; }
+  if(pieChart){ pieChart.destroy(); pieChart=null; }
   const listEl = document.getElementById('catList');
 
-  if (!total) {
-    listEl.innerHTML = '<div class="empty"><div class="empty-icon">📭</div>本月尚無記錄</div>';
+  if(!total){
+    listEl.innerHTML='<div class="empty"><div class="empty-icon">📭</div>本月尚無資料<br><small style="color:#CCC;margin-top:6px;display:block">上傳天天記帳 CSV 或設定 Google Sheets</small></div>';
     return;
   }
 
   const ctx = document.getElementById('pieChart').getContext('2d');
-  pieChart = new Chart(ctx, {
+  pieChart = new Chart(ctx,{
     type:'pie',
     data:{
-      labels: cats.map(([c]) => c.slice(0,2)+' '+c.slice(2).trim()),
-      datasets:[{
-        data: cats.map(([,v]) => v.total),
-        backgroundColor: cats.map(([c]) => CAT_COLORS[c]||'#ccc'),
-        borderColor:'#fff', borderWidth:2.5, hoverOffset:14
-      }]
+      labels:cats.map(([c])=>c.slice(0,2)+' '+c.slice(2).trim()),
+      datasets:[{data:cats.map(([,v])=>v.total),backgroundColor:cats.map(([c])=>CAT_COLORS[c]||'#ccc'),borderColor:'#fff',borderWidth:2.5,hoverOffset:14}]
     },
-    options:{
-      responsive:true, maintainAspectRatio:false,
-      plugins:{
-        legend:{display:false},
-        tooltip:{callbacks:{label(ctx){return ` ${fmt(ctx.raw)}（${(ctx.raw/total*100).toFixed(1)}%）`;}}}
-      },
-      onClick(evt,items){ if(items.length) toggleCat(cats[items[0].index][0],true); }
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label(ctx){return ` ${fmt(ctx.raw)}（${(ctx.raw/total*100).toFixed(1)}%）`;}}}}  ,
+      onClick(evt,items){if(items.length)toggleCat(cats[items[0].index][0],true);}
     }
   });
 
-  listEl.innerHTML = '';
-  cats.forEach(([cat, catData]) => {
-    const budget   = BUDGETS[cat] || 0;
-    const pct      = budget > 0 ? catData.total/budget : 0;
-    const color    = CAT_COLORS[cat] || '#ccc';
-    const barColor = pct>=1?'#E74C3C':pct>=.8?'#F39C12':'#27AE60';
-    const isOpen   = openCat === cat;
-    const over     = budget > 0 && catData.total > budget;
+  listEl.innerHTML='';
+  cats.forEach(([cat,catData])=>{
+    const budget=BUDGETS[cat]||0, pct=budget>0?catData.total/budget:0;
+    const color=CAT_COLORS[cat]||'#ccc';
+    const barColor=pct>=1?'#E74C3C':pct>=.8?'#F39C12':'#27AE60';
+    const isOpen=openCat===cat, over=budget>0&&catData.total>budget;
 
-    const item = document.createElement('div');
-    item.className = 'cat-item' + (isOpen?' open':'');
-    item.id = 'cat-' + encodeURIComponent(cat);
-    item.style.borderLeftColor = color;
-    item.innerHTML = `
+    const item=document.createElement('div');
+    item.className='cat-item'+(isOpen?' open':'');
+    item.id='cat-'+encodeURIComponent(cat);
+    item.style.borderLeftColor=color;
+    item.innerHTML=`
       <div class="cat-icon">${cat.slice(0,2)}</div>
       <div class="cat-info">
         <div class="cat-name">${cat.slice(2).trim()}${over?'<span class="over-badge">超支</span>':''}</div>
@@ -404,50 +595,60 @@ function render() {
         ${budget?`<div class="progress-bar"><div class="progress-fill" style="width:${Math.min(100,pct*100).toFixed(1)}%;background:${barColor}"></div></div>`:''}
       </div>
       <div class="arrow">›</div>`;
-    item.addEventListener('click', () => toggleCat(cat, false));
+    item.addEventListener('click',()=>toggleCat(cat,false));
     listEl.appendChild(item);
 
-    const panel = document.createElement('div');
-    panel.className = 'detail-panel' + (isOpen?' open':'');
-    panel.id = 'panel-' + encodeURIComponent(cat);
-    const items = catData.items || [];
-    panel.innerHTML = items.length
-      ? `<div class="detail-header"><span>共 <strong>${items.length}</strong> 筆</span><strong>${fmt(items.reduce((s,r)=>s+r.amt,0))}</strong></div>
-         ${items.map(it=>`<div class="detail-row">
-           <span class="d-date">${it.date}</span>
-           <span class="d-desc">${it.desc||'（無說明）'}</span>
-           <span class="d-card">${it.card||''}</span>
-           <span class="d-amt${it.amt>=5000?' big':''}">${fmt(it.amt)}</span>
-         </div>`).join('')}`
-      : '<div style="padding:12px 14px;font-size:12px;color:#AAA">無詳細記錄</div>';
+    const panel=document.createElement('div');
+    panel.className='detail-panel'+(isOpen?' open':'');
+    panel.id='panel-'+encodeURIComponent(cat);
+    const items=catData.items||[];
+    panel.innerHTML=items.length
+      ?`<div class="detail-header"><span>共 <strong>${items.length}</strong> 筆</span><strong>${fmt(items.reduce((s,r)=>s+r.amt,0))}</strong></div>
+        ${items.map(it=>`<div class="detail-row">
+          <span class="d-date">${it.date}</span>
+          <span class="d-desc">${it.desc||'（無說明）'}</span>
+          <span class="d-acct">${it.card||''}</span>
+          <span class="d-amt${it.amt>=5000?' big':''}">${fmt(it.amt)}</span>
+        </div>`).join('')}`
+      :'<div style="padding:12px 14px;font-size:12px;color:#AAA">無詳細記錄</div>';
     listEl.appendChild(panel);
   });
 }
 
-function toggleCat(cat, scroll) {
-  const key   = encodeURIComponent(cat);
-  const item  = document.getElementById('cat-'+key);
-  const panel = document.getElementById('panel-'+key);
-  if (openCat === cat) {
-    openCat = null;
-    item?.classList.remove('open');
-    panel?.classList.remove('open');
+function toggleCat(cat,scroll){
+  const key=encodeURIComponent(cat);
+  const item=document.getElementById('cat-'+key);
+  const panel=document.getElementById('panel-'+key);
+  if(openCat===cat){
+    openCat=null; item?.classList.remove('open'); panel?.classList.remove('open');
   } else {
-    if (openCat) {
-      const ok = encodeURIComponent(openCat);
-      document.getElementById('cat-'+ok)?.classList.remove('open');
-      document.getElementById('panel-'+ok)?.classList.remove('open');
-    }
-    openCat = cat;
-    item?.classList.add('open');
-    panel?.classList.add('open');
-    if (scroll && item) setTimeout(()=>item.scrollIntoView({behavior:'smooth',block:'center'}),200);
+    if(openCat){const ok=encodeURIComponent(openCat);document.getElementById('cat-'+ok)?.classList.remove('open');document.getElementById('panel-'+ok)?.classList.remove('open');}
+    openCat=cat; item?.classList.add('open'); panel?.classList.add('open');
+    if(scroll&&item)setTimeout(()=>item.scrollIntoView({behavior:'smooth',block:'center'}),200);
   }
 }
 
-// ── Init ──────────────────────────────────────────────────
-buildMonthBar();
-loadData();
+// ═══════════════════════════════════════════════════════
+//  Init — load from localStorage cache first
+// ═══════════════════════════════════════════════════════
+(function init(){
+  const cached = localStorage.getItem(STORE_KEY);
+  if (cached) {
+    try {
+      MONTHLY_DATA = JSON.parse(cached);
+      dataSource = 'cache';
+      const months = Object.keys(MONTHLY_DATA).map(Number).filter(m=>Object.values(MONTHLY_DATA[String(m)]||{}).some(c=>c.items.length>0));
+      if (months.length) currentMonth = Math.max(...months);
+      updateUI('💾 快取資料');
+    } catch(e) { MONTHLY_DATA = {}; }
+  }
+  buildMonthBar();
+  selectMonth(currentMonth);
+
+  // Auto-fetch from Sheets if URL is set
+  const sheetUrl = localStorage.getItem(SHEET_KEY);
+  if (sheetUrl) refreshData();
+})();
 </script>
 </body>
 </html>
