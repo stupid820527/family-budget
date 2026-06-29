@@ -187,13 +187,22 @@ let pie = null, openCat = null;
 // ══════════════════════════════════════════
 async function loadFromSheets() {
   try {
-    const res = await fetch(API_URL + '?action=read', {method:'GET'});
-    const json = await res.json();
+    // Apps Script 需要 redirect: 'follow'
+    const res = await fetch(API_URL + '?action=read', {
+      method: 'GET',
+      redirect: 'follow',
+    });
+    const text = await res.text();
+    let json;
+    try { json = JSON.parse(text); }
+    catch(e) { throw new Error('回應格式錯誤: ' + text.slice(0,100)); }
+
     if (json.error) throw new Error(json.error);
+
     if (json.data && Object.keys(json.data).length > 0) {
       DATA = json.data;
       const months = Object.keys(DATA).map(Number).filter(m=>
-        Object.values(DATA[String(m)]||{}).some(c=>c.items.length));
+        Object.values(DATA[String(m)]||{}).some(c=>c.items&&c.items.length));
       if (months.length) curMonth = Math.max(...months);
       const now = new Date();
       document.getElementById('updBadge').textContent =
@@ -203,7 +212,7 @@ async function loadFromSheets() {
     }
   } catch(e) {
     document.getElementById('updBadge').textContent = '⚠️ 離線';
-    console.warn('無法連線:', e.message);
+    console.warn('Sheets 連線失敗:', e.message);
   }
   buildMonthBar();
   selectMonth(curMonth);
