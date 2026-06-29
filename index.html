@@ -14,33 +14,27 @@
   --radius:14px;--shadow:0 2px 14px rgba(0,0,0,0.09);
 }
 body{font-family:'Noto Sans TC',system-ui,sans-serif;background:#EEF2F7;color:var(--dark);min-height:100vh;padding-bottom:40px}
-
 .header{background:linear-gradient(135deg,#1B4F72,#2E86C1);color:#fff;padding:18px 20px 14px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.2)}
 .header-row{display:flex;align-items:center;justify-content:space-between}
 .header-title{font-size:18px;font-weight:800;display:flex;align-items:center;gap:8px}
 .upd-badge{font-size:10px;background:rgba(255,255,255,.18);border-radius:12px;padding:2px 9px}
 .header-sub{font-size:11px;opacity:.7;margin-top:3px}
 .year-badge{background:rgba(255,255,255,.2);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700}
-
 .month-bar{display:flex;overflow-x:auto;gap:6px;padding:12px 16px;background:#fff;border-bottom:1px solid #E0E6ED;position:sticky;top:62px;z-index:99;scrollbar-width:none}
 .month-bar::-webkit-scrollbar{display:none}
 .m-btn{flex-shrink:0;min-width:44px;padding:7px 12px;border-radius:20px;border:1.5px solid #DDE3ED;font-size:12px;font-weight:600;cursor:pointer;background:#fff;color:#666;transition:all .15s}
 .m-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
 .m-btn.has-data{border-color:#aac4dc;color:var(--navy)}
-
 .content{padding:14px 14px 0;max-width:520px;margin:0 auto}
 .card{background:#fff;border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);margin-bottom:13px}
 .card-title{font-size:11px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px}
-
 .summary-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
 .s-item{background:var(--grey);border-radius:10px;padding:12px 8px;text-align:center}
 .s-label{font-size:10px;color:#999;margin-bottom:4px}
 .s-value{font-size:17px;font-weight:800;color:var(--dark)}
 .s-value.red{color:var(--red)}.s-value.green{color:var(--green)}.s-value.gold{color:var(--gold)}
-
 .chart-hint{font-size:11px;color:#999;text-align:center;margin-bottom:10px}
 .chart-wrap{position:relative;height:240px}
-
 .cat-list{display:flex;flex-direction:column}
 .cat-item{padding:13px 14px;cursor:pointer;border-left:4px solid transparent;display:flex;align-items:center;gap:11px;border-bottom:1px solid #F0F4F8;transition:background .1s}
 .cat-item:last-child{border-bottom:none}
@@ -57,7 +51,6 @@ body{font-family:'Noto Sans TC',system-ui,sans-serif;background:#EEF2F7;color:va
 .arrow{font-size:13px;color:#CCC;transition:transform .2s;flex-shrink:0;margin-left:4px}
 .cat-item.open .arrow{transform:rotate(90deg)}
 .over-badge{background:var(--lred);color:var(--red);font-size:10px;font-weight:700;padding:2px 6px;border-radius:8px;flex-shrink:0;margin-left:4px}
-
 .detail-panel{background:#F5F8FF;overflow:hidden;max-height:0;transition:max-height .35s ease;border-bottom:1px solid #E8EEF8}
 .detail-panel.open{max-height:9999px}
 .detail-header{display:flex;justify-content:space-between;padding:9px 14px 7px;font-size:11px;color:#888;border-bottom:1px solid #E8EEF8;background:#EEF3FC}
@@ -76,39 +69,34 @@ body{font-family:'Noto Sans TC',system-ui,sans-serif;background:#EEF2F7;color:va
 .tx-note{max-height:0;overflow:hidden;transition:max-height .3s ease;background:#EEF5FF}
 .tx-row.expanded .tx-note{max-height:400px}
 .tx-note-inner{padding:10px 14px 12px;font-size:11px;color:#555;line-height:1.7;white-space:pre-wrap;word-break:break-all;border-top:1px dashed #D0DFF0}
-
-.empty{text-align:center;padding:40px 20px;color:#BBB;font-size:13px}
-.empty-icon{font-size:36px;margin-bottom:8px}
-
-/* Upload zone */
-.upload-zone{border:2px dashed #C5D8E8;border-radius:14px;padding:22px;text-align:center;cursor:pointer;transition:all .2s;background:#F8FBFF;margin-bottom:13px;position:relative}
+.upload-zone{border:2px dashed #C5D8E8;border-radius:14px;padding:22px;text-align:center;cursor:pointer;transition:all .2s;background:#F8FBFF;margin-bottom:13px}
 .upload-zone:hover,.upload-zone.drag{border-color:var(--blue);background:#EBF5FF}
+.upload-zone.loading{border-color:#F39C12;background:#FEF9E7;cursor:not-allowed}
 .uz-icon{font-size:30px;margin-bottom:6px}
 .uz-title{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:3px}
 .uz-sub{font-size:11px;color:#888}
 .uz-hint{font-size:10px;color:#E67E22;margin-top:5px;font-weight:600}
 #fileInput{display:none}
-
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1B4F72;color:#fff;font-size:12px;font-weight:600;padding:10px 20px;border-radius:20px;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center}
 .toast.show{opacity:1}
+.loading-bar{height:3px;background:linear-gradient(90deg,#1B4F72,#2E86C1,#1B4F72);background-size:200%;animation:lb 1.2s infinite;border-radius:2px;margin-top:8px;display:none}
+.loading-bar.show{display:block}
+@keyframes lb{0%{background-position:200%}100%{background-position:-200%}}
 </style>
 </head>
 <body>
-
 <div class="header">
   <div class="header-row">
     <div>
       <div class="header-title">🏠 家庭支出分析
-        <span class="upd-badge" id="updBadge">—</span>
+        <span class="upd-badge" id="updBadge">載入中…</span>
       </div>
-      <div class="header-sub">上傳天天記帳 CSV · 每次同步最新狀態</div>
+      <div class="header-sub">上傳 CSV 同步更新網站與 Google Sheets</div>
     </div>
     <div class="year-badge">2026</div>
   </div>
 </div>
-
 <div class="month-bar" id="monthBar"></div>
-
 <div class="content">
   <div class="upload-zone" id="uploadZone"
        onclick="document.getElementById('fileInput').click()"
@@ -118,10 +106,10 @@ body{font-family:'Noto Sans TC',system-ui,sans-serif;background:#EEF2F7;color:va
     <div class="uz-icon">📂</div>
     <div class="uz-title">上傳天天記帳 CSV</div>
     <div class="uz-sub">點擊選擇或拖曳 CSV 檔案</div>
-    <div class="uz-hint">⚠️ 每次上傳會完全取代現有資料，與 CSV 同步</div>
+    <div class="uz-hint">⚡ 上傳後同步更新網站 + Google Sheets</div>
+    <div class="loading-bar" id="loadingBar"></div>
     <input type="file" id="fileInput" accept=".csv" onchange="handleFile(this.files[0])">
   </div>
-
   <div class="card">
     <div class="card-title">本月財務摘要</div>
     <div class="summary-grid">
@@ -130,29 +118,32 @@ body{font-family:'Noto Sans TC',system-ui,sans-serif;background:#EEF2F7;color:va
       <div class="s-item"><div class="s-label">超支／剩餘</div><div class="s-value" id="sumDiff">—</div></div>
     </div>
   </div>
-
   <div class="card">
     <div class="card-title">支出比例</div>
     <div class="chart-hint">👆 點色塊查看每筆明細</div>
     <div class="chart-wrap"><canvas id="pieChart"></canvas></div>
   </div>
-
   <div class="card" style="padding:0;overflow:hidden">
     <div style="padding:12px 14px 8px">
       <div class="card-title" style="margin-bottom:0">各類別明細 <span style="font-size:10px;color:#CCC;font-weight:400">（點每筆展開完整備註）</span></div>
     </div>
     <div class="cat-list" id="catList">
-      <div class="empty"><div class="empty-icon">📭</div>請上傳天天記帳 CSV</div>
+      <div class="empty" style="text-align:center;padding:40px 20px;color:#BBB;font-size:13px">
+        <div style="font-size:36px;margin-bottom:8px">⏳</div>從 Google Sheets 載入資料中…
+      </div>
     </div>
   </div>
 </div>
-
 <div class="toast" id="toast"></div>
-
 <script>
-// ══════════════════════════════════════════════════
-//  月預算設定（可直接修改這裡的數字）
-// ══════════════════════════════════════════════════
+// ══════════════════════════════════════════
+//  Google Apps Script API 網址
+// ══════════════════════════════════════════
+const API_URL = 'https://script.google.com/macros/s/AKfycbw9pDdAgE7rDfvIQQjm89zmkZ1FGfctCgKhAe3VXjdqYZJyg4ZMbfeL-n3qVWjM_joMtw/exec';
+
+// ══════════════════════════════════════════
+//  月預算（直接修改這裡的數字）
+// ══════════════════════════════════════════
 const BUDGETS = {
   '🍽️ 飲食':      24000,
   '🏠 居家開銷':   8000,
@@ -167,15 +158,15 @@ const BUDGETS = {
   '💬 其他':       1000,
 };
 
-// ══════════════════════════════════════════════════
-//  類別對應（天天記帳 → 顯示名稱）
-// ══════════════════════════════════════════════════
 const CAT_MAP = {
   '飲食':'🍽️ 飲食','居家開銷':'🏠 居家開銷','汽車':'🚗 汽車',
   '娛樂血拼':'🛍️ 娛樂血拚','娛樂血拚':'🛍️ 娛樂血拚',
   '看醫生':'🏥 看醫生','終身學習':'📚 終身學習','保險':'🛡️ 保險',
   '小孩學習':'👶 小孩學習','網路訂閱':'📱 網路訂閱',
-  '小孩日用品':'🧸 小孩日用品','小孩用品':'🧸 小孩日用品','其他':'💬 其他',
+  '小孩日用品':'🧸 小孩日用品','小孩用品':'🧸 小孩日用品',
+  '其他':'💬 其他','電話網路':'📱 網路訂閱',
+  '服飾':'🛍️ 娛樂血拚','教育':'📚 終身學習',
+  '醫療保健':'🏥 看醫生',
 };
 
 const TOTAL_BUDGET = Object.values(BUDGETS).reduce((a,b)=>a+b,0);
@@ -186,142 +177,160 @@ const CAT_COLORS = {
   '🧸 小孩日用品':'#E84393','💬 其他':'#95A5A6',
 };
 const MONTHS_ZH = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
-const STORE_KEY = 'fbv5_data';  // 新 key，避免舊快取衝突
 
-// ══════════════════════════════════════════════════
-//  State
-// ══════════════════════════════════════════════════
-let DATA = {};   // { "6": { "🍽️ 飲食": { total, items[] } } }
+let DATA = {};
 let curMonth = new Date().getMonth()+1;
 let pie = null, openCat = null;
 
-// ══════════════════════════════════════════════════
-//  天天記帳 CSV 解析（完全取代模式）
-// ══════════════════════════════════════════════════
-function parseTianTian(text) {
-  const out = {};
-  const rows = text.split(/\r?\n/);
-  const headers = splitRow(rows[0]);
-  const iDate = headers.indexOf('日期');
-  const iCat  = headers.indexOf('類別');
-  const iAmt  = headers.indexOf('金額');
-  const iAcct = headers.indexOf('帳戶');
-  const iNote = headers.indexOf('備註');
-  const iType = headers.indexOf('收支區分');
-  if (iDate<0||iCat<0) return null;
-
-  for (let i=1; i<rows.length; i++) {
-    const c = splitRow(rows[i]);
-    if (c.length<4) continue;
-    if ((c[iType]||'').trim()!=='支') continue;
-    const rawDate=(c[iDate]||'').trim();
-    const rawCat =(c[iCat]||'').trim();
-    const rawAmt = parseFloat((c[iAmt]||'0').replace(/,/g,''));
-    const rawAcct=(c[iAcct]||'現金').trim();
-    const rawNote=(c[iNote]||'').trim();
-    if (!rawDate||rawDate.length<8||isNaN(rawAmt)||rawAmt<=0) continue;
-
-    const mo=rawDate.slice(4,6), day=rawDate.slice(6,8);
-    const month=parseInt(mo,10);
-    const mKey=String(month);
-    const cat=CAT_MAP[rawCat]||('💬 '+rawCat);
-    const dateStr=mo+'/'+day;
-
-    // 清理備註
-    const cleanNote=rawNote
-      .split(/\d{4}年\d+月\d+日/)[0]
-      .split('#電子發票')[0]
-      .trim().replace(/\s+/g,' ');
-
-    if (!out[mKey]) out[mKey]={};
-    if (!out[mKey][cat]) out[mKey][cat]={total:0,items:[]};
-    out[mKey][cat].total+=rawAmt;
-    out[mKey][cat].items.push({date:dateStr,desc:cleanNote||rawCat,amt:rawAmt,card:rawAcct});
+// ══════════════════════════════════════════
+//  從 Google Sheets 讀取資料（開啟時自動執行）
+// ══════════════════════════════════════════
+async function loadFromSheets() {
+  try {
+    const res = await fetch(API_URL + '?action=read', {method:'GET'});
+    const json = await res.json();
+    if (json.error) throw new Error(json.error);
+    if (json.data && Object.keys(json.data).length > 0) {
+      DATA = json.data;
+      const months = Object.keys(DATA).map(Number).filter(m=>
+        Object.values(DATA[String(m)]||{}).some(c=>c.items.length));
+      if (months.length) curMonth = Math.max(...months);
+      const now = new Date();
+      document.getElementById('updBadge').textContent =
+        `☁️ ${now.getMonth()+1}/${now.getDate()} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+    } else {
+      document.getElementById('updBadge').textContent = '📭 尚無資料';
+    }
+  } catch(e) {
+    document.getElementById('updBadge').textContent = '⚠️ 離線';
+    console.warn('無法連線:', e.message);
   }
-
-  // 照日期排序（新→舊）
-  for (const m of Object.values(out))
-    for (const c of Object.values(m))
-      c.items.sort((a,b)=>b.date.localeCompare(a.date));
-
-  return out;
+  buildMonthBar();
+  selectMonth(curMonth);
 }
 
-function splitRow(line){
-  const out=[]; let cur='',inQ=false;
-  for(let i=0;i<line.length;i++){
-    const ch=line[i];
-    if(ch==='"'){inQ=!inQ;continue;}
-    if(ch===','&&!inQ){out.push(cur.trim());cur='';continue;}
-    cur+=ch;
-  }
-  out.push(cur.trim()); return out;
-}
-
-// ══════════════════════════════════════════════════
-//  File upload — 完全取代（不合併）
-// ══════════════════════════════════════════════════
+// ══════════════════════════════════════════
+//  上傳 CSV → 同步到 Sheets + 更新畫面
+// ══════════════════════════════════════════
 function handleDrop(e){
   e.preventDefault();
   document.getElementById('uploadZone').classList.remove('drag');
   handleFile(e.dataTransfer.files[0]);
 }
 
-function handleFile(file){
+function handleFile(file) {
   if (!file) return;
-  const reader=new FileReader();
-  reader.onload=e=>{
-    const text=e.target.result;
-    const parsed=parseTianTian(text);
-    if (!parsed){showToast('❌ 不是天天記帳格式');return;}
-    const months=Object.keys(parsed);
-    const totalItems=Object.values(parsed).flatMap(m=>Object.values(m)).reduce((s,c)=>s+c.items.length,0);
-    if (!totalItems){showToast('⚠️ 沒有找到支出資料');return;}
+  const reader = new FileReader();
+  reader.onload = async e => {
+    const csvText = e.target.result;
 
-    // 完全取代：只更新 CSV 裡有的月份，其他月份保留
-    // 若想完全清空改成：DATA = parsed;
-    // 這裡用「CSV 涵蓋的月份完全取代，其他月份保留」
-    for (const mKey of months) {
-      DATA[mKey] = parsed[mKey];
+    // 先解析，確認格式正確
+    const parsed = parseCSVLocal(csvText);
+    if (!parsed) { showToast('❌ 不是天天記帳格式'); return; }
+    const months = Object.keys(parsed);
+    const total = Object.values(parsed).flatMap(m=>Object.values(m)).reduce((s,c)=>s+c.items.length,0);
+    if (!total) { showToast('⚠️ 沒有找到支出資料'); return; }
+
+    // 顯示上傳中狀態
+    const zone = document.getElementById('uploadZone');
+    zone.classList.add('loading');
+    document.getElementById('loadingBar').classList.add('show');
+    showToast('⏳ 同步到 Google Sheets 中…', 30000);
+
+    try {
+      // 送到 Apps Script 處理
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        body: JSON.stringify({ csv: csvText, months }),
+      });
+      const json = await res.json();
+      if (json.error) throw new Error(json.error);
+
+      // 用 Sheets 回傳的最新資料更新畫面
+      DATA = json.data || parsed;
+
+      const now = new Date();
+      document.getElementById('updBadge').textContent =
+        `☁️ ${now.getMonth()+1}/${now.getDate()} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+
+      buildMonthBar();
+      selectMonth(Math.max(...months.map(Number)));
+      showToast(`✅ 已同步 ${total} 筆到 Sheets`);
+    } catch(err) {
+      // API 失敗時仍更新本地畫面
+      DATA = parsed;
+      buildMonthBar();
+      selectMonth(Math.max(...months.map(Number)));
+      showToast(`⚠️ Sheets 同步失敗，本地已更新`);
+    } finally {
+      zone.classList.remove('loading');
+      document.getElementById('loadingBar').classList.remove('show');
     }
-
-    // 儲存到 localStorage（完全取代）
-    localStorage.setItem(STORE_KEY, JSON.stringify(DATA));
-
-    const now=new Date();
-    document.getElementById('updBadge').textContent=
-      `📂 ${now.getMonth()+1}/${now.getDate()} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
-
-    buildMonthBar();
-    // 跳到最新有資料的月份
-    const latestMonth=Math.max(...months.map(Number));
-    selectMonth(latestMonth);
-    showToast(`✅ 已同步 ${totalItems} 筆，${months.map(m=>m+'月').join('、')}`);
   };
-  reader.readAsText(file,'UTF-8');
+  reader.readAsText(file, 'UTF-8');
+}
+
+// 本地 CSV 解析（用於即時預覽）
+function parseCSVLocal(text) {
+  const out = {};
+  const rows = text.split(/\r?\n/);
+  const headers = splitRow(rows[0]);
+  const iDate=headers.indexOf('日期'),iCat=headers.indexOf('類別');
+  const iAmt=headers.indexOf('金額'),iAcct=headers.indexOf('帳戶');
+  const iNote=headers.indexOf('備註'),iType=headers.indexOf('收支區分');
+  if (iDate<0||iCat<0) return null;
+
+  for (let i=1;i<rows.length;i++) {
+    const c=splitRow(rows[i]);
+    if (c.length<4) continue;
+    if ((c[iType]||'').trim()!=='支') continue;
+    const rawDate=(c[iDate]||'').trim();
+    const rawCat=(c[iCat]||'').trim();
+    const rawAmt=parseFloat((c[iAmt]||'0').replace(/,/g,''));
+    const rawAcct=(c[iAcct]||'現金').trim();
+    const rawNote=(c[iNote]||'').trim();
+    if (!rawDate||rawDate.length<8||isNaN(rawAmt)||rawAmt<=0) continue;
+    const mo=rawDate.slice(4,6),day=rawDate.slice(6,8);
+    const month=parseInt(mo,10),mKey=String(month);
+    const cat=CAT_MAP[rawCat]||('💬 '+rawCat);
+    const cleanNote=rawNote.split(/\d{4}年\d+月\d+日/)[0].split('#電子發票')[0].trim().replace(/\s+/g,' ');
+    if (!out[mKey]) out[mKey]={};
+    if (!out[mKey][cat]) out[mKey][cat]={total:0,items:[]};
+    out[mKey][cat].total+=rawAmt;
+    out[mKey][cat].items.push({date:mo+'/'+day,desc:cleanNote||rawCat,amt:rawAmt,card:rawAcct});
+  }
+  for (const m of Object.values(out))
+    for (const c of Object.values(m))
+      c.items.sort((a,b)=>b.date.localeCompare(a.date));
+  return Object.keys(out).length ? out : null;
+}
+
+function splitRow(line){
+  const out=[];let cur='',inQ=false;
+  for(let i=0;i<line.length;i++){
+    const ch=line[i];
+    if(ch==='"'){inQ=!inQ;continue;}
+    if(ch===','&&!inQ){out.push(cur.trim());cur='';continue;}
+    cur+=ch;
+  }
+  out.push(cur.trim());return out;
 }
 
 function pad(n){return String(n).padStart(2,'0');}
 
-// ══════════════════════════════════════════════════
-//  Toast
-// ══════════════════════════════════════════════════
 let _tt;
 function showToast(msg,dur=3000){
   const t=document.getElementById('toast');
-  t.textContent=msg; t.classList.add('show');
-  clearTimeout(_tt); _tt=setTimeout(()=>t.classList.remove('show'),dur);
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('show'),dur);
 }
 
-// ══════════════════════════════════════════════════
-//  UI
-// ══════════════════════════════════════════════════
 function buildMonthBar(){
   const bar=document.getElementById('monthBar');
   bar.innerHTML='';
   MONTHS_ZH.forEach((lbl,i)=>{
-    const m=i+1, btn=document.createElement('button');
-    btn.className='m-btn'; btn.textContent=lbl;
+    const m=i+1,btn=document.createElement('button');
+    btn.className='m-btn';btn.textContent=lbl;
     if(Object.values(DATA[String(m)]||{}).some(c=>c.items.length)) btn.classList.add('has-data');
     if(m===curMonth) btn.classList.add('active');
     btn.onclick=()=>selectMonth(m);
@@ -333,7 +342,7 @@ function selectMonth(m){
   curMonth=m;
   document.querySelectorAll('.m-btn').forEach((b,i)=>b.classList.toggle('active',i===m-1));
   document.querySelectorAll('.m-btn')[m-1]?.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
-  openCat=null; render();
+  openCat=null;render();
 }
 
 function fmt(n){return 'NT$'+Math.round(n).toLocaleString('zh-TW');}
@@ -343,34 +352,26 @@ function render(){
   const cats=Object.entries(mData).sort((a,b)=>b[1].total-a[1].total);
   const total=cats.reduce((s,[,v])=>s+v.total,0);
   const diff=TOTAL_BUDGET-total;
-
   document.getElementById('sumTotal').textContent=total?fmt(total):'—';
   document.getElementById('sumBudget').textContent=fmt(TOTAL_BUDGET);
   const de=document.getElementById('sumDiff');
   if(total){de.textContent=(diff>=0?'＋':'')+fmt(diff);de.className='s-value '+(diff>=0?'green':'red');}
   else{de.textContent='—';de.className='s-value';}
-
   if(pie){pie.destroy();pie=null;}
   const listEl=document.getElementById('catList');
-
   if(!total){
-    listEl.innerHTML='<div class="empty"><div class="empty-icon">📭</div>本月尚無資料</div>';
+    listEl.innerHTML='<div style="text-align:center;padding:40px 20px;color:#BBB;font-size:13px"><div style="font-size:36px;margin-bottom:8px">📭</div>本月尚無資料</div>';
     return;
   }
-
   const ctx=document.getElementById('pieChart').getContext('2d');
   pie=new Chart(ctx,{
     type:'pie',
-    data:{
-      labels:cats.map(([c])=>c.slice(0,2)+' '+c.slice(2).trim()),
-      datasets:[{data:cats.map(([,v])=>v.total),backgroundColor:cats.map(([c])=>CAT_COLORS[c]||'#ccc'),borderColor:'#fff',borderWidth:2.5,hoverOffset:14}]
-    },
+    data:{labels:cats.map(([c])=>c.slice(0,2)+' '+c.slice(2).trim()),
+      datasets:[{data:cats.map(([,v])=>v.total),backgroundColor:cats.map(([c])=>CAT_COLORS[c]||'#ccc'),borderColor:'#fff',borderWidth:2.5,hoverOffset:14}]},
     options:{responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:false},tooltip:{callbacks:{label(ctx){return ` ${fmt(ctx.raw)}（${(ctx.raw/total*100).toFixed(1)}%）`;}}}}  ,
-      onClick(e,items){if(items.length)toggleCat(cats[items[0].index][0],true);}
-    }
+      onClick(e,items){if(items.length)toggleCat(cats[items[0].index][0],true);}}
   });
-
   listEl.innerHTML='';
   cats.forEach(([cat,cd])=>{
     const budget=BUDGETS[cat]||0,pct=budget>0?cd.total/budget:0;
@@ -378,10 +379,9 @@ function render(){
     const barColor=pct>=1?'#E74C3C':pct>=.8?'#F39C12':'#27AE60';
     const isOpen=openCat===cat,over=budget>0&&cd.total>budget;
     const key=encodeURIComponent(cat);
-
     const item=document.createElement('div');
     item.className='cat-item'+(isOpen?' open':'');
-    item.id='cat-'+key; item.style.borderLeftColor=color;
+    item.id='cat-'+key;item.style.borderLeftColor=color;
     item.innerHTML=`
       <div class="cat-icon">${cat.slice(0,2)}</div>
       <div class="cat-info">
@@ -396,7 +396,6 @@ function render(){
       <div class="arrow">›</div>`;
     item.addEventListener('click',()=>toggleCat(cat,false));
     listEl.appendChild(item);
-
     const panel=document.createElement('div');
     panel.className='detail-panel'+(isOpen?' open':'');
     panel.id='panel-'+key;
@@ -415,44 +414,28 @@ function render(){
               ${hasLong?'<span class="expand-arrow">›</span>':''}
             </div>
             ${hasLong?`<div class="tx-note"><div class="tx-note-inner">${it.desc.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</div></div>`:''}
-          </div>`;
-        }).join('')}`
+          </div>`;}).join('')}`
       :'<div style="padding:12px 14px;font-size:12px;color:#AAA">無詳細記錄</div>';
     listEl.appendChild(panel);
   });
 }
 
-function toggleNote(catKey,idx){
-  document.getElementById(`tx-${catKey}-${idx}`)?.classList.toggle('expanded');
-}
+function toggleNote(k,idx){document.getElementById(`tx-${k}-${idx}`)?.classList.toggle('expanded');}
 
 function toggleCat(cat,scroll){
   const key=encodeURIComponent(cat);
   const item=document.getElementById('cat-'+key);
   const panel=document.getElementById('panel-'+key);
-  if(openCat===cat){
-    openCat=null; item?.classList.remove('open'); panel?.classList.remove('open');
-  } else {
+  if(openCat===cat){openCat=null;item?.classList.remove('open');panel?.classList.remove('open');}
+  else{
     if(openCat){const ok=encodeURIComponent(openCat);document.getElementById('cat-'+ok)?.classList.remove('open');document.getElementById('panel-'+ok)?.classList.remove('open');}
-    openCat=cat; item?.classList.add('open'); panel?.classList.add('open');
+    openCat=cat;item?.classList.add('open');panel?.classList.add('open');
     if(scroll&&item)setTimeout(()=>item.scrollIntoView({behavior:'smooth',block:'center'}),200);
   }
 }
 
-// ══════════════════════════════════════════════════
-//  Init — 從 localStorage 載入快取
-// ══════════════════════════════════════════════════
-(function init(){
-  try{DATA=JSON.parse(localStorage.getItem(STORE_KEY)||'{}');}catch(e){DATA={};}
-  const months=Object.keys(DATA).map(Number).filter(m=>Object.values(DATA[String(m)]||{}).some(c=>c.items.length));
-  if(months.length){
-    curMonth=Math.max(...months);
-    const saved=new Date(); // 無法知道上次上傳時間，就不顯示
-    document.getElementById('updBadge').textContent='💾 快取';
-  }
-  buildMonthBar();
-  selectMonth(curMonth);
-})();
+// 開啟時自動從 Sheets 讀取
+loadFromSheets();
 </script>
 </body>
 </html>
