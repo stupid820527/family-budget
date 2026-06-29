@@ -10,6 +10,7 @@
 :root{
   --navy:#1B4F72;--blue:#2E86C1;
   --green:#1E8449;--red:#C0392B;--lred:#FADBD8;
+  --orange:#E67E22;--lorange:#FEF9E7;
   --gold:#9A7D0A;--grey:#F2F3F4;--dark:#212F3D;
   --radius:14px;--shadow:0 2px 14px rgba(0,0,0,0.09);
 }
@@ -28,6 +29,19 @@ body{font-family:'Noto Sans TC',system-ui,sans-serif;background:#EEF2F7;color:va
 .content{padding:14px 14px 0;max-width:520px;margin:0 auto}
 .card{background:#fff;border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);margin-bottom:13px}
 .card-title{font-size:11px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px}
+
+/* 月底預測卡片 */
+.predict-card{border-radius:var(--radius);padding:14px 16px;margin-bottom:13px;box-shadow:var(--shadow)}
+.predict-card.safe{background:linear-gradient(135deg,#E9F7EF,#D5F5E3);border-left:4px solid #1E8449}
+.predict-card.warn{background:linear-gradient(135deg,#FEF9E7,#FDEBD0);border-left:4px solid #E67E22}
+.predict-card.danger{background:linear-gradient(135deg,#FDEDEC,#FADBD8);border-left:4px solid #C0392B}
+.predict-title{font-size:11px;font-weight:700;color:#666;margin-bottom:6px}
+.predict-main{font-size:16px;font-weight:800;margin-bottom:4px}
+.predict-sub{font-size:11px;color:#888;line-height:1.5}
+.predict-card.safe .predict-main{color:#1E8449}
+.predict-card.warn .predict-main{color:#E67E22}
+.predict-card.danger .predict-main{color:#C0392B}
+
 .summary-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
 .s-item{background:var(--grey);border-radius:10px;padding:12px 8px;text-align:center}
 .s-label{font-size:10px;color:#999;margin-bottom:4px}
@@ -35,13 +49,14 @@ body{font-family:'Noto Sans TC',system-ui,sans-serif;background:#EEF2F7;color:va
 .s-value.red{color:var(--red)}.s-value.green{color:var(--green)}.s-value.gold{color:var(--gold)}
 .chart-hint{font-size:11px;color:#999;text-align:center;margin-bottom:10px}
 .chart-wrap{position:relative;height:240px}
+
 .cat-list{display:flex;flex-direction:column}
 .cat-item{padding:13px 14px;cursor:pointer;border-left:4px solid transparent;display:flex;align-items:center;gap:11px;border-bottom:1px solid #F0F4F8;transition:background .1s}
 .cat-item:last-child{border-bottom:none}
 .cat-item.open{background:#FAFBFF}
 .cat-icon{font-size:20px;flex-shrink:0;width:32px;text-align:center}
 .cat-info{flex:1;min-width:0}
-.cat-name{font-size:13px;font-weight:700}
+.cat-name{font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px}
 .cat-row2{display:flex;align-items:center;gap:8px;margin-top:3px}
 .cat-amt{font-size:15px;font-weight:800}
 .cat-budget-info{font-size:10px;color:#AAA}
@@ -50,7 +65,14 @@ body{font-family:'Noto Sans TC',system-ui,sans-serif;background:#EEF2F7;color:va
 .progress-fill{height:100%;border-radius:2px;transition:width .5s}
 .arrow{font-size:13px;color:#CCC;transition:transform .2s;flex-shrink:0;margin-left:4px}
 .cat-item.open .arrow{transform:rotate(90deg)}
-.over-badge{background:var(--lred);color:var(--red);font-size:10px;font-weight:700;padding:2px 6px;border-radius:8px;flex-shrink:0;margin-left:4px}
+.over-badge{background:var(--lred);color:var(--red);font-size:10px;font-weight:700;padding:2px 6px;border-radius:8px}
+.warn-badge{background:var(--lorange);color:var(--orange);font-size:10px;font-weight:700;padding:2px 6px;border-radius:8px}
+/* 剩餘預算小標 */
+.cat-remain{font-size:10px;margin-top:3px}
+.cat-remain.ok{color:var(--green)}
+.cat-remain.warn{color:var(--orange)}
+.cat-remain.over{color:var(--red);font-weight:700}
+
 .detail-panel{background:#F5F8FF;overflow:hidden;max-height:0;transition:max-height .35s ease;border-bottom:1px solid #E8EEF8}
 .detail-panel.open{max-height:9999px}
 .detail-header{display:flex;justify-content:space-between;padding:9px 14px 7px;font-size:11px;color:#888;border-bottom:1px solid #E8EEF8;background:#EEF3FC}
@@ -69,19 +91,21 @@ body{font-family:'Noto Sans TC',system-ui,sans-serif;background:#EEF2F7;color:va
 .tx-note{max-height:0;overflow:hidden;transition:max-height .3s ease;background:#EEF5FF}
 .tx-row.expanded .tx-note{max-height:400px}
 .tx-note-inner{padding:10px 14px 12px;font-size:11px;color:#555;line-height:1.7;white-space:pre-wrap;word-break:break-all;border-top:1px dashed #D0DFF0}
-.upload-zone{border:2px dashed #C5D8E8;border-radius:14px;padding:22px;text-align:center;cursor:pointer;transition:all .2s;background:#F8FBFF;margin-bottom:13px}
+
+.upload-zone{border:2px dashed #C5D8E8;border-radius:14px;padding:20px;text-align:center;cursor:pointer;transition:all .2s;background:#F8FBFF;margin-bottom:13px}
 .upload-zone:hover,.upload-zone.drag{border-color:var(--blue);background:#EBF5FF}
-.upload-zone.loading{border-color:#F39C12;background:#FEF9E7;cursor:not-allowed}
-.uz-icon{font-size:30px;margin-bottom:6px}
-.uz-title{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:3px}
+.uz-icon{font-size:28px;margin-bottom:5px}
+.uz-title{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:2px}
 .uz-sub{font-size:11px;color:#888}
-.uz-hint{font-size:10px;color:#E67E22;margin-top:5px;font-weight:600}
 #fileInput{display:none}
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1B4F72;color:#fff;font-size:12px;font-weight:600;padding:10px 20px;border-radius:20px;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center}
-.toast.show{opacity:1}
 .loading-bar{height:3px;background:linear-gradient(90deg,#1B4F72,#2E86C1,#1B4F72);background-size:200%;animation:lb 1.2s infinite;border-radius:2px;margin-top:8px;display:none}
 .loading-bar.show{display:block}
 @keyframes lb{0%{background-position:200%}100%{background-position:-200%}}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1B4F72;color:#fff;font-size:12px;font-weight:600;padding:10px 20px;border-radius:20px;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none;max-width:90vw;text-align:center}
+.toast.show{opacity:1}
+.empty{text-align:center;padding:40px 20px;color:#BBB;font-size:13px}
+.empty-icon{font-size:36px;margin-bottom:8px}
 </style>
 </head>
 <body>
@@ -91,13 +115,17 @@ body{font-family:'Noto Sans TC',system-ui,sans-serif;background:#EEF2F7;color:va
       <div class="header-title">🏠 家庭支出分析
         <span class="upd-badge" id="updBadge">載入中…</span>
       </div>
-      <div class="header-sub">上傳 CSV 同步更新網站與 Google Sheets</div>
+      <div class="header-sub">上傳天天記帳 CSV · 點類別查看明細</div>
     </div>
     <div class="year-badge">2026</div>
   </div>
 </div>
 <div class="month-bar" id="monthBar"></div>
 <div class="content">
+
+  <!-- 月底預測 -->
+  <div id="predictCard" style="display:none"></div>
+
   <div class="upload-zone" id="uploadZone"
        onclick="document.getElementById('fileInput').click()"
        ondragover="event.preventDefault();this.classList.add('drag')"
@@ -106,10 +134,10 @@ body{font-family:'Noto Sans TC',system-ui,sans-serif;background:#EEF2F7;color:va
     <div class="uz-icon">📂</div>
     <div class="uz-title">上傳天天記帳 CSV</div>
     <div class="uz-sub">點擊選擇或拖曳 CSV 檔案</div>
-    <div class="uz-hint">⚡ 上傳後同步更新網站 + Google Sheets</div>
     <div class="loading-bar" id="loadingBar"></div>
     <input type="file" id="fileInput" accept=".csv" onchange="handleFile(this.files[0])">
   </div>
+
   <div class="card">
     <div class="card-title">本月財務摘要</div>
     <div class="summary-grid">
@@ -118,32 +146,28 @@ body{font-family:'Noto Sans TC',system-ui,sans-serif;background:#EEF2F7;color:va
       <div class="s-item"><div class="s-label">超支／剩餘</div><div class="s-value" id="sumDiff">—</div></div>
     </div>
   </div>
+
   <div class="card">
     <div class="card-title">支出比例</div>
     <div class="chart-hint">👆 點色塊查看每筆明細</div>
     <div class="chart-wrap"><canvas id="pieChart"></canvas></div>
   </div>
+
   <div class="card" style="padding:0;overflow:hidden">
     <div style="padding:12px 14px 8px">
       <div class="card-title" style="margin-bottom:0">各類別明細 <span style="font-size:10px;color:#CCC;font-weight:400">（點每筆展開完整備註）</span></div>
     </div>
     <div class="cat-list" id="catList">
-      <div class="empty" style="text-align:center;padding:40px 20px;color:#BBB;font-size:13px">
-        <div style="font-size:36px;margin-bottom:8px">⏳</div>從 Google Sheets 載入資料中…
-      </div>
+      <div class="empty"><div class="empty-icon">⏳</div>從 Google Sheets 載入中…</div>
     </div>
   </div>
 </div>
 <div class="toast" id="toast"></div>
+
 <script>
-// ══════════════════════════════════════════
-//  Google Apps Script API 網址
-// ══════════════════════════════════════════
 const API_URL = 'https://script.google.com/macros/s/AKfycbwKHbmVj4vtex2u9zxPt8fS8UNuaVmpGI1pRSJCIZu1tDk9q8IWmp1xZnxI7w9EIJRQ/exec';
 
-// ══════════════════════════════════════════
-//  月預算（直接修改這裡的數字）
-// ══════════════════════════════════════════
+// ══ 月預算（可直接改這裡）══════════════════════════
 const BUDGETS = {
   '🍽️ 飲食':      24000,
   '🏠 居家開銷':   8000,
@@ -165,8 +189,7 @@ const CAT_MAP = {
   '小孩學習':'👶 小孩學習','網路訂閱':'📱 網路訂閱',
   '小孩日用品':'🧸 小孩日用品','小孩用品':'🧸 小孩日用品',
   '其他':'💬 其他','電話網路':'📱 網路訂閱',
-  '服飾':'🛍️ 娛樂血拚','教育':'📚 終身學習',
-  '醫療保健':'🏥 看醫生',
+  '服飾':'🛍️ 娛樂血拚','教育':'📚 終身學習','醫療保健':'🏥 看醫生',
 };
 
 const TOTAL_BUDGET = Object.values(BUDGETS).reduce((a,b)=>a+b,0);
@@ -178,27 +201,56 @@ const CAT_COLORS = {
 };
 const MONTHS_ZH = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
 
-let DATA = {};
-let curMonth = new Date().getMonth()+1;
+let DATA = {}, curMonth = new Date().getMonth()+1;
 let pie = null, openCat = null;
 
-// ══════════════════════════════════════════
-//  從 Google Sheets 讀取資料（開啟時自動執行）
-// ══════════════════════════════════════════
+// ══ 月底預測 ════════════════════════════════════════
+function renderPredict(mData, month) {
+  const card = document.getElementById('predictCard');
+  const now = new Date();
+  // 只在當月顯示預測
+  if (month !== now.getMonth()+1) { card.style.display='none'; return; }
+
+  const daysInMonth = new Date(2026, month, 0).getDate();
+  const today = now.getDate();
+  const daysLeft = daysInMonth - today;
+  if (today === 0) { card.style.display='none'; return; }
+
+  const total = Object.values(mData).reduce((s,c)=>s+c.total, 0);
+  const dailyAvg = total / today;
+  const projected = Math.round(total + dailyAvg * daysLeft);
+  const diff = projected - TOTAL_BUDGET;
+  const diffAbs = Math.abs(diff);
+
+  let cls, icon, main, sub;
+  if (diff <= 0) {
+    cls = 'safe'; icon = '✅';
+    main = `月底預計剩餘 ${fmt(diffAbs)}`;
+    sub = `今天第 ${today} 天，日均 ${fmt(Math.round(dailyAvg))}，還有 ${daysLeft} 天`;
+  } else if (diff < TOTAL_BUDGET * 0.1) {
+    cls = 'warn'; icon = '⚠️';
+    main = `照這速度月底恐超支 ${fmt(diff)}`;
+    sub = `日均 ${fmt(Math.round(dailyAvg))}，建議每天控制在 ${fmt(Math.round((TOTAL_BUDGET - total) / daysLeft))} 以內`;
+  } else {
+    cls = 'danger'; icon = '🚨';
+    main = `月底預計超支 ${fmt(diff)}！`;
+    sub = `剩 ${daysLeft} 天，每天只能花 ${fmt(Math.max(0, Math.round((TOTAL_BUDGET - total) / daysLeft)))} 才能守住預算`;
+  }
+
+  card.className = `predict-card ${cls}`;
+  card.style.display = 'block';
+  card.innerHTML = `
+    <div class="predict-title">${icon} 月底預測（今天 ${month}/${today}）</div>
+    <div class="predict-main">${main}</div>
+    <div class="predict-sub">${sub}</div>`;
+}
+
+// ══ 從 Sheets 讀取 ══════════════════════════════════
 async function loadFromSheets() {
   try {
-    // Apps Script 需要 redirect: 'follow'
-    const res = await fetch(API_URL + '?action=read', {
-      method: 'GET',
-      redirect: 'follow',
-    });
+    const res = await fetch(API_URL + '?action=read', {method:'GET', redirect:'follow'});
     const text = await res.text();
-    let json;
-    try { json = JSON.parse(text); }
-    catch(e) { throw new Error('回應格式錯誤: ' + text.slice(0,100)); }
-
-    if (json.error) throw new Error(json.error);
-
+    const json = JSON.parse(text);
     if (json.data && Object.keys(json.data).length > 0) {
       DATA = json.data;
       const months = Object.keys(DATA).map(Number).filter(m=>
@@ -212,15 +264,12 @@ async function loadFromSheets() {
     }
   } catch(e) {
     document.getElementById('updBadge').textContent = '⚠️ 離線';
-    console.warn('Sheets 連線失敗:', e.message);
   }
   buildMonthBar();
   selectMonth(curMonth);
 }
 
-// ══════════════════════════════════════════
-//  上傳 CSV → 同步到 Sheets + 更新畫面
-// ══════════════════════════════════════════
+// ══ CSV 上傳（只更新本地，獨立於 Sheets）══════════
 function handleDrop(e){
   e.preventDefault();
   document.getElementById('uploadZone').classList.remove('drag');
@@ -229,71 +278,33 @@ function handleDrop(e){
 
 function handleFile(file) {
   if (!file) return;
+  document.getElementById('loadingBar').classList.add('show');
   const reader = new FileReader();
-  reader.onload = async e => {
-    const csvText = e.target.result;
-
-    // 先解析，確認格式正確
-    const parsed = parseCSVLocal(csvText);
+  reader.onload = e => {
+    const parsed = parseCSV(e.target.result);
     if (!parsed) { showToast('❌ 不是天天記帳格式'); return; }
     const months = Object.keys(parsed);
     const total = Object.values(parsed).flatMap(m=>Object.values(m)).reduce((s,c)=>s+c.items.length,0);
     if (!total) { showToast('⚠️ 沒有找到支出資料'); return; }
-
-    // 把新 CSV 的月份覆蓋到現有資料上（保留其他月份）
+    // 只更新 CSV 涵蓋的月份，其他月份保留
     for (const mKey of months) DATA[mKey] = parsed[mKey];
+    const now = new Date();
+    document.getElementById('updBadge').textContent =
+      `📂 ${now.getMonth()+1}/${now.getDate()} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+    document.getElementById('loadingBar').classList.remove('show');
     buildMonthBar();
     selectMonth(Math.max(...months.map(Number)));
-
-    // 顯示上傳中狀態
-    const zone = document.getElementById('uploadZone');
-    zone.classList.add('loading');
-    document.getElementById('loadingBar').classList.add('show');
-    showToast('⏳ 同步到 Google Sheets 中…', 30000);
-
-    try {
-      // 用 no-cors 模式送出（不等回應，避免 CORS 錯誤）
-      const rows = [];
-      for (const [mKey, mData] of Object.entries(parsed)) {
-        for (const [cat, cd] of Object.entries(mData)) {
-          for (const it of cd.items) {
-            rows.push([it.date, cat, it.desc, it.amt, it.card||'現金', '2026/'+it.date.slice(0,2)]);
-          }
-        }
-      }
-      const params = new URLSearchParams({
-        action: 'upload',
-        months: months.join(','),
-        rows: JSON.stringify(rows),
-      });
-      // 發送但不等待回應（no-cors 無法讀取回應內容）
-      fetch(API_URL + '?' + params.toString(), {mode:'no-cors'}).catch(()=>{});
-    } catch(err) {
-      console.warn('Sheets 同步:', err.message);
-    } finally {
-      const now = new Date();
-      document.getElementById('updBadge').textContent =
-        `☁️ ${now.getMonth()+1}/${now.getDate()} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
-      buildMonthBar();
-      selectMonth(Math.max(...months.map(Number)));
-      showToast(`✅ 已更新 ${total} 筆`);
-      zone.classList.remove('loading');
-      document.getElementById('loadingBar').classList.remove('show');
-    }
+    showToast(`✅ 已載入 ${total} 筆`);
   };
-  reader.readAsText(file, 'UTF-8');
+  reader.readAsText(file,'UTF-8');
 }
 
-// 本地 CSV 解析（用於即時預覽）
-function parseCSVLocal(text) {
-  const out = {};
-  const rows = text.split(/\r?\n/);
-  const headers = splitRow(rows[0]);
-  const iDate=headers.indexOf('日期'),iCat=headers.indexOf('類別');
-  const iAmt=headers.indexOf('金額'),iAcct=headers.indexOf('帳戶');
-  const iNote=headers.indexOf('備註'),iType=headers.indexOf('收支區分');
+function parseCSV(text) {
+  const out={}, rows=text.split(/\r?\n/);
+  const h=splitRow(rows[0]);
+  const iDate=h.indexOf('日期'),iCat=h.indexOf('類別'),iAmt=h.indexOf('金額');
+  const iAcct=h.indexOf('帳戶'),iNote=h.indexOf('備註'),iType=h.indexOf('收支區分');
   if (iDate<0||iCat<0) return null;
-
   for (let i=1;i<rows.length;i++) {
     const c=splitRow(rows[i]);
     if (c.length<4) continue;
@@ -305,13 +316,13 @@ function parseCSVLocal(text) {
     const rawNote=(c[iNote]||'').trim();
     if (!rawDate||rawDate.length<8||isNaN(rawAmt)||rawAmt<=0) continue;
     const mo=rawDate.slice(4,6),day=rawDate.slice(6,8);
-    const month=parseInt(mo,10),mKey=String(month);
+    const mKey=String(parseInt(mo,10));
     const cat=CAT_MAP[rawCat]||('💬 '+rawCat);
-    const cleanNote=rawNote.split(/\d{4}年\d+月\d+日/)[0].split('#電子發票')[0].trim().replace(/\s+/g,' ');
+    const note=rawNote.split(/\d{4}年\d+月\d+日/)[0].split('#電子發票')[0].trim().replace(/\s+/g,' ');
     if (!out[mKey]) out[mKey]={};
     if (!out[mKey][cat]) out[mKey][cat]={total:0,items:[]};
     out[mKey][cat].total+=rawAmt;
-    out[mKey][cat].items.push({date:mo+'/'+day,desc:cleanNote||rawCat,amt:rawAmt,card:rawAcct});
+    out[mKey][cat].items.push({date:mo+'/'+day,desc:note||rawCat,amt:rawAmt,card:rawAcct});
   }
   for (const m of Object.values(out))
     for (const c of Object.values(m))
@@ -331,7 +342,6 @@ function splitRow(line){
 }
 
 function pad(n){return String(n).padStart(2,'0');}
-
 let _tt;
 function showToast(msg,dur=3000){
   const t=document.getElementById('toast');
@@ -345,7 +355,7 @@ function buildMonthBar(){
   MONTHS_ZH.forEach((lbl,i)=>{
     const m=i+1,btn=document.createElement('button');
     btn.className='m-btn';btn.textContent=lbl;
-    if(Object.values(DATA[String(m)]||{}).some(c=>c.items.length)) btn.classList.add('has-data');
+    if(Object.values(DATA[String(m)]||{}).some(c=>c.items&&c.items.length)) btn.classList.add('has-data');
     if(m===curMonth) btn.classList.add('active');
     btn.onclick=()=>selectMonth(m);
     bar.appendChild(btn);
@@ -366,17 +376,24 @@ function render(){
   const cats=Object.entries(mData).sort((a,b)=>b[1].total-a[1].total);
   const total=cats.reduce((s,[,v])=>s+v.total,0);
   const diff=TOTAL_BUDGET-total;
+
+  // 月底預測
+  renderPredict(mData, curMonth);
+
   document.getElementById('sumTotal').textContent=total?fmt(total):'—';
   document.getElementById('sumBudget').textContent=fmt(TOTAL_BUDGET);
   const de=document.getElementById('sumDiff');
   if(total){de.textContent=(diff>=0?'＋':'')+fmt(diff);de.className='s-value '+(diff>=0?'green':'red');}
   else{de.textContent='—';de.className='s-value';}
+
   if(pie){pie.destroy();pie=null;}
   const listEl=document.getElementById('catList');
+
   if(!total){
-    listEl.innerHTML='<div style="text-align:center;padding:40px 20px;color:#BBB;font-size:13px"><div style="font-size:36px;margin-bottom:8px">📭</div>本月尚無資料</div>';
+    listEl.innerHTML='<div class="empty"><div class="empty-icon">📭</div>本月尚無資料<br><small style="color:#CCC;margin-top:6px;display:block">上傳天天記帳 CSV 即可</small></div>';
     return;
   }
+
   const ctx=document.getElementById('pieChart').getContext('2d');
   pie=new Chart(ctx,{
     type:'pie',
@@ -384,32 +401,44 @@ function render(){
       datasets:[{data:cats.map(([,v])=>v.total),backgroundColor:cats.map(([c])=>CAT_COLORS[c]||'#ccc'),borderColor:'#fff',borderWidth:2.5,hoverOffset:14}]},
     options:{responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:false},tooltip:{callbacks:{label(ctx){return ` ${fmt(ctx.raw)}（${(ctx.raw/total*100).toFixed(1)}%）`;}}}}  ,
-      onClick(e,items){if(items.length)toggleCat(cats[items[0].index][0],true);}}
+      onClick(e,items){if(items.length)toggleCat(cats[items[0].index][0],true);}
+    }
   });
+
   listEl.innerHTML='';
   cats.forEach(([cat,cd])=>{
     const budget=BUDGETS[cat]||0,pct=budget>0?cd.total/budget:0;
     const color=CAT_COLORS[cat]||'#ccc';
     const barColor=pct>=1?'#E74C3C':pct>=.8?'#F39C12':'#27AE60';
     const isOpen=openCat===cat,over=budget>0&&cd.total>budget;
+    const nearOver=budget>0&&pct>=.8&&!over;
+    const remain=budget>0?budget-cd.total:0;
     const key=encodeURIComponent(cat);
+
     const item=document.createElement('div');
     item.className='cat-item'+(isOpen?' open':'');
     item.id='cat-'+key;item.style.borderLeftColor=color;
     item.innerHTML=`
       <div class="cat-icon">${cat.slice(0,2)}</div>
       <div class="cat-info">
-        <div class="cat-name">${cat.slice(2).trim()}${over?'<span class="over-badge">超支</span>':''}</div>
+        <div class="cat-name">${cat.slice(2).trim()}
+          ${over?'<span class="over-badge">超支</span>':nearOver?'<span class="warn-badge">快超了</span>':''}
+        </div>
         <div class="cat-row2">
-          <span class="cat-amt" style="color:${over?'#E74C3C':color}">${fmt(cd.total)}</span>
+          <span class="cat-amt" style="color:${over?'#E74C3C':nearOver?'#E67E22':color}">${fmt(cd.total)}</span>
           ${budget?`<span class="cat-budget-info">預算${fmt(budget)}</span>`:''}
           <span class="cat-pct-badge">${(cd.total/total*100).toFixed(1)}%</span>
         </div>
-        ${budget?`<div class="progress-bar"><div class="progress-fill" style="width:${Math.min(100,pct*100).toFixed(1)}%;background:${barColor}"></div></div>`:''}
+        ${budget?`
+          <div class="progress-bar"><div class="progress-fill" style="width:${Math.min(100,pct*100).toFixed(1)}%;background:${barColor}"></div></div>
+          <div class="cat-remain ${over?'over':nearOver?'warn':'ok'}">
+            ${over?`⚠️ 已超支 ${fmt(-remain)}`:`還可花 ${fmt(remain)}`}
+          </div>`:''}
       </div>
       <div class="arrow">›</div>`;
     item.addEventListener('click',()=>toggleCat(cat,false));
     listEl.appendChild(item);
+
     const panel=document.createElement('div');
     panel.className='detail-panel'+(isOpen?' open':'');
     panel.id='panel-'+key;
@@ -435,11 +464,9 @@ function render(){
 }
 
 function toggleNote(k,idx){document.getElementById(`tx-${k}-${idx}`)?.classList.toggle('expanded');}
-
 function toggleCat(cat,scroll){
   const key=encodeURIComponent(cat);
-  const item=document.getElementById('cat-'+key);
-  const panel=document.getElementById('panel-'+key);
+  const item=document.getElementById('cat-'+key),panel=document.getElementById('panel-'+key);
   if(openCat===cat){openCat=null;item?.classList.remove('open');panel?.classList.remove('open');}
   else{
     if(openCat){const ok=encodeURIComponent(openCat);document.getElementById('cat-'+ok)?.classList.remove('open');document.getElementById('panel-'+ok)?.classList.remove('open');}
@@ -448,7 +475,6 @@ function toggleCat(cat,scroll){
   }
 }
 
-// 開啟時自動從 Sheets 讀取
 loadFromSheets();
 </script>
 </body>
