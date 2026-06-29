@@ -231,6 +231,11 @@ function handleFile(file) {
     const total = Object.values(parsed).flatMap(m=>Object.values(m)).reduce((s,c)=>s+c.items.length,0);
     if (!total) { showToast('⚠️ 沒有找到支出資料'); return; }
 
+    // 把新 CSV 的月份覆蓋到現有資料上（保留其他月份）
+    for (const mKey of months) DATA[mKey] = parsed[mKey];
+    buildMonthBar();
+    selectMonth(Math.max(...months.map(Number)));
+
     // 顯示上傳中狀態
     const zone = document.getElementById('uploadZone');
     zone.classList.add('loading');
@@ -245,7 +250,8 @@ function handleFile(file) {
       const json = await res.json();
       if (json.error) throw new Error(json.error);
 
-      DATA = json.data || parsed;
+      // Sheets 回傳的是全部資料，直接用
+      DATA = json.data || DATA;
       const now = new Date();
       document.getElementById('updBadge').textContent =
         `☁️ ${now.getMonth()+1}/${now.getDate()} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
@@ -253,9 +259,7 @@ function handleFile(file) {
       selectMonth(Math.max(...months.map(Number)));
       showToast(`✅ 已同步 ${total} 筆到 Sheets`);
     } catch(err) {
-      DATA = parsed;
-      buildMonthBar();
-      selectMonth(Math.max(...months.map(Number)));
+      // Sheets 失敗時用本地合併結果
       showToast(`⚠️ Sheets 同步失敗，本地已更新`);
       console.warn(err);
     } finally {
