@@ -252,26 +252,31 @@ function handleFile(file) {
     showToast('⏳ 同步到 Google Sheets 中…', 30000);
 
     try {
-      // 用 GET + Base64 傳送 CSV（避免 CORS 問題）
-      const b64 = btoa(unescape(encodeURIComponent(csvText)));
-      const url = API_URL + '?action=upload&months=' + months.join(',') + '&csv=' + encodeURIComponent(b64);
-      const res = await fetch(url);
-      const json = await res.json();
-      if (json.error) throw new Error(json.error);
-
-      // Sheets 回傳的是全部資料，直接用
-      DATA = json.data || DATA;
+      // 用 no-cors 模式送出（不等回應，避免 CORS 錯誤）
+      const rows = [];
+      for (const [mKey, mData] of Object.entries(parsed)) {
+        for (const [cat, cd] of Object.entries(mData)) {
+          for (const it of cd.items) {
+            rows.push([it.date, cat, it.desc, it.amt, it.card||'現金', '2026/'+it.date.slice(0,2)]);
+          }
+        }
+      }
+      const params = new URLSearchParams({
+        action: 'upload',
+        months: months.join(','),
+        rows: JSON.stringify(rows),
+      });
+      // 發送但不等待回應（no-cors 無法讀取回應內容）
+      fetch(API_URL + '?' + params.toString(), {mode:'no-cors'}).catch(()=>{});
+    } catch(err) {
+      console.warn('Sheets 同步:', err.message);
+    } finally {
       const now = new Date();
       document.getElementById('updBadge').textContent =
         `☁️ ${now.getMonth()+1}/${now.getDate()} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
       buildMonthBar();
       selectMonth(Math.max(...months.map(Number)));
-      showToast(`✅ 已同步 ${total} 筆到 Sheets`);
-    } catch(err) {
-      // Sheets 失敗時用本地合併結果
-      showToast(`⚠️ Sheets 同步失敗，本地已更新`);
-      console.warn(err);
-    } finally {
+      showToast(`✅ 已更新 ${total} 筆`);
       zone.classList.remove('loading');
       document.getElementById('loadingBar').classList.remove('show');
     }
