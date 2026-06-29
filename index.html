@@ -139,7 +139,7 @@ body{font-family:'Noto Sans TC',system-ui,sans-serif;background:#EEF2F7;color:va
 // ══════════════════════════════════════════
 //  Google Apps Script API 網址
 // ══════════════════════════════════════════
-const API_URL = 'https://script.google.com/macros/s/AKfycbw9pDdAgE7rDfvIQQjm89zmkZ1FGfctCgKhAe3VXjdqYZJyg4ZMbfeL-n3qVWjM_joMtw/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbxGOIWJeasO6xWGRCko9Tce5mpsRn-jHj0TAJqJvx3WklA_7sS40tncILZglUY6xULUqg/exec';
 
 // ══════════════════════════════════════════
 //  月預算（直接修改這裡的數字）
@@ -238,30 +238,26 @@ function handleFile(file) {
     showToast('⏳ 同步到 Google Sheets 中…', 30000);
 
     try {
-      // 送到 Apps Script 處理
-      const res = await fetch(API_URL, {
-        method: 'POST',
-        body: JSON.stringify({ csv: csvText, months }),
-      });
+      // 用 GET + Base64 傳送 CSV（避免 CORS 問題）
+      const b64 = btoa(unescape(encodeURIComponent(csvText)));
+      const url = API_URL + '?action=upload&months=' + months.join(',') + '&csv=' + encodeURIComponent(b64);
+      const res = await fetch(url);
       const json = await res.json();
       if (json.error) throw new Error(json.error);
 
-      // 用 Sheets 回傳的最新資料更新畫面
       DATA = json.data || parsed;
-
       const now = new Date();
       document.getElementById('updBadge').textContent =
         `☁️ ${now.getMonth()+1}/${now.getDate()} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
-
       buildMonthBar();
       selectMonth(Math.max(...months.map(Number)));
       showToast(`✅ 已同步 ${total} 筆到 Sheets`);
     } catch(err) {
-      // API 失敗時仍更新本地畫面
       DATA = parsed;
       buildMonthBar();
       selectMonth(Math.max(...months.map(Number)));
       showToast(`⚠️ Sheets 同步失敗，本地已更新`);
+      console.warn(err);
     } finally {
       zone.classList.remove('loading');
       document.getElementById('loadingBar').classList.remove('show');
