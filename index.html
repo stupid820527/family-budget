@@ -15,22 +15,26 @@
   --radius:14px;--shadow:0 2px 14px rgba(0,0,0,0.09);
 }
 body{font-family:'Noto Sans TC',system-ui,sans-serif;background:#EEF2F7;color:var(--dark);min-height:100vh;padding-bottom:40px}
+
 .header{background:linear-gradient(135deg,#1B4F72,#2E86C1);color:#fff;padding:18px 20px 14px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.2)}
 .header-row{display:flex;align-items:center;justify-content:space-between}
-.header-title{font-size:18px;font-weight:800;display:flex;align-items:center;gap:8px}
-.upd-badge{font-size:10px;background:rgba(255,255,255,.18);border-radius:12px;padding:2px 9px}
+.header-title{font-size:18px;font-weight:800}
+.upd-badge{font-size:10px;background:rgba(255,255,255,.18);border-radius:12px;padding:2px 9px;margin-left:8px}
 .header-sub{font-size:11px;opacity:.7;margin-top:3px}
 .year-badge{background:rgba(255,255,255,.2);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700}
+.refresh-btn{background:rgba(255,255,255,.18);border:none;color:#fff;font-size:16px;padding:6px 10px;border-radius:20px;cursor:pointer;margin-left:8px}
+.refresh-btn:active{background:rgba(255,255,255,.35)}
+
 .month-bar{display:flex;overflow-x:auto;gap:6px;padding:12px 16px;background:#fff;border-bottom:1px solid #E0E6ED;position:sticky;top:62px;z-index:99;scrollbar-width:none}
 .month-bar::-webkit-scrollbar{display:none}
 .m-btn{flex-shrink:0;min-width:44px;padding:7px 12px;border-radius:20px;border:1.5px solid #DDE3ED;font-size:12px;font-weight:600;cursor:pointer;background:#fff;color:#666;transition:all .15s}
 .m-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
 .m-btn.has-data{border-color:#aac4dc;color:var(--navy)}
+
 .content{padding:14px 14px 0;max-width:520px;margin:0 auto}
 .card{background:#fff;border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);margin-bottom:13px}
 .card-title{font-size:11px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px}
 
-/* 月底預測卡片 */
 .predict-card{border-radius:var(--radius);padding:14px 16px;margin-bottom:13px;box-shadow:var(--shadow)}
 .predict-card.safe{background:linear-gradient(135deg,#E9F7EF,#D5F5E3);border-left:4px solid #1E8449}
 .predict-card.warn{background:linear-gradient(135deg,#FEF9E7,#FDEBD0);border-left:4px solid #E67E22}
@@ -47,6 +51,7 @@ body{font-family:'Noto Sans TC',system-ui,sans-serif;background:#EEF2F7;color:va
 .s-label{font-size:10px;color:#999;margin-bottom:4px}
 .s-value{font-size:17px;font-weight:800;color:var(--dark)}
 .s-value.red{color:var(--red)}.s-value.green{color:var(--green)}.s-value.gold{color:var(--gold)}
+
 .chart-hint{font-size:11px;color:#999;text-align:center;margin-bottom:10px}
 .chart-wrap{position:relative;height:240px}
 
@@ -56,7 +61,7 @@ body{font-family:'Noto Sans TC',system-ui,sans-serif;background:#EEF2F7;color:va
 .cat-item.open{background:#FAFBFF}
 .cat-icon{font-size:20px;flex-shrink:0;width:32px;text-align:center}
 .cat-info{flex:1;min-width:0}
-.cat-name{font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px}
+.cat-name{font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .cat-row2{display:flex;align-items:center;gap:8px;margin-top:3px}
 .cat-amt{font-size:15px;font-weight:800}
 .cat-budget-info{font-size:10px;color:#AAA}
@@ -67,7 +72,6 @@ body{font-family:'Noto Sans TC',system-ui,sans-serif;background:#EEF2F7;color:va
 .cat-item.open .arrow{transform:rotate(90deg)}
 .over-badge{background:var(--lred);color:var(--red);font-size:10px;font-weight:700;padding:2px 6px;border-radius:8px}
 .warn-badge{background:var(--lorange);color:var(--orange);font-size:10px;font-weight:700;padding:2px 6px;border-radius:8px}
-/* 剩餘預算小標 */
 .cat-remain{font-size:10px;margin-top:3px}
 .cat-remain.ok{color:var(--green)}
 .cat-remain.warn{color:var(--orange)}
@@ -92,51 +96,41 @@ body{font-family:'Noto Sans TC',system-ui,sans-serif;background:#EEF2F7;color:va
 .tx-row.expanded .tx-note{max-height:400px}
 .tx-note-inner{padding:10px 14px 12px;font-size:11px;color:#555;line-height:1.7;white-space:pre-wrap;word-break:break-all;border-top:1px dashed #D0DFF0}
 
-.upload-zone{border:2px dashed #C5D8E8;border-radius:14px;padding:20px;text-align:center;cursor:pointer;transition:all .2s;background:#F8FBFF;margin-bottom:13px}
-.upload-zone:hover,.upload-zone.drag{border-color:var(--blue);background:#EBF5FF}
-.uz-icon{font-size:28px;margin-bottom:5px}
-.uz-title{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:2px}
-.uz-sub{font-size:11px;color:#888}
-#fileInput{display:none}
-.loading-bar{height:3px;background:linear-gradient(90deg,#1B4F72,#2E86C1,#1B4F72);background-size:200%;animation:lb 1.2s infinite;border-radius:2px;margin-top:8px;display:none}
-.loading-bar.show{display:block}
-@keyframes lb{0%{background-position:200%}100%{background-position:-200%}}
+.loading-screen{text-align:center;padding:60px 20px;color:#AAA}
+.loading-spinner{font-size:40px;animation:spin 1s linear infinite;display:block;margin-bottom:12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty{text-align:center;padding:40px 20px;color:#BBB;font-size:13px}
+.empty-icon{font-size:36px;margin-bottom:8px}
+.error-card{background:#FDEDEC;border-left:4px solid var(--red);border-radius:var(--radius);padding:14px 16px;margin-bottom:13px}
+.error-card .title{font-weight:700;color:var(--red);margin-bottom:6px}
+.error-card .msg{font-size:12px;color:#666;margin-bottom:10px}
+.retry-btn{background:var(--navy);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer}
 
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1B4F72;color:#fff;font-size:12px;font-weight:600;padding:10px 20px;border-radius:20px;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none;max-width:90vw;text-align:center}
 .toast.show{opacity:1}
-.empty{text-align:center;padding:40px 20px;color:#BBB;font-size:13px}
-.empty-icon{font-size:36px;margin-bottom:8px}
 </style>
 </head>
 <body>
+
 <div class="header">
   <div class="header-row">
     <div>
       <div class="header-title">🏠 家庭支出分析
         <span class="upd-badge" id="updBadge">載入中…</span>
       </div>
-      <div class="header-sub">上傳天天記帳 CSV · 點類別查看明細</div>
+      <div class="header-sub">資料來自 Google Sheets · 自動同步</div>
     </div>
-    <div class="year-badge">2026</div>
+    <div style="display:flex;align-items:center">
+      <div class="year-badge">2026</div>
+      <button class="refresh-btn" onclick="loadData(true)" title="重新整理">↺</button>
+    </div>
   </div>
 </div>
+
 <div class="month-bar" id="monthBar"></div>
+
 <div class="content">
-
-  <!-- 月底預測 -->
   <div id="predictCard" style="display:none"></div>
-
-  <div class="upload-zone" id="uploadZone"
-       onclick="document.getElementById('fileInput').click()"
-       ondragover="event.preventDefault();this.classList.add('drag')"
-       ondragleave="this.classList.remove('drag')"
-       ondrop="handleDrop(event)">
-    <div class="uz-icon">📂</div>
-    <div class="uz-title">上傳天天記帳 CSV</div>
-    <div class="uz-sub">點擊選擇或拖曳 CSV 檔案</div>
-    <div class="loading-bar" id="loadingBar"></div>
-    <input type="file" id="fileInput" accept=".csv" onchange="handleFile(this.files[0])">
-  </div>
 
   <div class="card">
     <div class="card-title">本月財務摘要</div>
@@ -158,16 +152,21 @@ body{font-family:'Noto Sans TC',system-ui,sans-serif;background:#EEF2F7;color:va
       <div class="card-title" style="margin-bottom:0">各類別明細 <span style="font-size:10px;color:#CCC;font-weight:400">（點每筆展開完整備註）</span></div>
     </div>
     <div class="cat-list" id="catList">
-      <div class="empty"><div class="empty-icon">⏳</div>從 Google Sheets 載入中…</div>
+      <div class="loading-screen">
+        <span class="loading-spinner">⏳</span>
+        從 Google Sheets 載入資料中…
+      </div>
     </div>
   </div>
 </div>
+
 <div class="toast" id="toast"></div>
 
 <script>
+// ══ Google Apps Script API ══════════════════════════
 const API_URL = 'https://script.google.com/macros/s/AKfycbwKHbmVj4vtex2u9zxPt8fS8UNuaVmpGI1pRSJCIZu1tDk9q8IWmp1xZnxI7w9EIJRQ/exec';
 
-// ══ 月預算（可直接改這裡）══════════════════════════
+// ══ 月預算（直接改這裡的數字）══════════════════════
 const BUDGETS = {
   '🍽️ 飲食':      24000,
   '🏠 居家開銷':   8000,
@@ -181,17 +180,6 @@ const BUDGETS = {
   '🧸 小孩日用品': 5000,
   '💬 其他':       1000,
 };
-
-const CAT_MAP = {
-  '飲食':'🍽️ 飲食','居家開銷':'🏠 居家開銷','汽車':'🚗 汽車',
-  '娛樂血拼':'🛍️ 娛樂血拚','娛樂血拚':'🛍️ 娛樂血拚',
-  '看醫生':'🏥 看醫生','終身學習':'📚 終身學習','保險':'🛡️ 保險',
-  '小孩學習':'👶 小孩學習','網路訂閱':'📱 網路訂閱',
-  '小孩日用品':'🧸 小孩日用品','小孩用品':'🧸 小孩日用品',
-  '其他':'💬 其他','電話網路':'📱 網路訂閱',
-  '服飾':'🛍️ 娛樂血拚','教育':'📚 終身學習','醫療保健':'🏥 看醫生',
-};
-
 const TOTAL_BUDGET = Object.values(BUDGETS).reduce((a,b)=>a+b,0);
 const CAT_COLORS = {
   '🍽️ 飲食':'#FF8C42','🏠 居家開銷':'#4ECDC4','🚗 汽車':'#E74C3C',
@@ -204,11 +192,51 @@ const MONTHS_ZH = ['1月','2月','3月','4月','5月','6月','7月','8月','9月
 let DATA = {}, curMonth = new Date().getMonth()+1;
 let pie = null, openCat = null;
 
+// ══ 載入資料 ════════════════════════════════════════
+async function loadData(manual=false) {
+  if (manual) showToast('🔄 更新中…');
+  document.getElementById('updBadge').textContent = '載入中…';
+
+  try {
+    const res = await fetch(API_URL + '?action=read', { redirect:'follow' });
+    const text = await res.text();
+    const json = JSON.parse(text);
+
+    if (json.error) throw new Error(json.error);
+    if (!json.data || !Object.keys(json.data).length) throw new Error('尚無資料');
+
+    DATA = json.data;
+
+    const months = Object.keys(DATA).map(Number)
+      .filter(m => Object.values(DATA[String(m)]||{}).some(c=>c.items&&c.items.length));
+    if (months.length) curMonth = Math.max(...months);
+
+    const now = new Date();
+    document.getElementById('updBadge').textContent =
+      `${now.getMonth()+1}/${now.getDate()} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+
+    buildMonthBar();
+    selectMonth(curMonth);
+    if (manual) showToast('✅ 資料已更新');
+
+  } catch(e) {
+    document.getElementById('updBadge').textContent = '⚠️ 載入失敗';
+    document.getElementById('catList').innerHTML = `
+      <div style="padding:20px">
+        <div class="error-card">
+          <div class="title">⚠️ 無法載入資料</div>
+          <div class="msg">${e.message}<br>請確認 Google Sheets 已有資料，或嘗試重新整理。</div>
+          <button class="retry-btn" onclick="loadData(true)">↺ 重試</button>
+        </div>
+      </div>`;
+    buildMonthBar();
+  }
+}
+
 // ══ 月底預測 ════════════════════════════════════════
 function renderPredict(mData, month) {
   const card = document.getElementById('predictCard');
   const now = new Date();
-  // 只在當月顯示預測
   if (month !== now.getMonth()+1) { card.style.display='none'; return; }
 
   const daysInMonth = new Date(2026, month, 0).getDate();
@@ -217,188 +245,88 @@ function renderPredict(mData, month) {
   if (today === 0) { card.style.display='none'; return; }
 
   const total = Object.values(mData).reduce((s,c)=>s+c.total, 0);
+  if (!total) { card.style.display='none'; return; }
+
   const dailyAvg = total / today;
   const projected = Math.round(total + dailyAvg * daysLeft);
   const diff = projected - TOTAL_BUDGET;
-  const diffAbs = Math.abs(diff);
 
   let cls, icon, main, sub;
   if (diff <= 0) {
-    cls = 'safe'; icon = '✅';
-    main = `月底預計剩餘 ${fmt(diffAbs)}`;
-    sub = `今天第 ${today} 天，日均 ${fmt(Math.round(dailyAvg))}，還有 ${daysLeft} 天`;
+    cls='safe'; icon='✅';
+    main=`月底預計剩餘 ${fmt(Math.abs(diff))}`;
+    sub=`今天第 ${today} 天，日均 ${fmt(Math.round(dailyAvg))}，還有 ${daysLeft} 天`;
   } else if (diff < TOTAL_BUDGET * 0.1) {
-    cls = 'warn'; icon = '⚠️';
-    main = `照這速度月底恐超支 ${fmt(diff)}`;
-    sub = `日均 ${fmt(Math.round(dailyAvg))}，建議每天控制在 ${fmt(Math.round((TOTAL_BUDGET - total) / daysLeft))} 以內`;
+    cls='warn'; icon='⚠️';
+    main=`照這速度月底恐超支 ${fmt(diff)}`;
+    sub=`每天最多只能花 ${fmt(Math.round((TOTAL_BUDGET-total)/Math.max(daysLeft,1)))}`;
   } else {
-    cls = 'danger'; icon = '🚨';
-    main = `月底預計超支 ${fmt(diff)}！`;
-    sub = `剩 ${daysLeft} 天，每天只能花 ${fmt(Math.max(0, Math.round((TOTAL_BUDGET - total) / daysLeft)))} 才能守住預算`;
+    cls='danger'; icon='🚨';
+    main=`月底預計超支 ${fmt(diff)}！`;
+    sub=`剩 ${daysLeft} 天，每天只能花 ${fmt(Math.max(0,Math.round((TOTAL_BUDGET-total)/Math.max(daysLeft,1))))}`;
   }
 
-  card.className = `predict-card ${cls}`;
-  card.style.display = 'block';
-  card.innerHTML = `
+  card.className=`predict-card ${cls}`;
+  card.style.display='block';
+  card.innerHTML=`
     <div class="predict-title">${icon} 月底預測（今天 ${month}/${today}）</div>
     <div class="predict-main">${main}</div>
     <div class="predict-sub">${sub}</div>`;
 }
 
-// ══ 從 Sheets 讀取 ══════════════════════════════════
-async function loadFromSheets() {
-  try {
-    const res = await fetch(API_URL + '?action=read', {method:'GET', redirect:'follow'});
-    const text = await res.text();
-    const json = JSON.parse(text);
-    if (json.data && Object.keys(json.data).length > 0) {
-      DATA = json.data;
-      const months = Object.keys(DATA).map(Number).filter(m=>
-        Object.values(DATA[String(m)]||{}).some(c=>c.items&&c.items.length));
-      if (months.length) curMonth = Math.max(...months);
-      const now = new Date();
-      document.getElementById('updBadge').textContent =
-        `☁️ ${now.getMonth()+1}/${now.getDate()} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
-    } else {
-      document.getElementById('updBadge').textContent = '📭 尚無資料';
-    }
-  } catch(e) {
-    document.getElementById('updBadge').textContent = '⚠️ 離線';
-  }
-  buildMonthBar();
-  selectMonth(curMonth);
-}
-
-// ══ CSV 上傳（只更新本地，獨立於 Sheets）══════════
-function handleDrop(e){
-  e.preventDefault();
-  document.getElementById('uploadZone').classList.remove('drag');
-  handleFile(e.dataTransfer.files[0]);
-}
-
-function handleFile(file) {
-  if (!file) return;
-  document.getElementById('loadingBar').classList.add('show');
-  const reader = new FileReader();
-  reader.onload = e => {
-    const parsed = parseCSV(e.target.result);
-    if (!parsed) { showToast('❌ 不是天天記帳格式'); return; }
-    const months = Object.keys(parsed);
-    const total = Object.values(parsed).flatMap(m=>Object.values(m)).reduce((s,c)=>s+c.items.length,0);
-    if (!total) { showToast('⚠️ 沒有找到支出資料'); return; }
-    // 只更新 CSV 涵蓋的月份，其他月份保留
-    for (const mKey of months) DATA[mKey] = parsed[mKey];
-    const now = new Date();
-    document.getElementById('updBadge').textContent =
-      `📂 ${now.getMonth()+1}/${now.getDate()} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
-    document.getElementById('loadingBar').classList.remove('show');
-    buildMonthBar();
-    selectMonth(Math.max(...months.map(Number)));
-    showToast(`✅ 已載入 ${total} 筆`);
-  };
-  reader.readAsText(file,'UTF-8');
-}
-
-function parseCSV(text) {
-  const out={}, rows=text.split(/\r?\n/);
-  const h=splitRow(rows[0]);
-  const iDate=h.indexOf('日期'),iCat=h.indexOf('類別'),iAmt=h.indexOf('金額');
-  const iAcct=h.indexOf('帳戶'),iNote=h.indexOf('備註'),iType=h.indexOf('收支區分');
-  if (iDate<0||iCat<0) return null;
-  for (let i=1;i<rows.length;i++) {
-    const c=splitRow(rows[i]);
-    if (c.length<4) continue;
-    if ((c[iType]||'').trim()!=='支') continue;
-    const rawDate=(c[iDate]||'').trim();
-    const rawCat=(c[iCat]||'').trim();
-    const rawAmt=parseFloat((c[iAmt]||'0').replace(/,/g,''));
-    const rawAcct=(c[iAcct]||'現金').trim();
-    const rawNote=(c[iNote]||'').trim();
-    if (!rawDate||rawDate.length<8||isNaN(rawAmt)||rawAmt<=0) continue;
-    const mo=rawDate.slice(4,6),day=rawDate.slice(6,8);
-    const mKey=String(parseInt(mo,10));
-    const cat=CAT_MAP[rawCat]||('💬 '+rawCat);
-    const note=rawNote.split(/\d{4}年\d+月\d+日/)[0].split('#電子發票')[0].trim().replace(/\s+/g,' ');
-    if (!out[mKey]) out[mKey]={};
-    if (!out[mKey][cat]) out[mKey][cat]={total:0,items:[]};
-    out[mKey][cat].total+=rawAmt;
-    out[mKey][cat].items.push({date:mo+'/'+day,desc:note||rawCat,amt:rawAmt,card:rawAcct});
-  }
-  for (const m of Object.values(out))
-    for (const c of Object.values(m))
-      c.items.sort((a,b)=>b.date.localeCompare(a.date));
-  return Object.keys(out).length ? out : null;
-}
-
-function splitRow(line){
-  const out=[];let cur='',inQ=false;
-  for(let i=0;i<line.length;i++){
-    const ch=line[i];
-    if(ch==='"'){inQ=!inQ;continue;}
-    if(ch===','&&!inQ){out.push(cur.trim());cur='';continue;}
-    cur+=ch;
-  }
-  out.push(cur.trim());return out;
-}
-
-function pad(n){return String(n).padStart(2,'0');}
-let _tt;
-function showToast(msg,dur=3000){
-  const t=document.getElementById('toast');
-  t.textContent=msg;t.classList.add('show');
-  clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('show'),dur);
-}
-
-function buildMonthBar(){
-  const bar=document.getElementById('monthBar');
-  bar.innerHTML='';
-  MONTHS_ZH.forEach((lbl,i)=>{
-    const m=i+1,btn=document.createElement('button');
-    btn.className='m-btn';btn.textContent=lbl;
-    if(Object.values(DATA[String(m)]||{}).some(c=>c.items&&c.items.length)) btn.classList.add('has-data');
-    if(m===curMonth) btn.classList.add('active');
-    btn.onclick=()=>selectMonth(m);
+// ══ UI ══════════════════════════════════════════════
+function buildMonthBar() {
+  const bar = document.getElementById('monthBar');
+  bar.innerHTML = '';
+  MONTHS_ZH.forEach((lbl,i) => {
+    const m = i+1, btn = document.createElement('button');
+    btn.className = 'm-btn'; btn.textContent = lbl;
+    if (Object.values(DATA[String(m)]||{}).some(c=>c.items&&c.items.length)) btn.classList.add('has-data');
+    if (m===curMonth) btn.classList.add('active');
+    btn.onclick = ()=>selectMonth(m);
     bar.appendChild(btn);
   });
 }
 
-function selectMonth(m){
-  curMonth=m;
+function selectMonth(m) {
+  curMonth = m;
   document.querySelectorAll('.m-btn').forEach((b,i)=>b.classList.toggle('active',i===m-1));
   document.querySelectorAll('.m-btn')[m-1]?.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
-  openCat=null;render();
+  openCat = null; render();
 }
 
-function fmt(n){return 'NT$'+Math.round(n).toLocaleString('zh-TW');}
+function fmt(n){ return 'NT$'+Math.round(n).toLocaleString('zh-TW'); }
+function pad(n){ return String(n).padStart(2,'0'); }
 
-function render(){
-  const mData=DATA[String(curMonth)]||{};
-  const cats=Object.entries(mData).sort((a,b)=>b[1].total-a[1].total);
-  const total=cats.reduce((s,[,v])=>s+v.total,0);
-  const diff=TOTAL_BUDGET-total;
+function render() {
+  const mData = DATA[String(curMonth)]||{};
+  const cats = Object.entries(mData).sort((a,b)=>b[1].total-a[1].total);
+  const total = cats.reduce((s,[,v])=>s+v.total, 0);
+  const diff = TOTAL_BUDGET-total;
 
-  // 月底預測
   renderPredict(mData, curMonth);
 
-  document.getElementById('sumTotal').textContent=total?fmt(total):'—';
-  document.getElementById('sumBudget').textContent=fmt(TOTAL_BUDGET);
-  const de=document.getElementById('sumDiff');
-  if(total){de.textContent=(diff>=0?'＋':'')+fmt(diff);de.className='s-value '+(diff>=0?'green':'red');}
-  else{de.textContent='—';de.className='s-value';}
+  document.getElementById('sumTotal').textContent = total?fmt(total):'—';
+  document.getElementById('sumBudget').textContent = fmt(TOTAL_BUDGET);
+  const de = document.getElementById('sumDiff');
+  if (total) { de.textContent=(diff>=0?'＋':'')+fmt(diff); de.className='s-value '+(diff>=0?'green':'red'); }
+  else { de.textContent='—'; de.className='s-value'; }
 
-  if(pie){pie.destroy();pie=null;}
-  const listEl=document.getElementById('catList');
+  if (pie){ pie.destroy(); pie=null; }
+  const listEl = document.getElementById('catList');
 
-  if(!total){
-    listEl.innerHTML='<div class="empty"><div class="empty-icon">📭</div>本月尚無資料<br><small style="color:#CCC;margin-top:6px;display:block">上傳天天記帳 CSV 即可</small></div>';
+  if (!total) {
+    listEl.innerHTML='<div class="empty"><div class="empty-icon">📭</div>本月尚無資料</div>';
     return;
   }
 
-  const ctx=document.getElementById('pieChart').getContext('2d');
-  pie=new Chart(ctx,{
+  const ctx = document.getElementById('pieChart').getContext('2d');
+  pie = new Chart(ctx, {
     type:'pie',
-    data:{labels:cats.map(([c])=>c.slice(0,2)+' '+c.slice(2).trim()),
-      datasets:[{data:cats.map(([,v])=>v.total),backgroundColor:cats.map(([c])=>CAT_COLORS[c]||'#ccc'),borderColor:'#fff',borderWidth:2.5,hoverOffset:14}]},
+    data:{
+      labels: cats.map(([c])=>c.slice(0,2)+' '+c.slice(2).trim()),
+      datasets:[{data:cats.map(([,v])=>v.total),backgroundColor:cats.map(([c])=>CAT_COLORS[c]||'#ccc'),borderColor:'#fff',borderWidth:2.5,hoverOffset:14}]
+    },
     options:{responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:false},tooltip:{callbacks:{label(ctx){return ` ${fmt(ctx.raw)}（${(ctx.raw/total*100).toFixed(1)}%）`;}}}}  ,
       onClick(e,items){if(items.length)toggleCat(cats[items[0].index][0],true);}
@@ -406,18 +334,17 @@ function render(){
   });
 
   listEl.innerHTML='';
-  cats.forEach(([cat,cd])=>{
-    const budget=BUDGETS[cat]||0,pct=budget>0?cd.total/budget:0;
+  cats.forEach(([cat,cd]) => {
+    const budget=BUDGETS[cat]||0, pct=budget>0?cd.total/budget:0;
     const color=CAT_COLORS[cat]||'#ccc';
     const barColor=pct>=1?'#E74C3C':pct>=.8?'#F39C12':'#27AE60';
-    const isOpen=openCat===cat,over=budget>0&&cd.total>budget;
-    const nearOver=budget>0&&pct>=.8&&!over;
+    const isOpen=openCat===cat, over=budget>0&&cd.total>budget, nearOver=budget>0&&pct>=.8&&!over;
     const remain=budget>0?budget-cd.total:0;
     const key=encodeURIComponent(cat);
 
     const item=document.createElement('div');
     item.className='cat-item'+(isOpen?' open':'');
-    item.id='cat-'+key;item.style.borderLeftColor=color;
+    item.id='cat-'+key; item.style.borderLeftColor=color;
     item.innerHTML=`
       <div class="cat-icon">${cat.slice(0,2)}</div>
       <div class="cat-info">
@@ -463,19 +390,28 @@ function render(){
   });
 }
 
-function toggleNote(k,idx){document.getElementById(`tx-${k}-${idx}`)?.classList.toggle('expanded');}
-function toggleCat(cat,scroll){
+function toggleNote(k,idx){ document.getElementById(`tx-${k}-${idx}`)?.classList.toggle('expanded'); }
+
+function toggleCat(cat,scroll) {
   const key=encodeURIComponent(cat);
-  const item=document.getElementById('cat-'+key),panel=document.getElementById('panel-'+key);
-  if(openCat===cat){openCat=null;item?.classList.remove('open');panel?.classList.remove('open');}
-  else{
-    if(openCat){const ok=encodeURIComponent(openCat);document.getElementById('cat-'+ok)?.classList.remove('open');document.getElementById('panel-'+ok)?.classList.remove('open');}
-    openCat=cat;item?.classList.add('open');panel?.classList.add('open');
-    if(scroll&&item)setTimeout(()=>item.scrollIntoView({behavior:'smooth',block:'center'}),200);
+  const item=document.getElementById('cat-'+key), panel=document.getElementById('panel-'+key);
+  if (openCat===cat){ openCat=null; item?.classList.remove('open'); panel?.classList.remove('open'); }
+  else {
+    if (openCat){ const ok=encodeURIComponent(openCat); document.getElementById('cat-'+ok)?.classList.remove('open'); document.getElementById('panel-'+ok)?.classList.remove('open'); }
+    openCat=cat; item?.classList.add('open'); panel?.classList.add('open');
+    if (scroll&&item) setTimeout(()=>item.scrollIntoView({behavior:'smooth',block:'center'}),200);
   }
 }
 
-loadFromSheets();
+let _tt;
+function showToast(msg,dur=3000){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(_tt); _tt=setTimeout(()=>t.classList.remove('show'),dur);
+}
+
+// 開啟時自動載入
+loadData();
 </script>
 </body>
 </html>
