@@ -3,248 +3,304 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
-<title>🏠 家庭理財</title>
+<meta name="theme-color" content="#0F1E2E">
+<title>雅涵家的理財網</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
-  --navy:#1B4F72;--blue:#2E86C1;--green:#1E8449;--red:#C0392B;
-  --orange:#E67E22;--gold:#9A7D0A;--grey:#F2F3F4;--dark:#212F3D;
-  --r:14px;--sh:0 2px 14px rgba(0,0,0,.09);
+  --ink:#0F1E2E;--ink2:#1C3350;--slate:#42566E;--mute:#8A9BAF;
+  --line:#E3E9F0;--bg:#F6F8FB;--card:#FFFFFF;
+  --gold:#C9A227;--teal:#0E7C7B;--rose:#B33A3A;--amber:#D48806;
+  --r:16px;--sh:0 1px 3px rgba(15,30,46,.06),0 8px 24px rgba(15,30,46,.05);
 }
-body{font-family:'Noto Sans TC',system-ui,-apple-system,sans-serif;background:#EEF2F7;color:var(--dark);min-height:100vh;padding-bottom:calc(72px + env(safe-area-inset-bottom))}
+body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:var(--bg);color:var(--ink);
+  min-height:100vh;padding-bottom:calc(76px + env(safe-area-inset-bottom));font-feature-settings:"tnum"}
 
-/* Header */
-.hd{background:linear-gradient(135deg,#1B4F72,#2E86C1);color:#fff;padding:16px 18px 13px;position:sticky;top:0;z-index:90;box-shadow:0 2px 12px rgba(0,0,0,.2)}
-.hd-row{display:flex;align-items:center;justify-content:space-between}
-.hd-t{font-size:17px;font-weight:800}
-.hd-s{font-size:10px;opacity:.7;margin-top:2px}
-.badge{font-size:10px;background:rgba(255,255,255,.2);border-radius:12px;padding:3px 9px}
-.ic-btn{background:rgba(255,255,255,.18);border:none;color:#fff;font-size:15px;padding:6px 11px;border-radius:18px;cursor:pointer;margin-left:6px}
-.ic-btn:active{background:rgba(255,255,255,.35)}
+/* ── Header ── */
+.hd{background:linear-gradient(160deg,#0F1E2E 0%,#1C3350 100%);color:#fff;
+  padding:18px 20px 16px;position:sticky;top:0;z-index:90}
+.hd::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(201,162,39,.5),transparent)}
+.hd-r{display:flex;align-items:flex-start;justify-content:space-between}
+.hd-t{font-size:15px;font-weight:700;letter-spacing:.04em}
+.hd-s{font-size:10px;color:rgba(255,255,255,.5);margin-top:3px;letter-spacing:.05em}
+.hd-a{display:flex;align-items:center;gap:8px}
+.bdg{font-size:9px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);
+  border-radius:20px;padding:4px 10px;color:rgba(255,255,255,.75);letter-spacing:.03em}
+.ib{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:#fff;
+  font-size:14px;width:32px;height:32px;border-radius:10px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center}
+.ib:active{background:rgba(255,255,255,.2)}
 
-/* Month bar */
-.mbar{display:flex;overflow-x:auto;gap:6px;padding:11px 14px;background:#fff;border-bottom:1px solid #E0E6ED;position:sticky;top:58px;z-index:89;scrollbar-width:none}
+/* Hero number */
+.hero{margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.08)}
+.hero-l{font-size:10px;color:rgba(255,255,255,.45);letter-spacing:.1em;text-transform:uppercase}
+.hero-v{font-size:30px;font-weight:900;letter-spacing:-.02em;margin-top:2px;line-height:1.1}
+.hero-m{font-size:11px;color:rgba(255,255,255,.55);margin-top:5px}
+.hero-m b{color:rgba(255,255,255,.85);font-weight:700}
+
+/* ── Month bar ── */
+.mbar{display:flex;overflow-x:auto;gap:5px;padding:10px 16px;background:var(--card);
+  border-bottom:1px solid var(--line);position:sticky;top:0;z-index:89;scrollbar-width:none}
 .mbar::-webkit-scrollbar{display:none}
-.mb{flex-shrink:0;min-width:42px;padding:6px 12px;border-radius:18px;border:1.5px solid #DDE3ED;font-size:12px;font-weight:600;cursor:pointer;background:#fff;color:#666}
-.mb.on{background:var(--navy);color:#fff;border-color:var(--navy)}
-.mb.has{border-color:#aac4dc;color:var(--navy)}
+.mb{flex-shrink:0;min-width:40px;padding:6px 12px;border-radius:9px;border:1px solid var(--line);
+  font-size:12px;font-weight:500;cursor:pointer;background:var(--card);color:var(--mute);
+  transition:all .16s;font-family:inherit}
+.mb.has{color:var(--slate);border-color:#CBD7E4}
+.mb.on{background:var(--ink);color:#fff;border-color:var(--ink);font-weight:700}
 
-.wrap{padding:13px 13px 0;max-width:540px;margin:0 auto}
-.card{background:#fff;border-radius:var(--r);padding:15px;box-shadow:var(--sh);margin-bottom:12px}
-.ct{font-size:11px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.06em;margin-bottom:11px;display:flex;justify-content:space-between;align-items:center}
-.mini{background:var(--navy);color:#fff;border:none;border-radius:13px;padding:4px 11px;font-size:11px;font-weight:600;cursor:pointer}
+.wrap{padding:14px 14px 0;max-width:560px;margin:0 auto}
+.card{background:var(--card);border-radius:var(--r);padding:16px;box-shadow:var(--sh);margin-bottom:12px}
+.ct{font-size:10px;font-weight:700;color:var(--mute);letter-spacing:.12em;text-transform:uppercase;
+  margin-bottom:13px;display:flex;justify-content:space-between;align-items:center}
+.ct em{font-style:normal;font-size:10px;color:#B8C4D2;letter-spacing:0;text-transform:none;font-weight:400}
 
-/* Summary */
-.sg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
-.si{background:var(--grey);border-radius:10px;padding:11px 6px;text-align:center}
-.sl{font-size:10px;color:#999;margin-bottom:3px}
-.sv{font-size:16px;font-weight:800}
-.sv.r{color:var(--red)}.sv.g{color:var(--green)}.sv.o{color:var(--gold)}
+/* ── Stat grid ── */
+.sg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--line);
+  border-radius:12px;overflow:hidden}
+.si{background:var(--card);padding:13px 8px;text-align:center}
+.sl{font-size:9px;color:var(--mute);letter-spacing:.06em;margin-bottom:5px}
+.sv{font-size:17px;font-weight:900;letter-spacing:-.02em}
+.sv.pos{color:var(--teal)}.sv.neg{color:var(--rose)}.sv.gold{color:var(--gold)}
 
-/* Predict */
-.pc{border-radius:var(--r);padding:13px 15px;margin-bottom:12px;box-shadow:var(--sh)}
-.pc.safe{background:linear-gradient(135deg,#E9F7EF,#D5F5E3);border-left:4px solid var(--green)}
-.pc.warn{background:linear-gradient(135deg,#FEF9E7,#FDEBD0);border-left:4px solid var(--orange)}
-.pc.dngr{background:linear-gradient(135deg,#FDEDEC,#FADBD8);border-left:4px solid var(--red)}
-.pt{font-size:10px;font-weight:700;color:#666;margin-bottom:5px}
-.pm{font-size:15px;font-weight:800;margin-bottom:3px}
-.ps{font-size:11px;color:#888;line-height:1.5}
-.pc.safe .pm{color:var(--green)}.pc.warn .pm{color:var(--orange)}.pc.dngr .pm{color:var(--red)}
+/* ── Alert ── */
+.al{border-radius:var(--r);padding:14px 16px;margin-bottom:12px;box-shadow:var(--sh);
+  border-left:3px solid;background:var(--card);position:relative;overflow:hidden}
+.al::before{content:'';position:absolute;inset:0;opacity:.045;pointer-events:none}
+.al.ok{border-left-color:var(--teal)}.al.ok::before{background:var(--teal)}
+.al.warn{border-left-color:var(--amber)}.al.warn::before{background:var(--amber)}
+.al.bad{border-left-color:var(--rose)}.al.bad::before{background:var(--rose)}
+.al-t{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin-bottom:6px}
+.al-m{font-size:15px;font-weight:700;letter-spacing:-.01em;margin-bottom:4px}
+.al-s{font-size:11px;color:var(--slate);line-height:1.6}
+.al.ok .al-m{color:var(--teal)}.al.warn .al-m{color:var(--amber)}.al.bad .al-m{color:var(--rose)}
 
-/* Wallet */
-.wl{background:#fff;border-radius:var(--r);padding:13px 15px;box-shadow:var(--sh);margin-bottom:9px;border-left:5px solid;cursor:pointer}
-.wl:active{transform:scale(.99)}
-.wt{display:flex;align-items:center;gap:9px;margin-bottom:7px}
-.wi{font-size:21px;flex-shrink:0}
-.wn{font-size:13px;font-weight:700;flex:1}
-.wa{display:flex;align-items:baseline;gap:7px;margin-bottom:7px}
-.wr{font-size:20px;font-weight:800}
-.wo{font-size:11px;color:#AAA}
-.wb{height:5px;background:#EEE;border-radius:3px;overflow:hidden}
-.wf{height:100%;border-radius:3px;transition:width .4s}
-.wft{display:flex;justify-content:space-between;font-size:10px;color:#AAA;margin-top:5px}
-.ws{font-weight:600}.ws.ok{color:var(--green)}.ws.wn2{color:var(--orange)}.ws.ov{color:var(--red)}
-
-/* List rows */
-.lr{display:flex;align-items:center;gap:9px;padding:11px 13px;border-bottom:1px solid #F2F5F8}
-.lr:last-child{border-bottom:none}
-.li{font-size:17px;width:26px;text-align:center;flex-shrink:0}
-.lc{flex:1;min-width:0}
-.ld{font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.lm{font-size:10px;color:#AAA;margin-top:1px}
-.la{font-size:14px;font-weight:700;flex-shrink:0}
-.la.exp{color:var(--red)}.la.inc{color:var(--green)}
-.ldel{color:#DDD;background:none;border:none;font-size:15px;cursor:pointer;padding:2px 4px;flex-shrink:0}
-.lin{background:#fff;border-radius:var(--r);overflow:hidden;box-shadow:var(--sh)}
-
-/* Editable rows */
-.er{display:flex;align-items:center;gap:8px;padding:10px 13px;border-bottom:1px solid #F2F5F8}
+/* ── Envelope rows ── */
+.env{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;margin-bottom:12px}
+.er{padding:14px 16px;border-bottom:1px solid var(--line);cursor:pointer;position:relative;transition:background .12s}
 .er:last-child{border-bottom:none}
-.er.sub{padding-left:26px;background:#FAFBFD}
-.er.hd2{background:#F5F8FC;font-weight:700;font-size:11px;color:#888;padding:7px 13px}
-.en{flex:1;font-size:12px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ev{width:106px;border:1.5px solid #E4E9F0;border-radius:8px;padding:7px 9px;font-size:13px;text-align:right;outline:none;font-weight:600}
-.ev:focus{border-color:var(--blue);background:#F8FBFF}
-.ev.calc{background:#F5F7FA;color:#888;border-color:#EEE}
+.er:active{background:#FAFCFE}
+.er::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--ec,var(--line))}
+.er-h{display:flex;align-items:center;gap:9px;margin-bottom:8px}
+.er-i{font-size:16px;width:22px;text-align:center;flex-shrink:0}
+.er-n{font-size:13px;font-weight:700;flex:1;letter-spacing:.01em}
+.er-p{font-size:10px;color:var(--mute);font-weight:500;letter-spacing:.02em}
+.er-v{display:flex;align-items:baseline;gap:6px;margin-bottom:8px}
+.er-a{font-size:19px;font-weight:900;letter-spacing:-.02em}
+.er-b{font-size:10px;color:var(--mute)}
+.bar{height:3px;background:#EDF1F6;border-radius:2px;overflow:hidden}
+.bar-f{height:100%;border-radius:2px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+.er-f{display:flex;justify-content:space-between;font-size:10px;color:var(--mute);margin-top:6px}
+.er-st{font-weight:700;letter-spacing:.02em}
+.st-ok{color:var(--teal)}.st-wn{color:var(--amber)}.st-ov{color:var(--rose)}
 
-/* Tabs */
-.tabs{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #E4E9F0;display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom);box-shadow:0 -2px 12px rgba(0,0,0,.06)}
-.tb{flex:1;border:none;background:none;padding:9px 2px 8px;cursor:pointer;color:#AAB;font-size:10px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:2px}
-.tb.on{color:var(--navy)}
-.tb .tbi{font-size:19px}
-.pg{display:none}.pg.on{display:block}
+/* ── Data rows ── */
+.dl{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.dr{display:flex;align-items:center;gap:10px;padding:12px 15px;border-bottom:1px solid var(--line)}
+.dr:last-child{border-bottom:none}
+.dr-i{font-size:15px;width:22px;text-align:center;flex-shrink:0;opacity:.85}
+.dr-c{flex:1;min-width:0}
+.dr-t{font-size:12.5px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dr-m{font-size:9.5px;color:var(--mute);margin-top:2px;letter-spacing:.03em}
+.dr-a{font-size:13px;font-weight:700;flex-shrink:0;letter-spacing:-.01em}
+.dr-a.out{color:var(--rose)}.dr-a.in{color:var(--teal)}
+.dr-x{color:#D5DEE8;background:none;border:none;font-size:13px;cursor:pointer;padding:3px 4px;flex-shrink:0}
+.dr-x:active{color:var(--rose)}
 
-/* FAB */
-.fab{position:fixed;bottom:calc(84px + env(safe-area-inset-bottom));right:20px;width:54px;height:54px;border-radius:50%;background:var(--navy);color:#fff;border:none;font-size:25px;box-shadow:0 4px 16px rgba(27,79,114,.4);cursor:pointer;z-index:95;display:flex;align-items:center;justify-content:center}
-.fab:active{transform:scale(.92)}
+/* group header */
+.gh{background:#F9FBFD;padding:8px 15px;font-size:9.5px;font-weight:700;color:var(--mute);
+  letter-spacing:.1em;text-transform:uppercase;border-bottom:1px solid var(--line)}
 
-/* Sheet modal */
-.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;align-items:flex-end;justify-content:center}
+/* editable */
+.ed{display:flex;align-items:center;gap:9px;padding:11px 15px;border-bottom:1px solid var(--line)}
+.ed:last-child{border-bottom:none}
+.ed.sub{padding-left:30px;background:#FBFCFE}
+.ed-n{flex:1;font-size:12px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--slate)}
+.ed-n b{color:var(--ink);font-weight:500}
+.ed-i{width:104px;border:1px solid var(--line);border-radius:9px;padding:8px 10px;
+  font-size:13px;text-align:right;outline:none;font-weight:700;font-family:inherit;
+  color:var(--ink);background:var(--card);transition:.15s}
+.ed-i:focus{border-color:var(--ink2);box-shadow:0 0 0 3px rgba(28,51,80,.07)}
+.ed-i[readonly]{background:#F4F7FA;color:var(--mute);font-weight:500}
+.ed-v{width:104px;text-align:right;font-size:13px;font-weight:700;color:var(--ink);padding:8px 10px}
+
+/* ── Tabs ── */
+.tabs{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.97);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-top:1px solid var(--line);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom)}
+.tb{flex:1;border:none;background:none;padding:9px 2px 8px;cursor:pointer;color:#A9B7C6;
+  font-size:9.5px;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:3px;
+  font-family:inherit;position:relative;letter-spacing:.02em}
+.tb .ti{font-size:17px;line-height:1}
+.tb.on{color:var(--ink);font-weight:700}
+.tb.on::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:22px;height:2px;background:var(--gold);border-radius:0 0 2px 2px}
+.pg{display:none}.pg.on{display:block;animation:fi .22s ease}
+@keyframes fi{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* ── FAB ── */
+.fab{position:fixed;bottom:calc(88px + env(safe-area-inset-bottom));right:18px;
+  width:52px;height:52px;border-radius:17px;background:var(--ink);color:#fff;border:none;
+  font-size:22px;font-weight:300;box-shadow:0 4px 14px rgba(15,30,46,.28);cursor:pointer;z-index:95;
+  display:flex;align-items:center;justify-content:center}
+.fab:active{transform:scale(.93)}
+
+/* ── Sheet ── */
+.ov{display:none;position:fixed;inset:0;background:rgba(15,30,46,.5);z-index:300;
+  align-items:flex-end;justify-content:center;backdrop-filter:blur(3px)}
 .ov.on{display:flex}
-.sht{background:#fff;border-radius:20px 20px 0 0;padding:20px 18px calc(30px + env(safe-area-inset-bottom));width:100%;max-width:540px;max-height:88vh;overflow-y:auto}
-.sht h3{font-size:16px;font-weight:800;margin-bottom:14px}
-.fld{margin-bottom:12px}
-.fld label{font-size:11px;font-weight:700;color:#888;display:block;margin-bottom:5px}
-.fld input,.fld select{width:100%;border:1.5px solid #DDE3ED;border-radius:10px;padding:11px 13px;font-size:15px;outline:none;background:#fff}
-.fld input:focus,.fld select:focus{border-color:var(--blue)}
-.cp{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
-.cb{border:1.5px solid #DDE3ED;border-radius:10px;padding:9px 3px;text-align:center;cursor:pointer;background:#fff}
-.cb.sel{border-color:var(--navy);background:#EBF5FF}
-.cb .cbi{font-size:19px;display:block;margin-bottom:2px}
-.cb .cbn{font-size:9px;color:#666;line-height:1.15}
-.br{display:flex;gap:8px;margin-top:15px}
-.btn{flex:1;padding:13px;border-radius:11px;border:none;font-size:15px;font-weight:700;cursor:pointer}
-.bp{background:var(--navy);color:#fff}.bp:disabled{background:#aaa}
-.bc{background:var(--grey);color:#666}
+.sh{background:var(--card);border-radius:22px 22px 0 0;padding:8px 18px calc(26px + env(safe-area-inset-bottom));
+  width:100%;max-width:560px;max-height:88vh;overflow-y:auto;animation:su .26s cubic-bezier(.2,.9,.3,1)}
+@keyframes su{from{transform:translateY(100%)}to{transform:none}}
+.sh-g{width:34px;height:4px;background:var(--line);border-radius:2px;margin:0 auto 14px}
+.sh h3{font-size:15px;font-weight:700;margin-bottom:15px;letter-spacing:.02em}
+.fl{margin-bottom:13px}
+.fl label{font-size:9.5px;font-weight:700;color:var(--mute);display:block;margin-bottom:6px;letter-spacing:.09em;text-transform:uppercase}
+.fl input,.fl select{width:100%;border:1px solid var(--line);border-radius:11px;padding:12px 13px;
+  font-size:15px;outline:none;background:var(--card);font-family:inherit;color:var(--ink);font-weight:500}
+.fl input:focus{border-color:var(--ink2);box-shadow:0 0 0 3px rgba(28,51,80,.07)}
+.cp{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.cb{border:1px solid var(--line);border-radius:11px;padding:9px 2px;text-align:center;
+  cursor:pointer;background:var(--card);transition:.14s}
+.cb.sel{border-color:var(--ink);background:var(--ink);color:#fff}
+.cb .cbi{font-size:16px;display:block;margin-bottom:3px}
+.cb .cbn{font-size:8.5px;line-height:1.2;color:var(--slate);letter-spacing:.01em}
+.cb.sel .cbn{color:rgba(255,255,255,.9)}
+.br{display:flex;gap:8px;margin-top:16px}
+.btn{flex:1;padding:13px;border-radius:12px;border:none;font-size:14px;font-weight:700;
+  cursor:pointer;font-family:inherit;letter-spacing:.02em}
+.bp{background:var(--ink);color:#fff}.bp:disabled{background:#B7C3D0}
+.bc{background:#EFF3F7;color:var(--slate)}
 
-.chw{position:relative;height:230px}
-.hint{font-size:11px;color:#999;text-align:center;margin-bottom:9px}
-.emp{text-align:center;padding:34px 18px;color:#BBB;font-size:13px}
-.emp .ei{font-size:34px;margin-bottom:7px}
+.chw{position:relative;height:220px}
+.emp{text-align:center;padding:36px 18px;color:#B8C4D2;font-size:12.5px}
+.emp .ei{font-size:30px;margin-bottom:9px;opacity:.55}
 .spin{display:inline-block;animation:sp 1s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
-.toast{position:fixed;bottom:calc(88px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);background:#1B4F72;color:#fff;font-size:12px;font-weight:600;padding:10px 19px;border-radius:19px;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none;max-width:90vw;text-align:center}
+.toast{position:fixed;bottom:calc(92px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);
+  background:var(--ink);color:#fff;font-size:12px;font-weight:500;padding:11px 19px;border-radius:11px;
+  z-index:999;opacity:0;transition:opacity .28s;pointer-events:none;max-width:88vw;text-align:center;
+  box-shadow:0 6px 20px rgba(15,30,46,.25);letter-spacing:.02em}
 .toast.on{opacity:1}
-.err{background:#FDEDEC;border-left:4px solid var(--red);border-radius:var(--r);padding:13px 15px;margin-bottom:12px}
-.err .et{font-weight:700;color:var(--red);margin-bottom:5px;font-size:13px}
-.err .em{font-size:12px;color:#666;margin-bottom:9px}
+.errb{background:#FDF6F6;border-left:3px solid var(--rose);border-radius:var(--r);padding:14px 16px;margin-bottom:12px}
+.errb .t{font-weight:700;color:var(--rose);margin-bottom:5px;font-size:12.5px}
+.errb .m{font-size:11px;color:var(--slate);margin-bottom:10px;line-height:1.6}
+.mini{background:var(--ink);color:#fff;border:none;border-radius:9px;padding:6px 13px;
+  font-size:11px;font-weight:600;cursor:pointer;font-family:inherit}
+.ro{font-size:9px;color:var(--mute);background:#F4F7FA;border:1px solid var(--line);
+  border-radius:6px;padding:2px 7px;letter-spacing:.04em;font-weight:500}
 </style>
 </head>
 <body>
 
 <div class="hd">
-  <div class="hd-row">
+  <div class="hd-r">
     <div>
-      <div class="hd-t" id="pgTitle">🏠 家庭理財</div>
-      <div class="hd-s" id="pgSub">與 Google Sheets 即時同步</div>
+      <div class="hd-t" id="pgT">雅涵家的理財網</div>
+      <div class="hd-s" id="pgS">GOOGLE SHEETS · 即時同步</div>
     </div>
-    <div style="display:flex;align-items:center">
-      <span class="badge" id="updBadge">載入中</span>
-      <button class="ic-btn" onclick="loadAll(true)">↺</button>
+    <div class="hd-a">
+      <span class="bdg" id="upd">載入中</span>
+      <button class="ib" onclick="loadAll(1)">↻</button>
     </div>
+  </div>
+  <div class="hero" id="hero">
+    <div class="hero-l" id="heroL">本月支出</div>
+    <div class="hero-v" id="heroV">—</div>
+    <div class="hero-m" id="heroM">—</div>
   </div>
 </div>
 
 <div class="mbar" id="mbar"></div>
 
-<!-- ══ 錢包 ══ -->
-<div class="pg on" id="pg-wallet">
-  <div class="wrap">
-    <div id="predict" style="display:none"></div>
-    <div class="card">
-      <div class="ct">本月概況</div>
-      <div class="sg">
-        <div class="si"><div class="sl">總支出</div><div class="sv r" id="sTotal">—</div></div>
-        <div class="si"><div class="sl">月預算</div><div class="sv o" id="sBudget">—</div></div>
-        <div class="si"><div class="sl">剩餘</div><div class="sv" id="sDiff">—</div></div>
-      </div>
-    </div>
-    <div class="ct" style="margin:15px 3px 9px">各類別錢包</div>
-    <div id="wallets"><div class="emp"><span class="spin ei">⏳</span><br>載入中…</div></div>
-  </div>
-</div>
+<!-- 錢包 -->
+<div class="pg on" id="pg-wallet"><div class="wrap">
+  <div id="alert"></div>
+  <div class="ct" style="margin:4px 3px 10px">各類別預算</div>
+  <div class="env" id="envs"><div class="emp"><span class="spin ei">◌</span><br>載入中</div></div>
+</div></div>
 
-<!-- ══ 明細 ══ -->
-<div class="pg" id="pg-detail">
-  <div class="wrap">
-    <div class="ct" style="margin:2px 3px 9px">本月支出明細</div>
-    <div class="lin" id="txList"><div class="emp">載入中…</div></div>
-  </div>
-</div>
+<!-- 明細 -->
+<div class="pg" id="pg-detail"><div class="wrap">
+  <div class="ct" style="margin:4px 3px 10px">本月支出明細 <em id="detCnt"></em></div>
+  <div class="dl" id="txs"><div class="emp">載入中</div></div>
+</div></div>
 
-<!-- ══ 收入 ══ -->
-<div class="pg" id="pg-income">
-  <div class="wrap">
-    <div class="card">
-      <div class="ct">本月收入合計</div>
-      <div class="sg">
-        <div class="si"><div class="sl">收入</div><div class="sv g" id="iTotal">—</div></div>
-        <div class="si"><div class="sl">支出</div><div class="sv r" id="iExp">—</div></div>
-        <div class="si"><div class="sl">結餘</div><div class="sv" id="iNet">—</div></div>
-      </div>
+<!-- 收入 -->
+<div class="pg" id="pg-income"><div class="wrap">
+  <div class="card">
+    <div class="ct">本月收支</div>
+    <div class="sg">
+      <div class="si"><div class="sl">收入</div><div class="sv pos" id="iIn">—</div></div>
+      <div class="si"><div class="sl">支出</div><div class="sv neg" id="iOut">—</div></div>
+      <div class="si"><div class="sl">結餘</div><div class="sv" id="iNet">—</div></div>
     </div>
-    <div class="ct" style="margin:15px 3px 9px">收入項目（直接輸入即存檔）</div>
-    <div class="lin" id="incomeList"><div class="emp">載入中…</div></div>
   </div>
-</div>
+  <div class="ct" style="margin:16px 3px 10px">收入項目 <em>輸入即存檔</em></div>
+  <div class="dl" id="incs"><div class="emp">載入中</div></div>
+</div></div>
 
-<!-- ══ 資產 ══ -->
-<div class="pg" id="pg-asset">
-  <div class="wrap">
-    <div class="card">
-      <div class="ct">資產概況</div>
-      <div class="sg">
-        <div class="si"><div class="sl">總資產</div><div class="sv" id="aTotal">—</div></div>
-        <div class="si"><div class="sl">月增減</div><div class="sv" id="aDelta">—</div></div>
-        <div class="si"><div class="sl">存款率</div><div class="sv" id="aRate">—</div></div>
-      </div>
+<!-- 資產 -->
+<div class="pg" id="pg-asset"><div class="wrap">
+  <div class="card">
+    <div class="ct">資產概況</div>
+    <div class="sg">
+      <div class="si"><div class="sl">總資產</div><div class="sv" id="aT">—</div></div>
+      <div class="si"><div class="sl">月增減</div><div class="sv" id="aD">—</div></div>
+      <div class="si"><div class="sl">存款率</div><div class="sv" id="aR">—</div></div>
     </div>
-    <div class="ct" style="margin:15px 3px 9px">各帳戶餘額（直接輸入即存檔）</div>
-    <div class="lin" id="assetList"><div class="emp">載入中…</div></div>
   </div>
-</div>
+  <div class="ct" style="margin:16px 3px 10px">帳戶餘額 <em>輸入即存檔</em></div>
+  <div class="dl" id="accs"><div class="emp">載入中</div></div>
+</div></div>
 
-<!-- ══ 分析 ══ -->
-<div class="pg" id="pg-chart">
-  <div class="wrap">
-    <div class="card">
-      <div class="ct">支出比例</div>
-      <div class="hint">👆 點色塊看該類別明細</div>
-      <div class="chw"><canvas id="pie"></canvas></div>
-    </div>
-    <div class="card">
-      <div class="ct">收支趨勢（全年）</div>
-      <div class="chw"><canvas id="bar"></canvas></div>
-    </div>
-    <div class="card">
-      <div class="ct">總資產走勢</div>
-      <div class="chw"><canvas id="line"></canvas></div>
+<!-- 投資＋保險 -->
+<div class="pg" id="pg-more"><div class="wrap">
+  <div class="card">
+    <div class="ct">本月投入 <span class="ro">唯讀</span></div>
+    <div class="sg">
+      <div class="si"><div class="sl">投資</div><div class="sv" id="vInv">—</div></div>
+      <div class="si"><div class="sl">保險</div><div class="sv" id="vIns">—</div></div>
+      <div class="si"><div class="sl">合計</div><div class="sv gold" id="vSum">—</div></div>
     </div>
   </div>
-</div>
+  <div class="ct" style="margin:16px 3px 10px">投資記錄 <em>請至 Excel 修改</em></div>
+  <div class="dl" id="invs"><div class="emp">載入中</div></div>
+  <div class="ct" style="margin:16px 3px 10px">保險月曆 <em>請至 Excel 修改</em></div>
+  <div class="dl" id="inss"><div class="emp">載入中</div></div>
+</div></div>
+
+<!-- 分析 -->
+<div class="pg" id="pg-chart"><div class="wrap">
+  <div class="card"><div class="ct">支出結構</div><div class="chw"><canvas id="c1"></canvas></div></div>
+  <div class="card"><div class="ct">全年收支</div><div class="chw"><canvas id="c2"></canvas></div></div>
+  <div class="card"><div class="ct">資產走勢</div><div class="chw"><canvas id="c3"></canvas></div></div>
+</div></div>
 
 <button class="fab" id="fab" onclick="openAdd()">＋</button>
 
 <div class="tabs">
-  <button class="tb on" data-pg="wallet" onclick="go('wallet')"><span class="tbi">💰</span>錢包</button>
-  <button class="tb" data-pg="detail" onclick="go('detail')"><span class="tbi">📋</span>明細</button>
-  <button class="tb" data-pg="income" onclick="go('income')"><span class="tbi">📈</span>收入</button>
-  <button class="tb" data-pg="asset"  onclick="go('asset')"><span class="tbi">🏦</span>資產</button>
-  <button class="tb" data-pg="chart"  onclick="go('chart')"><span class="tbi">📊</span>分析</button>
+  <button class="tb on" data-p="wallet" onclick="go('wallet')"><span class="ti">◈</span>預算</button>
+  <button class="tb" data-p="detail" onclick="go('detail')"><span class="ti">☰</span>明細</button>
+  <button class="tb" data-p="income" onclick="go('income')"><span class="ti">◉</span>收入</button>
+  <button class="tb" data-p="asset"  onclick="go('asset')"><span class="ti">▤</span>資產</button>
+  <button class="tb" data-p="more"   onclick="go('more')"><span class="ti">◇</span>投資</button>
+  <button class="tb" data-p="chart"  onclick="go('chart')"><span class="ti">◫</span>分析</button>
 </div>
 
-<!-- 記一筆 -->
-<div class="ov" id="ovAdd" onclick="if(event.target===this)close_('ovAdd')">
-  <div class="sht">
-    <h3>➕ 記一筆支出</h3>
-    <div class="fld"><label>選擇類別</label><div class="cp" id="catPicker"></div></div>
-    <div class="fld"><label>金額</label><input type="number" id="aAmt" placeholder="0" inputmode="decimal"></div>
-    <div class="fld"><label>說明（選填）</label><input type="text" id="aDesc" placeholder="例：午餐"></div>
-    <div class="fld"><label>日期</label><input type="date" id="aDate"></div>
+<div class="ov" id="ovAdd" onclick="if(event.target===this)cl('ovAdd')">
+  <div class="sh">
+    <div class="sh-g"></div>
+    <h3>記一筆支出</h3>
+    <div class="fl"><label>類別</label><div class="cp" id="cp"></div></div>
+    <div class="fl"><label>金額</label><input type="number" id="fAmt" placeholder="0" inputmode="decimal"></div>
+    <div class="fl"><label>說明</label><input type="text" id="fDesc" placeholder="選填"></div>
+    <div class="fl"><label>日期</label><input type="date" id="fDate"></div>
     <div class="br">
-      <button class="btn bc" onclick="close_('ovAdd')">取消</button>
-      <button class="btn bp" id="aBtn" onclick="submitExpense()">記錄</button>
+      <button class="btn bc" onclick="cl('ovAdd')">取消</button>
+      <button class="btn bp" id="fBtn" onclick="submitExp()">確認記錄</button>
     </div>
   </div>
 </div>
@@ -252,320 +308,321 @@ body{font-family:'Noto Sans TC',system-ui,-apple-system,sans-serif;background:#E
 <div class="toast" id="toast"></div>
 
 <script>
-// ═══════════════════════════════════════════════════
-//  ⚠️ 部署後把新網址貼在這裡
-// ═══════════════════════════════════════════════════
-const API = 'https://script.google.com/macros/s/AKfycbwKHbmVj4vtex2u9zxPt8fS8UNuaVmpGI1pRSJCIZu1tDk9q8IWmp1xZnxI7w9EIJRQ/exec';
+const API='https://script.google.com/macros/s/AKfycbwKHbmVj4vtex2u9zxPt8fS8UNuaVmpGI1pRSJCIZu1tDk9q8IWmp1xZnxI7w9EIJRQ/exec';
 
-const COLORS={'🍽️ 飲食':'#FF8C42','🏠 居家開銷':'#4ECDC4','🚗 汽車':'#E74C3C',
-'🛍️ 娛樂血拚':'#9B59B6','🏥 看醫生':'#3498DB','📚 終身學習':'#27AE60',
-'🛡️ 保險':'#F39C12','👶 小孩學習':'#E91E8C','📱 網路訂閱':'#1ABC9C',
-'🧸 小孩日用品':'#E84393','💬 其他':'#95A5A6'};
+const CL={'🍽️ 飲食':'#D4763C','🏠 居家開銷':'#0E7C7B','🚗 汽車':'#B33A3A',
+'🛍️ 娛樂血拚':'#7D5BA6','🏥 看醫生':'#2E6DA4','📚 終身學習':'#2E7D52',
+'🛡️ 保險':'#C9A227','👶 小孩學習':'#B4468E','📱 網路訂閱':'#14868C',
+'🧸 小孩日用品':'#C2557A','💬 其他':'#78899B'};
 const MN=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
-const TITLES={wallet:['🏠 家庭理財','與 Google Sheets 即時同步'],
-detail:['📋 支出明細','點刪除鈕可移除該筆'],
-income:['📈 收入記錄','輸入後自動存回 Sheets'],
-asset:['🏦 資產追蹤','輸入後自動存回 Sheets'],
-chart:['📊 財務分析','全年收支與資產趨勢']};
+const TT={wallet:['雅涵家的理財網','GOOGLE SHEETS · 即時同步'],detail:['支出明細','點右側 ✕ 可刪除'],
+income:['收入記錄','輸入後自動存回 SHEETS'],asset:['資產追蹤','輸入後自動存回 SHEETS'],
+more:['投資與保險','唯讀 · 請至 EXCEL 修改'],chart:['財務分析','全年趨勢概覽']};
 
-let D={expenses:{},income:{rows:[],months:{}},assets:{accounts:[],totals:{}},budgets:{}};
-let cm=new Date().getMonth()+1, page='wallet', selCat=null;
-let chPie=null,chBar=null,chLine=null;
+let D={expenses:{},income:{rows:[],months:{}},assets:{accounts:[],totals:{}},
+  budgets:{},invest:{rows:[],months:{}},insurance:{rows:[],months:{}}};
+let cm=new Date().getMonth()+1,pg='wallet',sel=null,c1,c2,c3;
 
-const fmt=n=>'NT$'+Math.round(n).toLocaleString('zh-TW');
-const pad=n=>String(n).padStart(2,'0');
+const F=n=>'NT$'+Math.round(n).toLocaleString('zh-TW');
+const F2=n=>Math.round(n).toLocaleString('zh-TW');
+const P=n=>String(n).padStart(2,'0');
+const E=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;');
 
-// ══ API ══
-async function api(params){
-  const q=new URLSearchParams(params).toString();
-  const res=await fetch(API+'?'+q,{redirect:'follow'});
-  const txt=await res.text();
-  const j=JSON.parse(txt);
-  if(j.error) throw new Error(j.error);
+async function api(q){
+  const r=await fetch(API+'?'+new URLSearchParams(q),{redirect:'follow'});
+  const j=JSON.parse(await r.text());
+  if(j.error)throw new Error(j.error);
   return j;
 }
 
-async function loadAll(manual){
-  if(manual) toast('🔄 更新中…');
-  document.getElementById('updBadge').textContent='載入中';
+async function loadAll(m){
+  if(m)tst('更新中…');
+  document.getElementById('upd').textContent='載入中';
   try{
     const j=await api({action:'read'});
-    D.expenses=j.expenses||{}; D.income=j.income||{rows:[],months:{}};
-    D.assets=j.assets||{accounts:[],totals:{}}; D.budgets=j.budgets||{};
-    const ms=Object.keys(D.expenses).map(Number).filter(m=>Object.keys(D.expenses[m]||{}).length);
-    if(ms.length&&!manual) cm=Math.max(...ms);
+    D.expenses=j.expenses||{};D.income=j.income||{rows:[],months:{}};
+    D.assets=j.assets||{accounts:[],totals:{}};D.budgets=j.budgets||{};
+    D.invest=j.invest||{rows:[],months:{}};D.insurance=j.insurance||{rows:[],months:{}};
+    if(!m){const ms=Object.keys(D.expenses).map(Number).filter(x=>Object.keys(D.expenses[x]||{}).length);
+      if(ms.length)cm=Math.max(...ms);}
     const n=new Date();
-    document.getElementById('updBadge').textContent=`${n.getMonth()+1}/${n.getDate()} ${pad(n.getHours())}:${pad(n.getMinutes())}`;
-    renderAll();
-    if(manual) toast('✅ 已更新');
+    document.getElementById('upd').textContent=`${n.getMonth()+1}/${n.getDate()} ${P(n.getHours())}:${P(n.getMinutes())}`;
+    rAll();
+    if(m)tst('已更新');
   }catch(e){
-    document.getElementById('updBadge').textContent='⚠️ 失敗';
-    document.getElementById('wallets').innerHTML=
-      `<div class="err"><div class="et">⚠️ 無法載入</div><div class="em">${e.message}</div>
-       <button class="mini" onclick="loadAll(true)">↺ 重試</button></div>`;
+    document.getElementById('upd').textContent='連線失敗';
+    document.getElementById('envs').innerHTML=
+      `<div class="errb"><div class="t">無法載入資料</div><div class="m">${E(e.message)}</div>
+       <button class="mini" onclick="loadAll(1)">重新載入</button></div>`;
   }
 }
 
-// ══ 導覽 ══
 function go(p){
-  page=p;
-  document.querySelectorAll('.pg').forEach(el=>el.classList.toggle('on',el.id==='pg-'+p));
-  document.querySelectorAll('.tb').forEach(el=>el.classList.toggle('on',el.dataset.pg===p));
-  document.getElementById('pgTitle').textContent=TITLES[p][0];
-  document.getElementById('pgSub').textContent=TITLES[p][1];
+  pg=p;
+  document.querySelectorAll('.pg').forEach(e=>e.classList.toggle('on',e.id==='pg-'+p));
+  document.querySelectorAll('.tb').forEach(e=>e.classList.toggle('on',e.dataset.p===p));
+  document.getElementById('pgT').textContent=TT[p][0];
+  document.getElementById('pgS').textContent=TT[p][1];
   document.getElementById('fab').style.display=(p==='wallet'||p==='detail')?'flex':'none';
   document.getElementById('mbar').style.display=(p==='chart')?'none':'flex';
-  if(p==='chart') drawCharts();
+  document.getElementById('hero').style.display=(p==='chart')?'none':'block';
+  rHero();
+  if(p==='chart')draw();
   window.scrollTo(0,0);
 }
 
-function buildMbar(){
-  const b=document.getElementById('mbar'); b.innerHTML='';
+function mbar(){
+  const b=document.getElementById('mbar');b.innerHTML='';
   MN.forEach((l,i)=>{
-    const m=i+1,btn=document.createElement('button');
-    btn.className='mb'; btn.textContent=l;
-    if(Object.keys(D.expenses[m]||{}).length||D.income.months[m]) btn.classList.add('has');
-    if(m===cm) btn.classList.add('on');
-    btn.onclick=()=>{cm=m;renderAll();};
-    b.appendChild(btn);
+    const m=i+1,x=document.createElement('button');
+    x.className='mb';x.textContent=l;
+    if(Object.keys(D.expenses[m]||{}).length||D.income.months[m])x.classList.add('has');
+    if(m===cm)x.classList.add('on');
+    x.onclick=()=>{cm=m;rAll();};
+    b.appendChild(x);
   });
 }
 
-function renderAll(){buildMbar();renderWallet();renderDetail();renderIncome();renderAsset();if(page==='chart')drawCharts();}
+function rAll(){mbar();rHero();rWallet();rDetail();rIncome();rAsset();rMore();if(pg==='chart')draw();}
 
-// ══ 錢包 ══
-function renderWallet(){
+function rHero(){
   const md=D.expenses[cm]||{};
-  const total=Object.values(md).reduce((s,c)=>s+c.total,0);
+  const exp=Object.values(md).reduce((s,c)=>s+c.total,0);
+  const inc=D.income.months[cm]||0;
   const tb=Object.values(D.budgets).reduce((a,b)=>a+b,0);
-  const diff=tb-total;
-  document.getElementById('sTotal').textContent=total?fmt(total):'—';
-  document.getElementById('sBudget').textContent=fmt(tb);
-  const de=document.getElementById('sDiff');
-  de.textContent=total?(diff>=0?'':'')+fmt(diff):'—';
-  de.className='sv '+(diff>=0?'g':'r');
+  const L=document.getElementById('heroL'),V=document.getElementById('heroV'),M=document.getElementById('heroM');
+  if(pg==='income'){L.textContent='本月結餘';V.textContent=(inc||exp)?F(inc-exp):'—';
+    M.innerHTML=`收入 <b>${F2(inc)}</b> · 支出 <b>${F2(exp)}</b>`;}
+  else if(pg==='asset'){const t=D.assets.totals[cm]||0,p=D.assets.totals[cm-1]||0;
+    L.textContent='家庭總資產';V.textContent=t?F(t):'—';
+    M.innerHTML=(t&&p)?`較上月 <b>${(t-p)>=0?'+':''}${F2(t-p)}</b>`:'—';}
+  else if(pg==='more'){const iv=D.invest.months[cm]||0,is=D.insurance.months[cm]||0;
+    L.textContent='本月投資＋保險';V.textContent=(iv||is)?F(iv+is):'—';
+    M.innerHTML=`投資 <b>${F2(iv)}</b> · 保險 <b>${F2(is)}</b>`;}
+  else{L.textContent='本月支出';V.textContent=exp?F(exp):'—';
+    M.innerHTML=exp?`預算 <b>${F2(tb)}</b> · 剩餘 <b>${F2(tb-exp)}</b>`:'尚無記錄';}
+}
 
-  renderPredict(md,total,tb);
-
-  const el=document.getElementById('wallets'); el.innerHTML='';
-  const cats=Object.keys(D.budgets);
-  if(!cats.length){el.innerHTML='<div class="emp"><div class="ei">📭</div>尚未設定預算</div>';return;}
-  cats.forEach(cat=>{
-    const budget=D.budgets[cat]||0, used=(md[cat]||{total:0}).total;
-    const remain=budget-used, pct=budget>0?used/budget:0;
-    const col=COLORS[cat]||'#ccc';
-    const bc=pct>=1?'#E74C3C':pct>=.8?'#F39C12':'#27AE60';
-    const sc=pct>=1?'ov':pct>=.8?'wn2':'ok';
-    const st=pct>=1?`超支 ${fmt(-remain)}`:pct>=.8?'快用完':'正常';
+function rWallet(){
+  const md=D.expenses[cm]||{};
+  const tot=Object.values(md).reduce((s,c)=>s+c.total,0);
+  const tb=Object.values(D.budgets).reduce((a,b)=>a+b,0);
+  rAlert(tot,tb);
+  const el=document.getElementById('envs');el.innerHTML='';
+  const cs=Object.keys(D.budgets);
+  if(!cs.length){el.innerHTML='<div class="emp"><div class="ei">◌</div>尚未設定預算</div>';return;}
+  cs.forEach(c=>{
+    const bg=D.budgets[c]||0,us=(md[c]||{total:0}).total,rm=bg-us,pc=bg>0?us/bg:0;
+    const col=CL[c]||'#8A9BAF';
+    const bc=pc>=1?'#B33A3A':pc>=.8?'#D48806':'#0E7C7B';
+    const sc=pc>=1?'st-ov':pc>=.8?'st-wn':'st-ok';
+    const st=pc>=1?`超支 ${F2(-rm)}`:pc>=.8?'接近上限':'正常';
     const d=document.createElement('div');
-    d.className='wl'; d.style.borderLeftColor=col;
-    d.onclick=()=>openAdd(cat);
-    d.innerHTML=`<div class="wt"><span class="wi">${cat.slice(0,2)}</span><span class="wn">${cat.slice(2).trim()}</span></div>
-      <div class="wa"><span class="wr" style="color:${remain<0?'#C0392B':col}">${fmt(remain)}</span><span class="wo">/ ${fmt(budget)}</span></div>
-      <div class="wb"><div class="wf" style="width:${Math.min(100,pct*100)}%;background:${bc}"></div></div>
-      <div class="wft"><span>已花 ${fmt(used)}（${(pct*100).toFixed(0)}%）</span><span class="ws ${sc}">${st}</span></div>`;
+    d.className='er';d.onclick=()=>openAdd(c);
+    d.style.setProperty('--ec',col);
+    d.innerHTML=`<div class="er-h"><span class="er-i">${c.slice(0,2)}</span>
+        <span class="er-n">${c.slice(2).trim()}</span>
+        <span class="er-p">${tot?(us/tot*100).toFixed(0):0}%</span></div>
+      <div class="er-v"><span class="er-a" style="color:${rm<0?'#B33A3A':'#0F1E2E'}">${F(rm)}</span>
+        <span class="er-b">／ ${F2(bg)}</span></div>
+      <div class="bar"><div class="bar-f" style="width:${Math.min(100,pc*100)}%;background:${bc}"></div></div>
+      <div class="er-f"><span>已用 ${F2(us)}</span><span class="er-st ${sc}">${st}</span></div>`;
     el.appendChild(d);
   });
 }
 
-function renderPredict(md,total,tb){
-  const c=document.getElementById('predict'), n=new Date();
-  if(cm!==n.getMonth()+1||!total){c.style.display='none';return;}
-  const dim=new Date(n.getFullYear(),cm,0).getDate(), td=n.getDate(), dl=dim-td;
-  const avg=total/td, proj=Math.round(total+avg*dl), diff=proj-tb;
-  let cls,ic,m,s;
-  if(diff<=0){cls='safe';ic='✅';m=`月底預計剩餘 ${fmt(Math.abs(diff))}`;
-    s=`今天第 ${td} 天，日均 ${fmt(Math.round(avg))}，還有 ${dl} 天`;}
-  else if(diff<tb*0.1){cls='warn';ic='⚠️';m=`照這速度月底恐超支 ${fmt(diff)}`;
-    s=`每天最多只能花 ${fmt(Math.round((tb-total)/Math.max(dl,1)))}`;}
-  else{cls='dngr';ic='🚨';m=`月底預計超支 ${fmt(diff)}！`;
-    s=`剩 ${dl} 天，每天只能花 ${fmt(Math.max(0,Math.round((tb-total)/Math.max(dl,1))))}`;}
-  c.className='pc '+cls; c.style.display='block';
-  c.innerHTML=`<div class="pt">${ic} 月底預測（今天 ${cm}/${td}）</div><div class="pm">${m}</div><div class="ps">${s}</div>`;
+function rAlert(tot,tb){
+  const a=document.getElementById('alert'),n=new Date();
+  if(cm!==n.getMonth()+1||!tot){a.innerHTML='';return;}
+  const dim=new Date(n.getFullYear(),cm,0).getDate(),td=n.getDate(),dl=dim-td;
+  const av=tot/td,pj=Math.round(tot+av*dl),df=pj-tb;
+  let cs,tl,ms,sb;
+  if(df<=0){cs='ok';tl='月底預測';ms=`預計剩餘 ${F(Math.abs(df))}`;
+    sb=`目前日均 ${F2(Math.round(av))}，剩餘 ${dl} 天`;}
+  else if(df<tb*.1){cs='warn';tl='預算警示';ms=`預計超支 ${F(df)}`;
+    sb=`剩 ${dl} 天，每日需控制在 ${F2(Math.round((tb-tot)/Math.max(dl,1)))} 以內`;}
+  else{cs='bad';tl='超支警告';ms=`預計超支 ${F(df)}`;
+    sb=`剩 ${dl} 天，每日僅剩 ${F2(Math.max(0,Math.round((tb-tot)/Math.max(dl,1))))} 可用`;}
+  a.innerHTML=`<div class="al ${cs}"><div class="al-t">${tl} · ${cm}/${td}</div>
+    <div class="al-m">${ms}</div><div class="al-s">${sb}</div></div>`;
 }
 
-// ══ 明細 ══
-function renderDetail(){
-  const md=D.expenses[cm]||{}, all=[];
-  Object.keys(md).forEach(cat=>md[cat].items.forEach(it=>all.push(Object.assign({cat},it))));
+function rDetail(){
+  const md=D.expenses[cm]||{},all=[];
+  Object.keys(md).forEach(c=>md[c].items.forEach(i=>all.push(Object.assign({cat:c},i))));
   all.sort((a,b)=>b.date.localeCompare(a.date));
-  const el=document.getElementById('txList');
-  if(!all.length){el.innerHTML='<div class="emp"><div class="ei">📭</div>本月尚無支出</div>';return;}
-  el.innerHTML=all.map(t=>`<div class="lr">
-    <span class="li">${t.cat.slice(0,2)}</span>
-    <div class="lc"><div class="ld">${esc(t.desc)||t.cat.slice(2).trim()}</div>
-      <div class="lm">${t.date} · ${t.cat.slice(2).trim()}${t.card?' · '+t.card:''}</div></div>
-    <span class="la exp">-${fmt(t.amt)}</span>
-    <button class="ldel" onclick="delExp(${t.row})">✕</button></div>`).join('');
+  document.getElementById('detCnt').textContent=all.length?`${all.length} 筆`:'';
+  const el=document.getElementById('txs');
+  if(!all.length){el.innerHTML='<div class="emp"><div class="ei">◌</div>本月尚無支出</div>';return;}
+  el.innerHTML=all.map(t=>`<div class="dr">
+    <span class="dr-i">${t.cat.slice(0,2)}</span>
+    <div class="dr-c"><div class="dr-t">${E(t.desc)||t.cat.slice(2).trim()}</div>
+      <div class="dr-m">${t.date} · ${t.cat.slice(2).trim()}</div></div>
+    <span class="dr-a out">−${F2(t.amt)}</span>
+    <button class="dr-x" onclick="delEx(${t.row})">✕</button></div>`).join('');
 }
 
-// ══ 收入 ══
-function renderIncome(){
+function rIncome(){
   const inc=D.income.months[cm]||0;
-  const md=D.expenses[cm]||{};
-  const exp=Object.values(md).reduce((s,c)=>s+c.total,0);
-  const net=inc-exp;
-  document.getElementById('iTotal').textContent=inc?fmt(inc):'—';
-  document.getElementById('iExp').textContent=exp?fmt(exp):'—';
-  const ne=document.getElementById('iNet');
-  ne.textContent=(inc||exp)?fmt(net):'—';
-  ne.className='sv '+(net>=0?'g':'r');
-
-  const el=document.getElementById('incomeList');
+  const exp=Object.values(D.expenses[cm]||{}).reduce((s,c)=>s+c.total,0);
+  document.getElementById('iIn').textContent=inc?F2(inc):'—';
+  document.getElementById('iOut').textContent=exp?F2(exp):'—';
+  const n=document.getElementById('iNet');
+  n.textContent=(inc||exp)?F2(inc-exp):'—';
+  n.className='sv '+((inc-exp)>=0?'pos':'neg');
+  const el=document.getElementById('incs');
   if(!D.income.rows.length){el.innerHTML='<div class="emp">無資料</div>';return;}
   el.innerHTML=D.income.rows.map(r=>{
-    const v=r.values[cm]||'';
-    const isCalc=r.name.indexOf('利息合計')>-1;
-    return `<div class="er ${r.isSub?'sub':''}">
-      <span class="en">${esc(r.name)}</span>
-      <input class="ev ${isCalc?'calc':''}" type="number" inputmode="decimal" value="${v}"
-        ${isCalc?'readonly':''} onchange="saveIncome(${r.row},this.value,this)">
-    </div>`;}).join('');
+    const ro=r.name.indexOf('合計')>-1;
+    return `<div class="ed ${r.isSub?'sub':''}"><span class="ed-n">${E(r.name)}</span>
+      <input class="ed-i" type="number" inputmode="decimal" value="${r.values[cm]||''}"
+        ${ro?'readonly':''} onchange="svIn(${r.row},this.value,this)"></div>`;}).join('');
 }
 
-// ══ 資產 ══
-function renderAsset(){
-  const t=D.assets.totals[cm]||0, prev=D.assets.totals[cm-1]||0;
-  const delta=(t&&prev)?t-prev:0;
-  const inc=D.income.months[cm]||0;
-  const rate=(delta&&inc)?(delta/inc*100):0;
-  document.getElementById('aTotal').textContent=t?fmt(t):'—';
-  const dd=document.getElementById('aDelta');
-  dd.textContent=delta?fmt(delta):'—';
-  dd.className='sv '+(delta>=0?'g':'r');
-  const rr=document.getElementById('aRate');
-  rr.textContent=rate?rate.toFixed(0)+'%':'—';
-  rr.className='sv '+(rate>=30?'g':rate>0?'o':'r');
-
-  const el=document.getElementById('assetList');
+function rAsset(){
+  const t=D.assets.totals[cm]||0,p=D.assets.totals[cm-1]||0;
+  const dl=(t&&p)?t-p:0,inc=D.income.months[cm]||0;
+  const rt=(dl&&inc)?(dl/inc*100):0;
+  document.getElementById('aT').textContent=t?F2(t):'—';
+  const d=document.getElementById('aD');
+  d.textContent=dl?(dl>=0?'+':'')+F2(dl):'—';d.className='sv '+(dl>=0?'pos':'neg');
+  const r=document.getElementById('aR');
+  r.textContent=rt?rt.toFixed(0)+'%':'—';
+  r.className='sv '+(rt>=30?'pos':rt>0?'gold':'neg');
+  const el=document.getElementById('accs');
   if(!D.assets.accounts.length){el.innerHTML='<div class="emp">無資料</div>';return;}
-  el.innerHTML=D.assets.accounts.map(a=>`<div class="er">
-    <span class="en">${esc(a.name)}${a.owner?`<span style="color:#BBB;font-size:10px"> · ${esc(a.owner)}</span>`:''}</span>
-    <input class="ev" type="number" inputmode="decimal" value="${a.values[cm]||''}"
-      onchange="saveAsset(${a.row},this.value,this)"></div>`).join('');
+  el.innerHTML=D.assets.accounts.map(a=>`<div class="ed">
+    <span class="ed-n"><b>${E(a.name)}</b>${a.owner?` · ${E(a.owner)}`:''}</span>
+    <input class="ed-i" type="number" inputmode="decimal" value="${a.values[cm]||''}"
+      onchange="svAs(${a.row},this.value,this)"></div>`).join('');
 }
 
-// ══ 寫入 ══
-async function saveIncome(row,val,el){
+function rMore(){
+  const iv=D.invest.months[cm]||0,is=D.insurance.months[cm]||0;
+  document.getElementById('vInv').textContent=iv?F2(iv):'—';
+  document.getElementById('vIns').textContent=is?F2(is):'—';
+  document.getElementById('vSum').textContent=(iv||is)?F2(iv+is):'—';
+
+  const ie=document.getElementById('invs');
+  const ir=D.invest.rows.filter(r=>r.values[cm]);
+  if(!ir.length){ie.innerHTML='<div class="emp">本月無投資記錄</div>';}
+  else{
+    let h='',lastSrc='';
+    ir.forEach(r=>{
+      if(r.src&&r.src!==lastSrc){h+=`<div class="gh">${E(r.src)}</div>`;lastSrc=r.src;}
+      h+=`<div class="ed"><span class="ed-n"><b>${E(r.name)}</b></span>
+        <span class="ed-v">${F2(r.values[cm])}</span></div>`;});
+    ie.innerHTML=h;
+  }
+
+  const se=document.getElementById('inss');
+  const sr=D.insurance.rows.filter(r=>r.values[cm]);
+  if(!sr.length){se.innerHTML='<div class="emp">本月無保費</div>';}
+  else{
+    let h='',lastWho='';
+    sr.forEach(r=>{
+      if(r.who!==lastWho){h+=`<div class="gh">${E(r.who)}</div>`;lastWho=r.who;}
+      h+=`<div class="ed"><span class="ed-n">${E(r.item)}</span>
+        <span class="ed-v">${F2(r.values[cm])}</span></div>`;});
+    se.innerHTML=h;
+  }
+}
+
+async function svIn(row,v,el){
   el.disabled=true;
-  try{
-    const j=await api({action:'setIncome',row,month:cm,value:val});
-    D.income=j.income; renderIncome(); renderAll(); toast('✅ 已存');
-  }catch(e){toast('❌ '+e.message);}
+  try{const j=await api({action:'setIncome',row,month:cm,value:v});
+    D.income=j.income;rHero();rIncome();mbar();tst('已儲存');}
+  catch(e){tst(e.message);}
   el.disabled=false;
 }
-
-async function saveAsset(row,val,el){
+async function svAs(row,v,el){
   el.disabled=true;
-  try{
-    const j=await api({action:'setAsset',row,month:cm,value:val});
-    D.assets=j.assets; renderAsset(); toast('✅ 已存');
-  }catch(e){toast('❌ '+e.message);}
+  try{const j=await api({action:'setAsset',row,month:cm,value:v});
+    D.assets=j.assets;rHero();rAsset();tst('已儲存');}
+  catch(e){tst(e.message);}
   el.disabled=false;
 }
-
-async function delExp(row){
+async function delEx(row){
   if(!confirm('確定刪除這筆支出？'))return;
-  toast('⏳ 刪除中…');
-  try{
-    const j=await api({action:'delExpense',row});
-    D.expenses=j.expenses; renderAll(); toast('✅ 已刪除');
-  }catch(e){toast('❌ '+e.message);}
+  tst('刪除中…');
+  try{const j=await api({action:'delExpense',row});D.expenses=j.expenses;rAll();tst('已刪除');}
+  catch(e){tst(e.message);}
 }
 
-// ══ 記一筆 ══
-function openAdd(preCat){
-  selCat=preCat||null;
-  const p=document.getElementById('catPicker');
-  p.innerHTML=Object.keys(D.budgets).map(c=>
-    `<div class="cb ${c===selCat?'sel':''}" data-c="${encodeURIComponent(c)}" onclick="pickCat(this)">
+function openAdd(pc){
+  sel=pc||null;
+  document.getElementById('cp').innerHTML=Object.keys(D.budgets).map(c=>
+    `<div class="cb ${c===sel?'sel':''}" data-c="${encodeURIComponent(c)}" onclick="pk(this)">
       <span class="cbi">${c.slice(0,2)}</span><span class="cbn">${c.slice(2).trim()}</span></div>`).join('');
-  document.getElementById('aAmt').value='';
-  document.getElementById('aDesc').value='';
+  document.getElementById('fAmt').value='';
+  document.getElementById('fDesc').value='';
   const n=new Date();
-  document.getElementById('aDate').value=`${n.getFullYear()}-${pad(n.getMonth()+1)}-${pad(n.getDate())}`;
+  document.getElementById('fDate').value=`${n.getFullYear()}-${P(n.getMonth()+1)}-${P(n.getDate())}`;
   document.getElementById('ovAdd').classList.add('on');
-  setTimeout(()=>document.getElementById('aAmt').focus(),300);
+  setTimeout(()=>document.getElementById('fAmt').focus(),320);
 }
+function pk(e){sel=decodeURIComponent(e.dataset.c);
+  document.querySelectorAll('.cb').forEach(b=>b.classList.toggle('sel',b===e));}
 
-function pickCat(el){
-  selCat=decodeURIComponent(el.dataset.c);
-  document.querySelectorAll('.cb').forEach(b=>b.classList.toggle('sel',b===el));
-}
-
-async function submitExpense(){
-  const amt=parseFloat(document.getElementById('aAmt').value);
-  const desc=document.getElementById('aDesc').value.trim();
-  const dv=document.getElementById('aDate').value;
-  if(!selCat){toast('請選擇類別');return;}
-  if(!amt||amt<=0){toast('請輸入金額');return;}
-  if(!dv){toast('請選日期');return;}
-  const [y,mo,dy]=dv.split('-');
-  const btn=document.getElementById('aBtn'); btn.disabled=true; btn.textContent='儲存中…';
+async function submitExp(){
+  const a=parseFloat(document.getElementById('fAmt').value);
+  const d=document.getElementById('fDesc').value.trim();
+  const dt=document.getElementById('fDate').value;
+  if(!sel){tst('請選擇類別');return;}
+  if(!a||a<=0){tst('請輸入金額');return;}
+  if(!dt){tst('請選擇日期');return;}
+  const[y,mo,dy]=dt.split('-');
+  const b=document.getElementById('fBtn');b.disabled=true;b.textContent='儲存中…';
   try{
-    const j=await api({action:'addExpense',date:`${mo}/${dy}`,cat:selCat,desc,amt,card:'現金',year:y});
-    D.expenses=j.expenses;
-    cm=parseInt(mo,10);
-    renderAll(); close_('ovAdd'); toast(`✅ 已記錄 ${fmt(amt)}`);
-  }catch(e){toast('❌ '+e.message);}
-  btn.disabled=false; btn.textContent='記錄';
+    const j=await api({action:'addExpense',date:`${mo}/${dy}`,cat:sel,desc:d,amt:a,card:'現金',year:y});
+    D.expenses=j.expenses;cm=parseInt(mo,10);rAll();cl('ovAdd');tst(`已記錄 ${F(a)}`);
+  }catch(e){tst(e.message);}
+  b.disabled=false;b.textContent='確認記錄';
 }
 
-// ══ 圖表 ══
-function drawCharts(){
-  // 圓餅
+function draw(){
   const md=D.expenses[cm]||{};
-  const cats=Object.entries(md).sort((a,b)=>b[1].total-a[1].total);
-  const tot=cats.reduce((s,[,v])=>s+v.total,0);
-  if(chPie){chPie.destroy();chPie=null;}
-  if(tot){
-    chPie=new Chart(document.getElementById('pie'),{type:'doughnut',
-      data:{labels:cats.map(([c])=>c.slice(2).trim()),
-        datasets:[{data:cats.map(([,v])=>v.total),backgroundColor:cats.map(([c])=>COLORS[c]||'#ccc'),borderColor:'#fff',borderWidth:2.5,hoverOffset:12}]},
-      options:{responsive:true,maintainAspectRatio:false,cutout:'52%',
-        plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:10},padding:8}},
-          tooltip:{callbacks:{label:c=>` ${fmt(c.raw)}（${(c.raw/tot*100).toFixed(1)}%）`}}},
-        onClick:(e,it)=>{if(it.length){go('detail');}}}});
-  }
-  // 收支長條
-  const inc=[],exp=[];
-  for(let m=1;m<=12;m++){
-    inc.push(D.income.months[m]||0);
-    exp.push(Object.values(D.expenses[m]||{}).reduce((s,c)=>s+c.total,0));
-  }
-  if(chBar){chBar.destroy();chBar=null;}
-  chBar=new Chart(document.getElementById('bar'),{type:'bar',
-    data:{labels:MN,datasets:[
-      {label:'收入',data:inc,backgroundColor:'#1E8449',borderRadius:4},
-      {label:'支出',data:exp,backgroundColor:'#E74C3C',borderRadius:4}]},
-    options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:10}}},
-        tooltip:{callbacks:{label:c=>` ${c.dataset.label} ${fmt(c.raw)}`}}},
-      scales:{y:{ticks:{font:{size:9},callback:v=>(v/1000)+'k'}},x:{ticks:{font:{size:9}}}}}});
-  // 資產走勢
-  const at=[];
-  for(let m=1;m<=12;m++) at.push(D.assets.totals[m]||null);
-  if(chLine){chLine.destroy();chLine=null;}
-  chLine=new Chart(document.getElementById('line'),{type:'line',
-    data:{labels:MN,datasets:[{label:'總資產',data:at,borderColor:'#1B4F72',
-      backgroundColor:'rgba(27,79,114,.1)',fill:true,tension:.3,spanGaps:true,pointRadius:4}]},
-    options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+fmt(c.raw)}}},
-      scales:{y:{ticks:{font:{size:9},callback:v=>(v/10000).toFixed(0)+'萬'}},x:{ticks:{font:{size:9}}}}}});
+  const cs=Object.entries(md).sort((a,b)=>b[1].total-a[1].total);
+  const tt=cs.reduce((s,[,v])=>s+v.total,0);
+  if(c1){c1.destroy();c1=null;}
+  if(tt)c1=new Chart(document.getElementById('c1'),{type:'doughnut',
+    data:{labels:cs.map(([c])=>c.slice(2).trim()),datasets:[{data:cs.map(([,v])=>v.total),
+      backgroundColor:cs.map(([c])=>CL[c]||'#8A9BAF'),borderColor:'#fff',borderWidth:2,hoverOffset:8}]},
+    options:{responsive:1,maintainAspectRatio:0,cutout:'62%',
+      plugins:{legend:{position:'bottom',labels:{boxWidth:8,boxHeight:8,font:{size:10,family:'Noto Sans TC'},padding:9,color:'#42566E'}},
+        tooltip:{callbacks:{label:c=>` ${F(c.raw)}（${(c.raw/tt*100).toFixed(1)}%）`}}},
+      onClick:(e,i)=>{if(i.length)go('detail');}}});
+
+  const iA=[],eA=[];
+  for(let m=1;m<=12;m++){iA.push(D.income.months[m]||0);
+    eA.push(Object.values(D.expenses[m]||{}).reduce((s,c)=>s+c.total,0));}
+  if(c2){c2.destroy();c2=null;}
+  c2=new Chart(document.getElementById('c2'),{type:'bar',
+    data:{labels:MN,datasets:[{label:'收入',data:iA,backgroundColor:'#0E7C7B',borderRadius:3,barPercentage:.7},
+      {label:'支出',data:eA,backgroundColor:'#B33A3A',borderRadius:3,barPercentage:.7}]},
+    options:{responsive:1,maintainAspectRatio:0,
+      plugins:{legend:{position:'bottom',labels:{boxWidth:8,boxHeight:8,font:{size:10,family:'Noto Sans TC'},padding:9,color:'#42566E'}},
+        tooltip:{callbacks:{label:c=>` ${c.dataset.label} ${F(c.raw)}`}}},
+      scales:{y:{grid:{color:'#EDF1F6'},ticks:{font:{size:9},color:'#8A9BAF',callback:v=>(v/1000)+'k'}},
+        x:{grid:{display:0},ticks:{font:{size:9},color:'#8A9BAF'}}}}});
+
+  const aA=[];for(let m=1;m<=12;m++)aA.push(D.assets.totals[m]||null);
+  if(c3){c3.destroy();c3=null;}
+  c3=new Chart(document.getElementById('c3'),{type:'line',
+    data:{labels:MN,datasets:[{data:aA,borderColor:'#1C3350',backgroundColor:'rgba(28,51,80,.07)',
+      fill:1,tension:.32,spanGaps:1,pointRadius:3,pointBackgroundColor:'#C9A227',borderWidth:2}]},
+    options:{responsive:1,maintainAspectRatio:0,
+      plugins:{legend:{display:0},tooltip:{callbacks:{label:c=>' '+F(c.raw)}}},
+      scales:{y:{grid:{color:'#EDF1F6'},ticks:{font:{size:9},color:'#8A9BAF',callback:v=>(v/10000).toFixed(0)+'萬'}},
+        x:{grid:{display:0},ticks:{font:{size:9},color:'#8A9BAF'}}}}});
 }
 
-// ══ 工具 ══
-function close_(id){document.getElementById(id).classList.remove('on');}
-function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+function cl(i){document.getElementById(i).classList.remove('on');}
 let _t;
-function toast(m,d=2600){
-  const t=document.getElementById('toast');
-  t.textContent=m;t.classList.add('on');
-  clearTimeout(_t);_t=setTimeout(()=>t.classList.remove('on'),d);
-}
+function tst(m,d=2400){const t=document.getElementById('toast');
+  t.textContent=m;t.classList.add('on');clearTimeout(_t);_t=setTimeout(()=>t.classList.remove('on'),d);}
 document.addEventListener('keydown',e=>{
-  if(e.key==='Enter'&&document.getElementById('ovAdd').classList.contains('on'))submitExpense();
-});
+  if(e.key==='Enter'&&document.getElementById('ovAdd').classList.contains('on'))submitExp();});
 
 loadAll();
 </script>
