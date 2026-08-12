@@ -189,6 +189,21 @@ body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:va
 .errb .m{font-size:11px;color:var(--slate);margin-bottom:10px;line-height:1.6}
 .mini{background:var(--ink);color:#fff;border:none;border-radius:9px;padding:6px 13px;
   font-size:11px;font-weight:600;cursor:pointer;font-family:inherit}
+.tip{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);padding:16px;margin-bottom:12px;
+  border-left:3px solid var(--gold)}
+.tip-h{font-size:10px;font-weight:700;color:var(--mute);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
+.tip-m{font-size:14px;font-weight:700;line-height:1.55;margin-bottom:10px;letter-spacing:.01em}
+.tip-l{list-style:none}
+.tip-l li{font-size:12.5px;color:var(--slate);line-height:1.75;padding-left:18px;position:relative;margin-bottom:7px}
+.tip-l li::before{content:'▸';position:absolute;left:2px;color:var(--gold);font-size:11px}
+.tip-l li b{color:var(--ink);font-weight:700}
+.tip-goal{background:#F9FBFD;border-radius:11px;padding:12px 14px;margin-top:12px;
+  font-size:12px;color:var(--slate);line-height:1.7}
+.tip-goal b{color:var(--teal);font-weight:700;font-size:14px}
+.sortbar{display:flex;gap:4px}
+.sb{border:1px solid var(--line);background:var(--card);color:var(--mute);border-radius:8px;
+  padding:4px 10px;font-size:10px;font-weight:600;cursor:pointer;font-family:inherit;letter-spacing:.03em}
+.sb.on{background:var(--ink);color:#fff;border-color:var(--ink)}
 .ro{font-size:9px;color:var(--mute);background:#F4F7FA;border:1px solid var(--line);
   border-radius:6px;padding:2px 7px;letter-spacing:.04em;font-weight:500}
 </style>
@@ -224,7 +239,13 @@ body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:va
 
 <!-- 明細 -->
 <div class="pg" id="pg-detail"><div class="wrap">
-  <div class="ct" style="margin:4px 3px 10px">本月支出明細 <em id="detCnt"></em></div>
+  <div class="ct" style="margin:4px 3px 10px">
+    <span>本月支出明細 <em id="detCnt"></em></span>
+    <span class="sortbar">
+      <button class="sb on" id="sb-date" onclick="setSort('date')">日期</button>
+      <button class="sb" id="sb-amt" onclick="setSort('amt')">金額 ↓</button>
+    </span>
+  </div>
   <div class="dl" id="txs"><div class="emp">載入中</div></div>
 </div></div>
 
@@ -259,24 +280,23 @@ body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:va
 <!-- 投資＋保險 -->
 <div class="pg" id="pg-more"><div class="wrap">
   <div class="card">
-    <div class="ct">本月投入 <span class="ro">唯讀</span></div>
+    <div class="ct">本月投資 <span class="ro">唯讀</span></div>
     <div class="sg">
-      <div class="si"><div class="sl">投資</div><div class="sv" id="vInv">—</div></div>
-      <div class="si"><div class="sl">保險</div><div class="sv" id="vIns">—</div></div>
-      <div class="si"><div class="sl">合計</div><div class="sv gold" id="vSum">—</div></div>
+      <div class="si"><div class="sl">自己出的錢</div><div class="sv" id="vSelf">—</div></div>
+      <div class="si"><div class="sl">子女教育</div><div class="sv" id="vKid">—</div></div>
+      <div class="si"><div class="sl">本月合計</div><div class="sv gold" id="vSum">—</div></div>
     </div>
   </div>
-  <div class="ct" style="margin:16px 3px 10px">投資記錄 <em>請至 Excel 修改</em></div>
+  <div class="ct" style="margin:16px 3px 10px">投資明細 <em>請至 Excel 修改</em></div>
   <div class="dl" id="invs"><div class="emp">載入中</div></div>
-  <div class="ct" style="margin:16px 3px 10px">保險月曆 <em>請至 Excel 修改</em></div>
-  <div class="dl" id="inss"><div class="emp">載入中</div></div>
 </div></div>
 
 <!-- 分析 -->
 <div class="pg" id="pg-chart"><div class="wrap">
-  <div class="card"><div class="ct">支出結構</div><div class="chw"><canvas id="c1"></canvas></div></div>
-  <div class="card"><div class="ct">全年收支</div><div class="chw"><canvas id="c2"></canvas></div></div>
-  <div class="card"><div class="ct">資產走勢</div><div class="chw"><canvas id="c3"></canvas></div></div>
+  <div id="tips"></div>
+  <div class="card"><div class="ct">這個月錢花去哪</div><div class="chw"><canvas id="c1"></canvas></div></div>
+  <div class="card"><div class="ct">每月賺多少 vs 花多少</div><div class="chw"><canvas id="c2"></canvas></div></div>
+  <div class="card"><div class="ct">存款有沒有變多</div><div class="chw"><canvas id="c3"></canvas></div></div>
 </div></div>
 
 <button class="fab" id="fab" onclick="openAdd()">＋</button>
@@ -317,11 +337,11 @@ const CL={'🍽️ 飲食':'#D4763C','🏠 居家開銷':'#0E7C7B','🚗 汽車'
 const MN=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
 const TT={wallet:['雅涵家的理財網','GOOGLE SHEETS · 即時同步'],detail:['支出明細','點右側 ✕ 可刪除'],
 income:['收入記錄','輸入後自動存回 SHEETS'],asset:['資產追蹤','輸入後自動存回 SHEETS'],
-more:['投資與保險','唯讀 · 請至 EXCEL 修改'],chart:['財務分析','全年趨勢概覽']};
+more:['投資記錄','唯讀 · 請至 EXCEL 修改'],chart:['財務分析','全年趨勢概覽']};
 
 let D={expenses:{},income:{rows:[],months:{}},assets:{accounts:[],totals:{}},
-  budgets:{},invest:{rows:[],months:{}},insurance:{rows:[],months:{}}};
-let cm=new Date().getMonth()+1,pg='wallet',sel=null,c1,c2,c3;
+  budgets:{},invest:{rows:[],months:{},breakdown:{}}};
+let cm=new Date().getMonth()+1,pg='wallet',sel=null,c1,c2,c3,sortBy='date';
 
 const F=n=>'NT$'+Math.round(n).toLocaleString('zh-TW');
 const F2=n=>Math.round(n).toLocaleString('zh-TW');
@@ -342,7 +362,7 @@ async function loadAll(m){
     const j=await api({action:'read'});
     D.expenses=j.expenses||{};D.income=j.income||{rows:[],months:{}};
     D.assets=j.assets||{accounts:[],totals:{}};D.budgets=j.budgets||{};
-    D.invest=j.invest||{rows:[],months:{}};D.insurance=j.insurance||{rows:[],months:{}};
+    D.invest=j.invest||{rows:[],months:{},breakdown:{}};
     if(!m){const ms=Object.keys(D.expenses).map(Number).filter(x=>Object.keys(D.expenses[x]||{}).length);
       if(ms.length)cm=Math.max(...ms);}
     const n=new Date();
@@ -396,9 +416,11 @@ function rHero(){
   else if(pg==='asset'){const t=D.assets.totals[cm]||0,p=D.assets.totals[cm-1]||0;
     L.textContent='家庭總資產';V.textContent=t?F(t):'—';
     M.innerHTML=(t&&p)?`較上月 <b>${(t-p)>=0?'+':''}${F2(t-p)}</b>`:'—';}
-  else if(pg==='more'){const iv=D.invest.months[cm]||0,is=D.insurance.months[cm]||0;
-    L.textContent='本月投資＋保險';V.textContent=(iv||is)?F(iv+is):'—';
-    M.innerHTML=`投資 <b>${F2(iv)}</b> · 保險 <b>${F2(is)}</b>`;}
+  else if(pg==='more'){const iv=D.invest.months[cm]||0;
+    const bd=D.invest.breakdown[cm]||{};
+    const sf=Object.keys(bd).filter(k=>k.indexOf('自己')>-1).reduce((a,k)=>a+bd[k],0);
+    L.textContent='本月投資金額';V.textContent=iv?F(iv):'—';
+    M.innerHTML=iv?`自己出 <b>${F2(sf)}</b> · 其他 <b>${F2(iv-sf)}</b>`:'尚無記錄';}
   else{L.textContent='本月支出';V.textContent=exp?F(exp):'—';
     M.innerHTML=exp?`預算 <b>${F2(tb)}</b> · 剩餘 <b>${F2(tb-exp)}</b>`:'尚無記錄';}
 }
@@ -447,10 +469,16 @@ function rAlert(tot,tb){
     <div class="al-m">${ms}</div><div class="al-s">${sb}</div></div>`;
 }
 
+function setSort(m){sortBy=m;
+  document.getElementById('sb-date').classList.toggle('on',m==='date');
+  document.getElementById('sb-amt').classList.toggle('on',m==='amt');
+  rDetail();}
+
 function rDetail(){
   const md=D.expenses[cm]||{},all=[];
   Object.keys(md).forEach(c=>md[c].items.forEach(i=>all.push(Object.assign({cat:c},i))));
-  all.sort((a,b)=>b.date.localeCompare(a.date));
+  if(sortBy==='amt')all.sort((a,b)=>b.amt-a.amt);
+  else all.sort((a,b)=>b.date.localeCompare(a.date));
   document.getElementById('detCnt').textContent=all.length?`${all.length} 筆`:'';
   const el=document.getElementById('txs');
   if(!all.length){el.innerHTML='<div class="emp"><div class="ei">◌</div>本月尚無支出</div>';return;}
@@ -498,34 +526,26 @@ function rAsset(){
 }
 
 function rMore(){
-  const iv=D.invest.months[cm]||0,is=D.insurance.months[cm]||0;
-  document.getElementById('vInv').textContent=iv?F2(iv):'—';
-  document.getElementById('vIns').textContent=is?F2(is):'—';
-  document.getElementById('vSum').textContent=(iv||is)?F2(iv+is):'—';
+  const bd=D.invest.breakdown[cm]||{};
+  const iv=D.invest.months[cm]||0;
+  let sf=0,kd=0;
+  Object.keys(bd).forEach(k=>{
+    if(k.indexOf('自己')>-1)sf+=bd[k];
+    else if(k.indexOf('子女')>-1||k.indexOf('教育')>-1)kd+=bd[k];
+  });
+  document.getElementById('vSelf').textContent=sf?F2(sf):'—';
+  document.getElementById('vKid').textContent=kd?F2(kd):'—';
+  document.getElementById('vSum').textContent=iv?F2(iv):'—';
 
   const ie=document.getElementById('invs');
   const ir=D.invest.rows.filter(r=>r.values[cm]);
-  if(!ir.length){ie.innerHTML='<div class="emp">本月無投資記錄</div>';}
-  else{
-    let h='',lastSrc='';
-    ir.forEach(r=>{
-      if(r.src&&r.src!==lastSrc){h+=`<div class="gh">${E(r.src)}</div>`;lastSrc=r.src;}
-      h+=`<div class="ed"><span class="ed-n"><b>${E(r.name)}</b></span>
-        <span class="ed-v">${F2(r.values[cm])}</span></div>`;});
-    ie.innerHTML=h;
-  }
-
-  const se=document.getElementById('inss');
-  const sr=D.insurance.rows.filter(r=>r.values[cm]);
-  if(!sr.length){se.innerHTML='<div class="emp">本月無保費</div>';}
-  else{
-    let h='',lastWho='';
-    sr.forEach(r=>{
-      if(r.who!==lastWho){h+=`<div class="gh">${E(r.who)}</div>`;lastWho=r.who;}
-      h+=`<div class="ed"><span class="ed-n">${E(r.item)}</span>
-        <span class="ed-v">${F2(r.values[cm])}</span></div>`;});
-    se.innerHTML=h;
-  }
+  if(!ir.length){ie.innerHTML='<div class="emp"><div class="ei">◌</div>本月無投資記錄</div>';return;}
+  let h='',ls='';
+  ir.forEach(r=>{
+    if(r.src&&r.src!==ls){h+=`<div class="gh">${E(r.src)}</div>`;ls=r.src;}
+    h+=`<div class="ed"><span class="ed-n"><b>${E(r.name)}</b></span>
+      <span class="ed-v">${F2(r.values[cm])}</span></div>`;});
+  ie.innerHTML=h;
 }
 
 async function svIn(row,v,el){
@@ -580,7 +600,80 @@ async function submitExp(){
   b.disabled=false;b.textContent='確認記錄';
 }
 
+function rTips(){
+  const el=document.getElementById('tips');
+  const md=D.expenses[cm]||{};
+  const cats=Object.entries(md).sort((a,b)=>b[1].total-a[1].total);
+  const tot=cats.reduce((s,[,v])=>s+v.total,0);
+  if(!tot){el.innerHTML='';return;}
+
+  const tb=Object.values(D.budgets).reduce((a,b)=>a+b,0);
+  const inc=D.income.months[cm]||0;
+
+  // 找超支的類別
+  const over=cats.filter(([c,v])=>D.budgets[c]&&v.total>D.budgets[c])
+    .map(([c,v])=>({c,over:v.total-D.budgets[c],used:v.total,bg:D.budgets[c]}))
+    .sort((a,b)=>b.over-a.over);
+
+  // 找最大筆的單次支出
+  const allItems=[];
+  Object.keys(md).forEach(c=>md[c].items.forEach(i=>allItems.push({cat:c,...i})));
+  allItems.sort((a,b)=>b.amt-a.amt);
+  const big=allItems.slice(0,3);
+
+  // 前3大類別
+  const top3=cats.slice(0,3);
+
+  // 跟上個月比
+  const pm=D.expenses[cm-1]||{};
+  const pmTot=Object.values(pm).reduce((s,c)=>s+c.total,0);
+  const mom=pmTot?tot-pmTot:0;
+
+  let msg='',items=[];
+
+  if(over.length){
+    const o=over[0];
+    msg=`這個月「${o.c.slice(2).trim()}」花超過了`;
+    items.push(`<b>${o.c.slice(2).trim()}</b>：預算 ${F2(o.bg)}，實際花了 ${F2(o.used)}，超出 <b>${F2(o.over)}</b>`);
+    if(over.length>1)
+      items.push(`另外還有 ${over.slice(1).map(x=>x.c.slice(2).trim()).join('、')} 也超支了`);
+  }else{
+    msg='這個月預算控制得不錯';
+    items.push(`總共花了 <b>${F2(tot)}</b>，預算 ${F2(tb)}，還剩 <b>${F2(tb-tot)}</b>`);
+  }
+
+  if(big.length&&big[0].amt>=3000)
+    items.push(`最大筆支出是 <b>${F2(big[0].amt)}</b>（${E(big[0].desc||big[0].cat.slice(2).trim())}），佔了整月的 ${(big[0].amt/tot*100).toFixed(0)}%`);
+
+  if(mom>0&&pmTot)
+    items.push(`比上個月多花了 <b>${F2(mom)}</b>（上月 ${F2(pmTot)}）`);
+  else if(mom<0&&pmTot)
+    items.push(`比上個月省下 <b>${F2(-mom)}</b>，繼續保持`);
+
+  if(top3.length>=3){
+    const t3=top3.reduce((s,[,v])=>s+v.total,0);
+    items.push(`${top3.map(([c])=>c.slice(2).trim()).join('、')} 這三項就佔了 <b>${(t3/tot*100).toFixed(0)}%</b>，是最值得省的地方`);
+  }
+
+  // 下月目標
+  let goal='';
+  if(over.length){
+    const cut=over.reduce((s,o)=>s+o.over,0);
+    goal=`下個月如果把超支的部分省下來，可以多存 <b>${F2(cut)}</b>`;
+  }else if(inc){
+    goal=`這個月收入 ${F2(inc)}、支出 ${F2(tot)}，實際存下 <b>${F2(inc-tot)}</b>`;
+  }
+
+  el.innerHTML=`<div class="tip">
+    <div class="tip-h">${cm}月 消費體檢</div>
+    <div class="tip-m">${msg}</div>
+    <ul class="tip-l">${items.map(i=>`<li>${i}</li>`).join('')}</ul>
+    ${goal?`<div class="tip-goal">💡 ${goal}</div>`:''}
+  </div>`;
+}
+
 function draw(){
+  rTips();
   const md=D.expenses[cm]||{};
   const cs=Object.entries(md).sort((a,b)=>b[1].total-a[1].total);
   const tt=cs.reduce((s,[,v])=>s+v.total,0);
