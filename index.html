@@ -234,7 +234,7 @@ body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:va
 <div class="pg on" id="pg-wallet"><div class="wrap">
   <div id="alert"></div>
   <div class="ct" style="margin:4px 3px 10px">各類別預算</div>
-  <div class="env" id="envs"><div class="emp"><span class="spin ei">◌</span><br>載入中</div></div>
+  <div class="env" id="envs"><div class="emp"><span class="spin ei">◌</span><br>正在同步 Google Sheets…</div></div>
 </div></div>
 
 <!-- 明細 -->
@@ -348,32 +348,98 @@ const F2=n=>Math.round(n).toLocaleString('zh-TW');
 const P=n=>String(n).padStart(2,'0');
 const E=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;');
 
-async function api(q){
-  const r=await fetch(API+'?'+new URLSearchParams(q),{redirect:'follow'});
-  const j=JSON.parse(await r.text());
-  if(j.error)throw new Error(j.error);
-  return j;
+const LS='famBudgetCache';
+
+// 帶逾時的 fetch（預設 20 秒）
+function fetchT(url,ms){
+  return Promise.race([
+    fetch(url,{redirect:'follow'}),
+    new Promise((_,rej)=>setTimeout(()=>rej(new Error('連線逾時')),ms||20000))
+  ]);
 }
 
-async function loadAll(m){
-  if(m)tst('更新中…');
-  document.getElementById('upd').textContent='載入中';
+async function api(q,tries){
+  tries=tries||2;
+  let err;
+  for(let i=0;i<tries;i++){
+    try{
+      const r=await fetchT(API+'?'+new URLSearchParams(q),20000);
+      const t=await r.text();
+      const j=JSON.parse(t);
+      if(j.error)throw new Error(j.error);
+      return j;
+    }catch(e){
+      err=e;
+      if(i<tries-1)await new Promise(r=>setTimeout(r,900));  // 等 0.9 秒再試
+    }
+  }
+  throw err;
+}
+
+function saveCache(){
+  try{localStorage.setItem(LS,JSON.stringify({d:D,t:Date.now()}));}catch(e){}
+}
+function loadCache(){
   try{
-    const j=await api({action:'read'});
-    D.expenses=j.expenses||{};D.income=j.income||{rows:[],months:{}};
-    D.assets=j.assets||{accounts:[],totals:{}};D.budgets=j.budgets||{};
-    D.invest=j.invest||{rows:[],months:{},breakdown:{}};
-    if(!m){const ms=Object.keys(D.expenses).map(Number).filter(x=>Object.keys(D.expenses[x]||{}).length);
-      if(ms.length)cm=Math.max(...ms);}
+    const c=JSON.parse(localStorage.getItem(LS)||'null');
+    if(!c||!c.d)return null;
+    return c;
+  }catch(e){return null;}
+}
+
+function applyData(j){
+  D.expenses=j.expenses||{};
+  D.income=j.income||{rows:[],months:{}};
+  D.assets=j.assets||{accounts:[],totals:{}};
+  D.budgets=j.budgets||{};
+  D.invest=j.invest||{rows:[],months:{},breakdown:{}};
+}
+
+let booted=false;
+
+async function loadAll(m){
+  const badge=document.getElementById('upd');
+
+  // 首次開啟：先用本地快取秒開，再背景更新
+  if(!booted){
+    const c=loadCache();
+    if(c){
+      D=c.d;
+      const ms=Object.keys(D.expenses).map(Number).filter(x=>Object.keys(D.expenses[x]||{}).length);
+      if(ms.length)cm=Math.max(...ms);
+      rAll();
+      const mins=Math.round((Date.now()-c.t)/60000);
+      badge.textContent=mins<1?'剛更新':(mins<60?mins+' 分鐘前':'更新中…');
+    }
+    booted=true;
+  }
+
+  if(m)tst('更新中…');
+  badge.textContent=badge.textContent==='載入中'?'載入中':'同步中…';
+
+  try{
+    const j=await api({action:'read',force:m?'1':'0'});
+    applyData(j);
+    if(!m){
+      const ms=Object.keys(D.expenses).map(Number).filter(x=>Object.keys(D.expenses[x]||{}).length);
+      if(ms.length&&!loadCache())cm=Math.max(...ms);
+    }
+    saveCache();
     const n=new Date();
-    document.getElementById('upd').textContent=`${n.getMonth()+1}/${n.getDate()} ${P(n.getHours())}:${P(n.getMinutes())}`;
+    badge.textContent=`${n.getMonth()+1}/${n.getDate()} ${P(n.getHours())}:${P(n.getMinutes())}`;
     rAll();
     if(m)tst('已更新');
   }catch(e){
-    document.getElementById('upd').textContent='連線失敗';
-    document.getElementById('envs').innerHTML=
-      `<div class="errb"><div class="t">無法載入資料</div><div class="m">${E(e.message)}</div>
-       <button class="mini" onclick="loadAll(1)">重新載入</button></div>`;
+    const c=loadCache();
+    if(c){
+      badge.textContent='離線資料';
+      if(m)tst('連線失敗，顯示上次資料');
+    }else{
+      badge.textContent='連線失敗';
+      document.getElementById('envs').innerHTML=
+        `<div class="errb"><div class="t">無法載入資料</div><div class="m">${E(e.message)}</div>
+         <button class="mini" onclick="loadAll(1)">重新載入</button></div>`;
+    }
   }
 }
 
@@ -403,7 +469,11 @@ function mbar(){
   });
 }
 
-function rAll(){mbar();rHero();rWallet();rDetail();rIncome();rAsset();rMore();if(pg==='chart')draw();}
+function rAll(){
+  mbar();rHero();rWallet();
+  // 其他分頁延後渲染，讓首屏更快
+  requestAnimationFrame(()=>{rDetail();rIncome();rAsset();rMore();if(pg==='chart')draw();});
+}
 
 function rHero(){
   const md=D.expenses[cm]||{};
@@ -551,21 +621,21 @@ function rMore(){
 async function svIn(row,v,el){
   el.disabled=true;
   try{const j=await api({action:'setIncome',row,month:cm,value:v});
-    D.income=j.income;rHero();rIncome();mbar();tst('已儲存');}
+    D.income=j.income;saveCache();rHero();rIncome();mbar();tst('已儲存');}
   catch(e){tst(e.message);}
   el.disabled=false;
 }
 async function svAs(row,v,el){
   el.disabled=true;
   try{const j=await api({action:'setAsset',row,month:cm,value:v});
-    D.assets=j.assets;rHero();rAsset();tst('已儲存');}
+    D.assets=j.assets;saveCache();rHero();rAsset();tst('已儲存');}
   catch(e){tst(e.message);}
   el.disabled=false;
 }
 async function delEx(row){
   if(!confirm('確定刪除這筆支出？'))return;
   tst('刪除中…');
-  try{const j=await api({action:'delExpense',row});D.expenses=j.expenses;rAll();tst('已刪除');}
+  try{const j=await api({action:'delExpense',row});D.expenses=j.expenses;saveCache();rAll();tst('已刪除');}
   catch(e){tst(e.message);}
 }
 
@@ -595,7 +665,7 @@ async function submitExp(){
   const b=document.getElementById('fBtn');b.disabled=true;b.textContent='儲存中…';
   try{
     const j=await api({action:'addExpense',date:`${mo}/${dy}`,cat:sel,desc:d,amt:a,card:'現金',year:y});
-    D.expenses=j.expenses;cm=parseInt(mo,10);rAll();cl('ovAdd');tst(`已記錄 ${F(a)}`);
+    D.expenses=j.expenses;saveCache();cm=parseInt(mo,10);rAll();cl('ovAdd');tst(`已記錄 ${F(a)}`);
   }catch(e){tst(e.message);}
   b.disabled=false;b.textContent='確認記錄';
 }
