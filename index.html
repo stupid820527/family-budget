@@ -79,7 +79,7 @@ body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:va
 
 /* ── Envelope rows ── */
 .env{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;margin-bottom:12px}
-.er{padding:14px 16px;border-bottom:1px solid var(--line);cursor:pointer;position:relative;transition:background .12s}
+.er{padding:14px 16px;border-bottom:1px solid var(--line);cursor:pointer;position:relative;transition:background .12s;overflow:hidden}
 .er:last-child{border-bottom:none}
 .er:active{background:#FAFCFE}
 .er::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--ec,var(--line))}
@@ -92,6 +92,20 @@ body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:va
 .er-b{font-size:10px;color:var(--mute)}
 .bar{height:3px;background:#EDF1F6;border-radius:2px;overflow:hidden}
 .bar-f{height:100%;border-radius:2px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+.er-x{max-height:0;overflow:hidden;transition:max-height .32s cubic-bezier(.4,0,.2,1);background:#FAFCFE;
+  margin:0 -16px -14px;border-top:0 solid var(--line)}
+.er.open .er-x{max-height:2400px;border-top-width:1px;margin-top:12px}
+.xr{display:flex;align-items:center;gap:9px;padding:9px 16px;border-bottom:1px solid #EDF2F7}
+.xr:last-child{border-bottom:none}
+.xr-d{font-size:10px;color:var(--mute);width:34px;flex-shrink:0;font-weight:600}
+.xr-t{flex:1;font-size:11.5px;color:var(--slate);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.xr-a{font-size:12px;font-weight:700;flex-shrink:0}
+.xr-x{color:#DCE4EC;background:none;border:none;font-size:12px;cursor:pointer;padding:2px 3px;flex-shrink:0}
+.xr-x:active{color:var(--rose)}
+.xr-h{padding:8px 16px;font-size:9.5px;color:var(--mute);letter-spacing:.06em;
+  background:#F3F7FA;border-bottom:1px solid #EDF2F7;display:flex;justify-content:space-between}
+.er-ar{font-size:11px;color:#C5D0DB;transition:transform .25s;margin-left:6px;flex-shrink:0}
+.er.open .er-ar{transform:rotate(90deg)}
 .er-f{display:flex;justify-content:space-between;font-size:10px;color:var(--mute);margin-top:6px}
 .er-st{font-weight:700;letter-spacing:.02em}
 .st-ok{color:var(--teal)}.st-wn{color:var(--amber)}.st-ov{color:var(--rose)}
@@ -341,7 +355,7 @@ more:['投資記錄','唯讀 · 請至 EXCEL 修改'],chart:['財務分析','全
 
 let D={expenses:{},income:{rows:[],months:{}},assets:{accounts:[],totals:{}},
   budgets:{},invest:{rows:[],months:{},breakdown:{},divMonths:{}}};
-let cm=new Date().getMonth()+1,pg='wallet',sel=null,c1,c2,c3,sortBy='date';
+let cm=new Date().getMonth()+1,pg='wallet',sel=null,c1,c2,c3,sortBy='date',openEnv=null;
 
 const F=n=>'NT$'+Math.round(n).toLocaleString('zh-TW');
 const F2=n=>Math.round(n).toLocaleString('zh-TW');
@@ -464,7 +478,7 @@ function mbar(){
     x.className='mb';x.textContent=l;
     if(Object.keys(D.expenses[m]||{}).length||D.income.months[m])x.classList.add('has');
     if(m===cm)x.classList.add('on');
-    x.onclick=()=>{cm=m;rAll();};
+    x.onclick=()=>{cm=m;openEnv=null;rAll();};
     b.appendChild(x);
   });
 }
@@ -513,17 +527,44 @@ function rWallet(){
     const bc=pc>=1?'#B33A3A':pc>=.8?'#D48806':'#0E7C7B';
     const sc=pc>=1?'st-ov':pc>=.8?'st-wn':'st-ok';
     const st=pc>=1?`超支 ${F2(-rm)}`:pc>=.8?'接近上限':'正常';
+    const items=(md[c]||{items:[]}).items||[];
+    const key=encodeURIComponent(c);
+
     const d=document.createElement('div');
-    d.className='er';d.onclick=()=>openAdd(c);
+    d.className='er'+(openEnv===c?' open':'');
+    d.id='env-'+key;
     d.style.setProperty('--ec',col);
+    d.onclick=(e)=>{if(!e.target.closest('.xr-x'))toggleEnv(c);};
+
+    const detail=items.length?
+      `<div class="xr-h"><span>共 ${items.length} 筆</span><span>點 ✕ 可刪除</span></div>`+
+      items.slice().sort((a,b)=>b.amt-a.amt).map(t=>
+        `<div class="xr">
+          <span class="xr-d">${t.date}</span>
+          <span class="xr-t">${E(t.desc)||'—'}</span>
+          <span class="xr-a" style="color:${col}">${F2(t.amt)}</span>
+          <button class="xr-x" onclick="event.stopPropagation();delEx(${t.row})">✕</button>
+        </div>`).join('')
+      : '<div style="padding:16px;text-align:center;font-size:11.5px;color:#B8C4D2">本月尚無消費</div>';
+
     d.innerHTML=`<div class="er-h"><span class="er-i">${c.slice(0,2)}</span>
         <span class="er-n">${c.slice(2).trim()}</span>
-        <span class="er-p">${tot?(us/tot*100).toFixed(0):0}%</span></div>
+        <span class="er-p">${tot?(us/tot*100).toFixed(0):0}%</span>
+        <span class="er-ar">›</span></div>
       <div class="er-v"><span class="er-a" style="color:${rm<0?'#B33A3A':'#0F1E2E'}">${F(rm)}</span>
         <span class="er-b">／ ${F2(bg)}</span></div>
       <div class="bar"><div class="bar-f" style="width:${Math.min(100,pc*100)}%;background:${bc}"></div></div>
-      <div class="er-f"><span>已用 ${F2(us)}</span><span class="er-st ${sc}">${st}</span></div>`;
+      <div class="er-f"><span>已用 ${F2(us)}${items.length?`（${items.length} 筆）`:''}</span>
+        <span class="er-st ${sc}">${st}</span></div>
+      <div class="er-x">${detail}</div>`;
     el.appendChild(d);
+  });
+}
+
+function toggleEnv(c){
+  openEnv = (openEnv===c) ? null : c;
+  document.querySelectorAll('.er').forEach(el=>{
+    el.classList.toggle('open', el.id==='env-'+encodeURIComponent(openEnv||''));
   });
 }
 
