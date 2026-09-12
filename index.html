@@ -284,7 +284,7 @@ body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:va
     <div class="sg">
       <div class="si"><div class="sl">自己出的錢</div><div class="sv" id="vSelf">—</div></div>
       <div class="si"><div class="sl">子女教育</div><div class="sv" id="vKid">—</div></div>
-      <div class="si"><div class="sl">本月合計</div><div class="sv gold" id="vSum">—</div></div>
+      <div class="si"><div class="sl">股利再投入</div><div class="sv gold" id="vDiv">—</div></div>
     </div>
   </div>
   <div class="ct" style="margin:16px 3px 10px">投資明細 <em>請至 Excel 修改</em></div>
@@ -340,7 +340,7 @@ income:['收入記錄','輸入後自動存回 SHEETS'],asset:['資產追蹤','�
 more:['投資記錄','唯讀 · 請至 EXCEL 修改'],chart:['財務分析','全年趨勢概覽']};
 
 let D={expenses:{},income:{rows:[],months:{}},assets:{accounts:[],totals:{}},
-  budgets:{},invest:{rows:[],months:{},breakdown:{}}};
+  budgets:{},invest:{rows:[],months:{},breakdown:{},divMonths:{}}};
 let cm=new Date().getMonth()+1,pg='wallet',sel=null,c1,c2,c3,sortBy='date';
 
 const F=n=>'NT$'+Math.round(n).toLocaleString('zh-TW');
@@ -392,7 +392,7 @@ function applyData(j){
   D.income=j.income||{rows:[],months:{}};
   D.assets=j.assets||{accounts:[],totals:{}};
   D.budgets=j.budgets||{};
-  D.invest=j.invest||{rows:[],months:{},breakdown:{}};
+  D.invest=j.invest||{rows:[],months:{},breakdown:{},divMonths:{}};
 }
 
 let booted=false;
@@ -487,10 +487,9 @@ function rHero(){
     L.textContent='家庭總資產';V.textContent=t?F(t):'—';
     M.innerHTML=(t&&p)?`較上月 <b>${(t-p)>=0?'+':''}${F2(t-p)}</b>`:'—';}
   else if(pg==='more'){const iv=D.invest.months[cm]||0;
-    const bd=D.invest.breakdown[cm]||{};
-    const sf=Object.keys(bd).filter(k=>k.indexOf('自己')>-1).reduce((a,k)=>a+bd[k],0);
-    L.textContent='本月投資金額';V.textContent=iv?F(iv):'—';
-    M.innerHTML=iv?`自己出 <b>${F2(sf)}</b> · 其他 <b>${F2(iv-sf)}</b>`:'尚無記錄';}
+    const dv=D.invest.divMonths[cm]||0;
+    L.textContent='本月實際投入';V.textContent=iv?F(iv):'—';
+    M.innerHTML=iv?(dv?`另有股利再投入 <b>${F2(dv)}</b>（不花自己的錢）`:'全部為自己出的錢'):'尚無記錄';}
   else{L.textContent='本月支出';V.textContent=exp?F(exp):'—';
     M.innerHTML=exp?`預算 <b>${F2(tb)}</b> · 剩餘 <b>${F2(tb-exp)}</b>`:'尚無記錄';}
 }
@@ -501,7 +500,12 @@ function rWallet(){
   const tb=Object.values(D.budgets).reduce((a,b)=>a+b,0);
   rAlert(tot,tb);
   const el=document.getElementById('envs');el.innerHTML='';
-  const cs=Object.keys(D.budgets);
+  // 依當月實際花費由大到小排序
+  const cs=Object.keys(D.budgets).sort((a,b)=>{
+    const ua=(md[a]||{total:0}).total, ub=(md[b]||{total:0}).total;
+    if(ub!==ua) return ub-ua;
+    return (D.budgets[b]||0)-(D.budgets[a]||0);
+  });
   if(!cs.length){el.innerHTML='<div class="emp"><div class="ei">◌</div>尚未設定預算</div>';return;}
   cs.forEach(c=>{
     const bg=D.budgets[c]||0,us=(md[c]||{total:0}).total,rm=bg-us,pc=bg>0?us/bg:0;
@@ -598,23 +602,33 @@ function rAsset(){
 function rMore(){
   const bd=D.invest.breakdown[cm]||{};
   const iv=D.invest.months[cm]||0;
+  const dv=D.invest.divMonths[cm]||0;
   let sf=0,kd=0;
   Object.keys(bd).forEach(k=>{
-    if(k.indexOf('自己')>-1)sf+=bd[k];
-    else if(k.indexOf('子女')>-1||k.indexOf('教育')>-1)kd+=bd[k];
+    if(k.indexOf('子女')>-1||k.indexOf('教育')>-1)kd+=bd[k];
+    else sf+=bd[k];
   });
   document.getElementById('vSelf').textContent=sf?F2(sf):'—';
   document.getElementById('vKid').textContent=kd?F2(kd):'—';
-  document.getElementById('vSum').textContent=iv?F2(iv):'—';
+  document.getElementById('vDiv').textContent=dv?F2(dv):'—';
 
   const ie=document.getElementById('invs');
   const ir=D.invest.rows.filter(r=>r.values[cm]);
   if(!ir.length){ie.innerHTML='<div class="emp"><div class="ei">◌</div>本月無投資記錄</div>';return;}
+
+  // 自己出的錢在前，股利再投入在後
+  const own=ir.filter(r=>!r.isDiv), div=ir.filter(r=>r.isDiv);
   let h='',ls='';
-  ir.forEach(r=>{
+  own.forEach(r=>{
     if(r.src&&r.src!==ls){h+=`<div class="gh">${E(r.src)}</div>`;ls=r.src;}
     h+=`<div class="ed"><span class="ed-n"><b>${E(r.name)}</b></span>
       <span class="ed-v">${F2(r.values[cm])}</span></div>`;});
+  if(div.length){
+    h+=`<div class="gh">股利再投入 · 不計入實際投入</div>`;
+    div.forEach(r=>{
+      h+=`<div class="ed"><span class="ed-n">${E(r.name)}</span>
+        <span class="ed-v" style="color:var(--gold)">${F2(r.values[cm])}</span></div>`;});
+  }
   ie.innerHTML=h;
 }
 
