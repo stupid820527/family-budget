@@ -5,6 +5,16 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0F1E2E">
 <title>雅涵家的理財網</title>
+
+<!-- ── 加到手機主畫面的圖示與名稱 ── -->
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="雅涵理財">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
@@ -186,7 +196,37 @@ body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:va
 .note{background:#FFFCF2;border:1px solid #F0E3BE;border-radius:var(--r);padding:13px 15px;
   font-size:11.5px;color:#6B5A2A;line-height:1.75;margin-bottom:12px}
 .note b{color:#4A3D14}
-#pg-save .wrap{padding-bottom:104px}
+#pg-wallet .wrap{padding-bottom:104px}
+
+/* ── 錢的流向（預算↔存款的橋）── */
+.flow{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);
+  padding:14px 15px 15px;margin-bottom:12px}
+.flow-h{font-size:10px;font-weight:700;color:var(--mute);letter-spacing:.12em;
+  text-transform:uppercase;margin-bottom:11px}
+.flow-g{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:5px}
+.flow-c{text-align:center;min-width:0}
+.flow-l{font-size:8.5px;color:var(--mute);letter-spacing:.03em;margin-bottom:3px}
+.flow-v{font-size:14px;font-weight:900;letter-spacing:-.025em}
+.flow-x{font-size:11px;color:#C5D0DB;font-weight:700}
+.flow-bar{display:flex;height:10px;border-radius:5px;overflow:hidden;margin:13px 0 8px;background:#EEF3F7}
+.flow-bar i{display:block;height:100%}
+.flow-f{display:flex;justify-content:space-between;font-size:10px;color:var(--mute)}
+.flow-f b{font-weight:800}
+
+/* ── 收合區 ── */
+.fold{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);
+  overflow:hidden;margin-top:16px}
+.fold-h{width:100%;border:none;background:none;font-family:inherit;cursor:pointer;
+  display:grid;grid-template-columns:1fr auto;gap:2px 8px;padding:14px 15px;text-align:left}
+.fold-t{font-size:12.5px;font-weight:700;color:var(--ink)}
+.fold-s{grid-column:1;font-size:9.5px;color:var(--mute);letter-spacing:.03em}
+.fold-ar{grid-column:2;grid-row:1/3;align-self:center;font-size:13px;color:#C5D0DB;
+  transition:transform .25s}
+.fold.open .fold-ar{transform:rotate(90deg)}
+.fold-b{max-height:0;overflow:hidden;transition:max-height .35s ease;padding:0 13px}
+.fold.open .fold-b{max-height:4000px;padding-bottom:14px}
+.lk{display:inline-block;font-size:8.5px;font-weight:700;padding:2px 5px;border-radius:4px;
+  background:#EEF2F6;color:#73839A;margin-left:6px;letter-spacing:.02em;vertical-align:1px}
 
 /* ── Tabs ── */
 .tabs{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.97);
@@ -292,11 +332,32 @@ body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:va
 
 <div class="mbar" id="mbar"></div>
 
-<!-- 錢包 -->
+<!-- 錢包（預算＋存款整合） -->
 <div class="pg on" id="pg-wallet"><div class="wrap">
+  <!-- 錢的流向 -->
+  <div class="flow" id="flow"></div>
   <div id="alert"></div>
   <div class="ct" style="margin:4px 3px 10px">各類別預算</div>
   <div class="env" id="envs"><div class="emp"><span class="spin ei">◌</span><br>正在同步 Google Sheets…</div></div>
+
+  <!-- 資金配置細節（原「存款」分頁，收合） -->
+  <div class="fold" id="foldPlan">
+    <button class="fold-h" onclick="document.getElementById('foldPlan').classList.toggle('open')">
+      <span class="fold-t">🔒 存款準備與資金配置</span>
+      <span class="fold-s">車貸・保險・年繳稅費怎麼存</span>
+      <span class="fold-ar">›</span>
+    </button>
+    <div class="fold-b">
+      <div class="ct" style="margin:14px 3px 10px">薪水一入帳就分四份</div>
+      <div class="dl" id="buks"></div>
+      <div class="ct" style="margin:18px 3px 10px">年繳／大額項目 月存對照</div>
+      <div class="dl" id="yrs"></div>
+      <div class="ct" style="margin:18px 3px 10px">支出結構（2027 含車貸）</div>
+      <div class="sbar" id="sbar"></div>
+      <div id="lays"></div>
+      <div class="note" id="snote"></div>
+    </div>
+  </div>
 </div></div>
 
 <!-- 明細 -->
@@ -339,27 +400,6 @@ body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:va
   <div class="dl" id="accs"><div class="emp">載入中</div></div>
 </div></div>
 
-<!-- 存款準備 -->
-<div class="pg" id="pg-save"><div class="wrap">
-  <div class="lock">
-    <div class="lock-l">每月必須先鎖起來</div>
-    <div class="lock-v" id="lkV">—</div>
-    <div class="lock-m" id="lkM">—</div>
-  </div>
-
-  <div class="ct" style="margin:4px 3px 10px">薪水一入帳就分四份</div>
-  <div class="dl" id="buks"></div>
-
-  <div class="ct" style="margin:18px 3px 10px">年繳／大額項目 月存對照</div>
-  <div class="dl" id="yrs"></div>
-
-  <div class="ct" style="margin:18px 3px 10px">支出結構（2027 含車貸）</div>
-  <div class="sbar" id="sbar"></div>
-  <div id="lays"></div>
-
-  <div class="note" id="snote"></div>
-</div></div>
-
 <!-- 投資＋保險 -->
 <div class="pg" id="pg-more"><div class="wrap">
   <div class="card">
@@ -389,7 +429,6 @@ body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:va
   <button class="tb" data-p="detail" onclick="go('detail')"><span class="ti">☰</span>明細</button>
   <button class="tb" data-p="income" onclick="go('income')"><span class="ti">◉</span>收入</button>
   <button class="tb" data-p="asset"  onclick="go('asset')"><span class="ti">▤</span>資產</button>
-  <button class="tb" data-p="save"   onclick="go('save')"><span class="ti">▦</span>存款</button>
   <button class="tb" data-p="more"   onclick="go('more')"><span class="ti">◇</span>投資</button>
   <button class="tb" data-p="chart"  onclick="go('chart')"><span class="ti">◫</span>分析</button>
 </div>
@@ -421,7 +460,6 @@ const CL={'🍽️ 飲食':'#D4763C','🏠 居家開銷':'#0E7C7B','🚗 汽車'
 const MN=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
 const TT={wallet:['雅涵家的理財網','GOOGLE SHEETS · 即時同步'],detail:['支出明細','點右側 ✕ 可刪除'],
 income:['收入記錄','輸入後自動存回 SHEETS'],asset:['資產追蹤','輸入後自動存回 SHEETS'],
-save:['存款準備','2027 換車後資金配置'],
 more:['投資記錄','唯讀 · 請至 EXCEL 修改'],chart:['財務分析','全年趨勢概覽']};
 
 /* ══════════ 2027 換車後財務藍圖（貸款 120 萬 / 5 年）══════════
@@ -459,6 +497,8 @@ const GSUM=g=>g.items.reduce((a,b)=>a+b[1],0);
 const PTOT=()=>PLAN.groups.reduce((a,g)=>a+GSUM(g),0);
 // 必須先鎖起來的錢＝車貸 + 所有年繳項目的月存（車貸已含，不重複）
 const RESERVE=()=>PLAN.annual.reduce((a,x)=>a+x.mo,0);
+// 這些記帳類別屬於「已鎖定／自動扣款」，不列入生活花費的進度條
+const LOCKED=['🚗 車貸','🛡️ 保險'];
 
 let D={expenses:{},income:{rows:[],months:{}},assets:{accounts:[],totals:{}},
   budgets:{},invest:{rows:[],months:{},breakdown:{},divMonths:{}}};
@@ -571,8 +611,8 @@ function go(p){
   document.getElementById('pgT').textContent=TT[p][0];
   document.getElementById('pgS').textContent=TT[p][1];
   document.getElementById('fab').style.display=(p==='wallet'||p==='detail')?'flex':'none';
-  document.getElementById('mbar').style.display=(p==='chart'||p==='save')?'none':'flex';
-  document.getElementById('hero').style.display=(p==='chart'||p==='save')?'none':'block';
+  document.getElementById('mbar').style.display=(p==='chart')?'none':'flex';
+  document.getElementById('hero').style.display=(p==='chart')?'none':'block';
   rHero();
   if(p==='chart')draw();
   window.scrollTo(0,0);
@@ -591,22 +631,46 @@ function mbar(){
 }
 
 function rAll(){
-  mbar();rHero();rWallet();
+  mbar();rHero();rFlow();rWallet();rSave();
   // 其他分頁延後渲染，讓首屏更快
-  requestAnimationFrame(()=>{rDetail();rIncome();rAsset();rMore();rSave();if(pg==='chart')draw();});
+  requestAnimationFrame(()=>{rDetail();rIncome();rAsset();rMore();if(pg==='chart')draw();});
 }
 
-/* ══════════ 存款準備頁 ══════════ */
+/* ══════════ 錢的流向：預算與存款的交集 ══════════ */
+function rFlow(){
+  const md=D.expenses[cm]||{};
+  const res=RESERVE();
+  const spend=PLAN.income-res;                 // 鎖完之後手上還有多少
+  // 本月已花（扣掉已鎖定類別，那些是自動扣款不用管）
+  const used=Object.keys(md).filter(c=>LOCKED.indexOf(c)<0)
+    .reduce((s,c)=>s+md[c].total,0);
+  const pc=spend>0?used/spend:0;
+  const rm=spend-used;
+  const col=pc>=1?'#B33A3A':pc>=.8?'#D48806':'#0E7C7B';
+
+  document.getElementById('flow').innerHTML=
+   `<div class="flow-h">薪水進來之後怎麼走</div>
+    <div class="flow-g">
+      <div class="flow-c"><div class="flow-l">月實收</div>
+        <div class="flow-v">${F2(PLAN.income)}</div></div>
+      <div class="flow-x">−</div>
+      <div class="flow-c"><div class="flow-l">先鎖起來</div>
+        <div class="flow-v" style="color:#C9A227">${F2(res)}</div></div>
+      <div class="flow-x">=</div>
+      <div class="flow-c"><div class="flow-l">這個月能花</div>
+        <div class="flow-v" style="color:#0E7C7B">${F2(spend)}</div></div>
+    </div>
+    <div class="flow-bar"><i style="width:${Math.min(100,pc*100).toFixed(1)}%;background:${col}"></i></div>
+    <div class="flow-f"><span>${cm} 月已花 <b style="color:${col}">${F2(used)}</b></span>
+      <span>${rm>=0?'還可以花':'已經超出'} <b style="color:${col}">${F2(Math.abs(rm))}</b></span></div>`;
+}
+
+/* ══════════ 存款準備（收合在預算頁內）══════════ */
 function rSave(){
   const res=RESERVE(), tot=PTOT(), inc=PLAN.income;
   const live=tot-res;                 // 生活帳戶（可自由花的）
   const left=inc-tot;                 // 月結餘
   const annualNoLoan=res-PLAN.carLoan;
-
-  document.getElementById('lkV').textContent=F(res);
-  document.getElementById('lkM').innerHTML=
-    `車貸 <b>${F2(PLAN.carLoan)}</b> ＋ 年繳準備金 <b>${F2(annualNoLoan)}</b><br>`+
-    `這筆錢不算生活費，發薪日當天就轉走`;
 
   // ── 四個帳戶
   const buks=[
@@ -735,7 +799,7 @@ function rWallet(){
       : '<div style="padding:16px;text-align:center;font-size:11.5px;color:#B8C4D2">本月尚無消費</div>';
 
     d.innerHTML=`<div class="er-h"><span class="er-i">${c.slice(0,2)}</span>
-        <span class="er-n">${c.slice(2).trim()}</span>
+        <span class="er-n">${c.slice(2).trim()}${LOCKED.indexOf(c)>=0?'<span class="lk">🔒 自動扣款</span>':''}</span>
         <span class="er-p">${tot?(us/tot*100).toFixed(0):0}%</span>
         <span class="er-ar">›</span></div>
       <div class="er-v"><span class="er-a" style="color:${rm<0?'#B33A3A':'#0F1E2E'}">${F(rm)}</span>
