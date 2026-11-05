@@ -293,6 +293,9 @@ body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:va
   font-size:9.5px;font-weight:700;font-family:inherit;border-radius:7px;padding:3px 7px;
   cursor:pointer;vertical-align:1px}
 .bplus:active{background:#F6ECCF}
+.prac{margin-top:11px;padding:10px 12px;background:#F0F7F7;border:1px solid #CFE4E3;
+  border-radius:10px;font-size:10.5px;color:#2C5F5E;line-height:1.7}
+.prac b{color:#0E6F6E;font-weight:800}
 .br{display:flex;gap:8px;margin-top:16px}
 .btn{flex:1;padding:13px;border-radius:12px;border:none;font-size:14px;font-weight:700;
   cursor:pointer;font-family:inherit;letter-spacing:.02em}
@@ -513,29 +516,35 @@ more:['投資記錄','唯讀 · 請至 EXCEL 修改'],chart:['財務分析','全
 const PLAN={
   income:106000,                       // 月實收（夫妻薪資 10 萬 + 年終 20 萬攤提 ÷12 ≈ 1.6 萬 → 取 10.6 萬）
   carLoan:20000,                       // 車貸月付（120 萬 / 60 期）
+  loanStart:'2027/1',                  // 車貸開始扣款的月份；在這之前 20,000 是「練習存款」
   groups:[
     {k:'fix', n:'固定支出', s:'每月金額幾乎不會變，簽約就定了',
      c:'#B33A3A',
      items:[['🚗 車貸（120萬/5年）',20000],['🛡️ 保險（全家年繳攤月）',13778],
             ['📱 網路訂閱＋電話',3580],['🏠 水電瓦斯',2000]]},
-    {k:'semi',n:'半固定支出', s:'一期一期繳，金額可預測但不是每月都付',
+    {k:'semi',n:'半固定支出', s:'小孩的學費才藝＋汽車稅費，可預測但不是每月都付',
      c:'#C9A227',
-     items:[['👶 小孩學費／註冊費',15000],['👶 小孩補習才藝',7600],
-            ['📚 自我學習（英文）',3000],['🚗 牌照稅（4月繳攤月）',2352],
-            ['🚗 車體險（年繳攤月）',2083],['🚗 燃料稅（7月繳攤月）',515]]},
+     items:[['👦 哥哥 補習班',10000],['👧 妹妹 幼稚園月費',9100],
+            ['👧 妹妹 幼稚園註冊費（攤月）',3000],['👦 哥哥 畫圖 575×4堂',2300],
+            ['👧 妹妹 畫圖 475×4堂',1900],['👧 妹妹 跳舞 320×4堂',1280],
+            ['👦 哥哥 國小學費（攤月）',621],
+            ['🚗 牌照稅（4月繳攤月）',2352],['🚗 車體險（年繳攤月）',2083],
+            ['🚗 燃料稅（7月繳攤月）',515]]},
     {k:'var', n:'變動支出', s:'唯一能靠自己省下來的部分',
      c:'#0E7C7B',
-     items:[['🍽️ 吃（含外食雜貨）',12000],['⛽ 加油',4500],
-            ['💬 備用／人情／雜支',4700],['🏠 家用日用品',3500],
+     items:[['🍽️ 吃（含外食雜貨）',20000],['⛽ 加油',4500],
+            ['🏠 家用日用品',3500],['💬 人情／節慶／廟裡',2500],
             ['🧼 洗車／定保',1000]]}
   ],
   // 年繳大額：拆成每月該存多少
   annual:[
-    {n:'車貸',        year:240000, mo:20000, due:'每月繳', m:0},
-    {n:'全家保險',    year:165338, mo:13778, due:'分期扣款', m:0},
-    {n:'汽車牌照稅',  year:28220,  mo:2352,  due:'4 月',  m:4},
-    {n:'汽車車體險',  year:25000,  mo:2083,  due:'續保月', m:0},
-    {n:'汽車燃料稅',  year:6180,   mo:515,   due:'7 月',  m:7}
+    {n:'車貸',            year:240000, mo:20000, due:'每月繳',   m:0},
+    {n:'全家保險',        year:165338, mo:13778, due:'分期扣款', m:0},
+    {n:'妹妹 幼稚園註冊費', year:36000,  mo:3000,  due:'2・8 月', m:8},
+    {n:'汽車牌照稅',      year:28220,  mo:2352,  due:'4 月',    m:4},
+    {n:'汽車車體險',      year:25000,  mo:2083,  due:'續保月',  m:0},
+    {n:'哥哥 國小學費',    year:7448,   mo:621,   due:'2・9 月', m:9},
+    {n:'汽車燃料稅',      year:6180,   mo:515,   due:'7 月',    m:7}
   ]
 };
 const PG=(k)=>PLAN.groups.find(g=>g.k===k);
@@ -545,6 +554,12 @@ const PTOT=()=>PLAN.groups.reduce((a,g)=>a+GSUM(g),0);
 const RESERVE=()=>PLAN.annual.reduce((a,x)=>a+x.mo,0);
 // 這些記帳類別屬於「已鎖定」，不列入生活花費的進度條（值＝標籤文字）
 const LOCKED={'🚗 車貸':'🔒 自動扣款','🛡️ 保險':'🛡️ 保險月曆帶入'};
+// 車貸還沒開始扣款＝練習期，那 20,000 是存起來不是花掉
+function inPractice(){
+  const m=(PLAN.loanStart||'').match(/(20\d{2})\D+(\d{1,2})/);
+  if(!m)return false;
+  return (yr*12+cm) < (parseInt(m[1],10)*12+parseInt(m[2],10));
+}
 const isLocked=c=>Object.prototype.hasOwnProperty.call(LOCKED,c);
 
 let D={expenses:{},income:{rows:[],months:{}},assets:{accounts:[],totals:{}},
@@ -721,8 +736,9 @@ function rFlow(){
   const rm=spend-used;
   const col=pc>=1?'#B33A3A':pc>=.8?'#D48806':'#0E7C7B';
 
+  const prac=inPractice();
   document.getElementById('flow').innerHTML=
-   `<div class="flow-h">薪水進來之後怎麼走</div>
+   `<div class="flow-h">${prac?'薪水進來之後怎麼走 · 練習期':'薪水進來之後怎麼走'}</div>
     <div class="flow-g">
       <div class="flow-c"><div class="flow-l">月實收</div>
         <div class="flow-v">${F2(PLAN.income)}</div></div>
@@ -735,7 +751,9 @@ function rFlow(){
     </div>
     <div class="flow-bar"><i style="width:${Math.min(100,pc*100).toFixed(1)}%;background:${col}"></i></div>
     <div class="flow-f"><span>${cm} 月已花 <b style="color:${col}">${F2(used)}</b></span>
-      <span>${rm>=0?'還可以花':'已經超出'} <b style="color:${col}">${F2(Math.abs(rm))}</b></span></div>`;
+      <span>${rm>=0?'還可以花':'已經超出'} <b style="color:${col}">${F2(Math.abs(rm))}</b></span></div>`+
+   (prac?`<div class="prac">🏦 車貸還沒開始扣，這個月的 <b>${F2(PLAN.carLoan)}</b> 是
+      <b>練習存款</b>——轉進專戶別動，交車時就是頭期款。</div>`:'');
 }
 
 /* ══════════ 存款準備（收合在預算頁內）══════════ */
@@ -746,11 +764,16 @@ function rSave(){
   const annualNoLoan=res-PLAN.carLoan;
 
   // ── 四個帳戶
+  const prac=inPractice();
   const buks=[
-    {n:'1',c:'#B33A3A',t:'車貸專戶',s:'每月自動扣款，絕對不能動',a:PLAN.carLoan},
+    {n:'1',c:prac?'#0E7C7B':'#B33A3A',t:prac?'車貸專戶（練習存款）':'車貸專戶',
+     s:prac?'車貸還沒開始扣，先存起來當頭期款':'每月自動扣款，絕對不能動',a:PLAN.carLoan},
     {n:'2',c:'#C9A227',t:'年繳準備金',s:'保險・牌照稅・車險・燃料稅',a:annualNoLoan},
     {n:'3',c:'#0E7C7B',t:'生活帳戶',s:'吃・加油・小孩・家用，花完就停',a:live},
-    {n:'4',c:'#2E6DA4',t:'月結餘',s:left>=0?'可再投入投資或加速還款':'缺口，需從變動支出擠出',a:left}
+    {n:'4',c:'#2E6DA4',t:'月結餘',
+     s:left>=0?(prac?`練習期實際可存 ${F2(left+PLAN.carLoan)}（含上面的 ${F2(PLAN.carLoan)}）`
+                    :'可再投入投資或加速還款')
+              :'缺口，需從變動支出擠出',a:left}
   ];
   document.getElementById('buks').innerHTML=buks.map(b=>
     `<div class="buk"><span class="buk-n" style="background:${b.c}">${b.n}</span>
