@@ -497,8 +497,9 @@ const GSUM=g=>g.items.reduce((a,b)=>a+b[1],0);
 const PTOT=()=>PLAN.groups.reduce((a,g)=>a+GSUM(g),0);
 // 必須先鎖起來的錢＝車貸 + 所有年繳項目的月存（車貸已含，不重複）
 const RESERVE=()=>PLAN.annual.reduce((a,x)=>a+x.mo,0);
-// 這些記帳類別屬於「已鎖定／自動扣款」，不列入生活花費的進度條
-const LOCKED=['🚗 車貸','🛡️ 保險'];
+// 這些記帳類別屬於「已鎖定」，不列入生活花費的進度條（值＝標籤文字）
+const LOCKED={'🚗 車貸':'🔒 自動扣款','🛡️ 保險':'🛡️ 保險月曆帶入'};
+const isLocked=c=>Object.prototype.hasOwnProperty.call(LOCKED,c);
 
 let D={expenses:{},income:{rows:[],months:{}},assets:{accounts:[],totals:{}},
   budgets:{},invest:{rows:[],months:{},breakdown:{},divMonths:{}}};
@@ -642,7 +643,7 @@ function rFlow(){
   const res=RESERVE();
   const spend=PLAN.income-res;                 // 鎖完之後手上還有多少
   // 本月已花（扣掉已鎖定類別，那些是自動扣款不用管）
-  const used=Object.keys(md).filter(c=>LOCKED.indexOf(c)<0)
+  const used=Object.keys(md).filter(c=>!isLocked(c))
     .reduce((s,c)=>s+md[c].total,0);
   const pc=spend>0?used/spend:0;
   const rm=spend-used;
@@ -788,18 +789,20 @@ function rWallet(){
     d.onclick=(e)=>{if(!e.target.closest('.xr-x'))toggleEnv(c);};
 
     const detail=items.length?
-      `<div class="xr-h"><span>共 ${items.length} 筆</span><span>點 ✕ 可刪除</span></div>`+
+      `<div class="xr-h"><span>共 ${items.length} 筆</span><span>${
+        (md[c]||{}).ro?'自動帶入 · 請至保險月曆修改':'點 ✕ 可刪除'}</span></div>`+
       items.slice().sort((a,b)=>b.amt-a.amt).map(t=>
         `<div class="xr">
           <span class="xr-d">${t.date}</span>
           <span class="xr-t">${E(t.desc)||'—'}</span>
           <span class="xr-a" style="color:${col}">${F2(t.amt)}</span>
-          <button class="xr-x" onclick="event.stopPropagation();delEx(${t.row})">✕</button>
+          ${t.ro?'<span class="xr-x" style="opacity:.45">🛡️</span>':
+            `<button class="xr-x" onclick="event.stopPropagation();delEx(${t.row})">✕</button>`}
         </div>`).join('')
       : '<div style="padding:16px;text-align:center;font-size:11.5px;color:#B8C4D2">本月尚無消費</div>';
 
     d.innerHTML=`<div class="er-h"><span class="er-i">${c.slice(0,2)}</span>
-        <span class="er-n">${c.slice(2).trim()}${LOCKED.indexOf(c)>=0?'<span class="lk">🔒 自動扣款</span>':''}</span>
+        <span class="er-n">${c.slice(2).trim()}${isLocked(c)?`<span class="lk">${LOCKED[c]}</span>`:''}</span>
         <span class="er-p">${tot?(us/tot*100).toFixed(0):0}%</span>
         <span class="er-ar">›</span></div>
       <div class="er-v"><span class="er-a" style="color:${rm<0?'#B33A3A':'#0F1E2E'}">${F(rm)}</span>
@@ -851,9 +854,10 @@ function rDetail(){
   el.innerHTML=all.map(t=>`<div class="dr">
     <span class="dr-i">${t.cat.slice(0,2)}</span>
     <div class="dr-c"><div class="dr-t">${E(t.desc)||t.cat.slice(2).trim()}</div>
-      <div class="dr-m">${t.date} · ${t.cat.slice(2).trim()}</div></div>
+      <div class="dr-m">${t.ro?'保險月曆':t.date} · ${t.cat.slice(2).trim()}</div></div>
     <span class="dr-a out">−${F2(t.amt)}</span>
-    <button class="dr-x" onclick="delEx(${t.row})">✕</button></div>`).join('');
+    ${t.ro?'<span class="dr-x" style="opacity:.4">🛡️</span>':
+      `<button class="dr-x" onclick="delEx(${t.row})">✕</button>`}</div>`).join('');
 }
 
 function rIncome(){
