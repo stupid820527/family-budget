@@ -281,6 +281,18 @@ body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:va
 .cb .cbi{font-size:16px;display:block;margin-bottom:3px}
 .cb .cbn{font-size:8.5px;line-height:1.2;color:var(--slate);letter-spacing:.01em}
 .cb.sel .cbn{color:rgba(255,255,255,.9)}
+/* 分幾個月 */
+.tp{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.tb2{border:1px solid var(--line);border-radius:10px;padding:10px 0;text-align:center;
+  cursor:pointer;background:var(--card);font-size:12.5px;font-weight:700;color:var(--slate);
+  font-family:inherit;transition:.14s}
+.tb2.sel{border-color:var(--gold);background:var(--gold);color:#fff}
+.hint{font-size:10.5px;color:var(--mute);margin-top:7px;line-height:1.6}
+.hint b{color:var(--ink);font-weight:700}
+.bplus{margin-left:8px;border:1px solid #EBD9A8;background:#FFFBF0;color:#9A7A1E;
+  font-size:9.5px;font-weight:700;font-family:inherit;border-radius:7px;padding:3px 7px;
+  cursor:pointer;vertical-align:1px}
+.bplus:active{background:#F6ECCF}
 .br{display:flex;gap:8px;margin-top:16px}
 .btn{flex:1;padding:13px;border-radius:12px;border:none;font-size:14px;font-weight:700;
   cursor:pointer;font-family:inherit;letter-spacing:.02em}
@@ -450,12 +462,34 @@ body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:va
     <div class="sh-g"></div>
     <h3>記一筆支出</h3>
     <div class="fl"><label>類別</label><div class="cp" id="cp"></div></div>
-    <div class="fl"><label>金額</label><input type="number" id="fAmt" placeholder="0" inputmode="decimal"></div>
+    <div class="fl"><label>金額</label><input type="number" id="fAmt" placeholder="0" inputmode="decimal" oninput="upTp()"></div>
     <div class="fl"><label>說明</label><input type="text" id="fDesc" placeholder="選填"></div>
     <div class="fl"><label>日期</label><input type="date" id="fDate"></div>
+    <div class="fl">
+      <label>這筆錢涵蓋幾個月？</label>
+      <div class="tp" id="tp"></div>
+      <div class="hint" id="tpHint">一次付清，就記在這個月</div>
+    </div>
     <div class="br">
       <button class="btn bc" onclick="cl('ovAdd')">取消</button>
       <button class="btn bp" id="fBtn" onclick="submitExp()">確認記錄</button>
+    </div>
+  </div>
+</div>
+
+<!-- 獎金內容 -->
+<div class="ov" id="ovBonus" onclick="if(event.target===this)cl('ovBonus')">
+  <div class="sh">
+    <div class="sh-g"></div>
+    <h3>這個月的獎金是什麼</h3>
+    <div class="dl" id="bnList" style="margin-bottom:14px"></div>
+    <div class="fl"><label>獎金內容</label>
+      <input type="text" id="bDesc" placeholder="例：Q3 業績達標、新客開發獎"></div>
+    <div class="fl"><label>金額（選填）</label>
+      <input type="number" id="bAmt" placeholder="0" inputmode="decimal"></div>
+    <div class="br">
+      <button class="btn bc" onclick="cl('ovBonus')">關閉</button>
+      <button class="btn bp" id="bBtn" onclick="submitBonus()">新增</button>
     </div>
   </div>
 </div>
@@ -514,9 +548,10 @@ const LOCKED={'🚗 車貸':'🔒 自動扣款','🛡️ 保險':'🛡️ 保險
 const isLocked=c=>Object.prototype.hasOwnProperty.call(LOCKED,c);
 
 let D={expenses:{},income:{rows:[],months:{}},assets:{accounts:[],totals:{}},
-  budgets:{},invest:{rows:[],months:{},breakdown:{},divMonths:{}},bonus:{},years:[]};
+  budgets:{},invest:{rows:[],months:{},breakdown:{},divMonths:{}},bonus:{},years:[],amort:[]};
 let cm=new Date().getMonth()+1,pg='wallet',sel=null,c1,c2,c3,sortBy='date',openEnv=null;
 const LSY='famBudgetYear';
+let terms=1;
 let yr=parseInt(localStorage.getItem(LSY)||'',10)||new Date().getFullYear();
 
 const F=n=>'NT$'+Math.round(n).toLocaleString('zh-TW');
@@ -571,6 +606,7 @@ function applyData(j){
   D.budgets=j.budgets||{};
   D.invest=j.invest||{rows:[],months:{},breakdown:{},divMonths:{}};
   D.bonus=j.bonus||{};
+  D.amort=j.amort||[];
   if(j.year) yr=j.year;
   D.years=(j.years&&j.years.length)?j.years:[yr];
   rYsel();
@@ -912,11 +948,12 @@ function rIncome(){
     const ro=r.name.indexOf('合計')>-1;
     // 績效獎金底下附上當月獎金內容
     const isBonus=r.name.indexOf('績效')>-1;
+    const badd=isBonus?`<button class="bplus" onclick="openBonus()">＋ 記內容</button>`:'';
     const note=(isBonus&&bn.length)?
       `<div class="bnote">${bn.map(b=>
         `<span class="bn-r"><span class="bn-d">${E(b.desc)}</span>${
           b.amt?`<span class="bn-a">${F2(b.amt)}</span>`:''}</span>`).join('')}</div>`:'';
-    return `<div class="ed ${r.isSub?'sub':''}"><span class="ed-n">${E(r.name)}</span>
+    return `<div class="ed ${r.isSub?'sub':''}"><span class="ed-n">${E(r.name)}${badd}</span>
       <input class="ed-i" type="number" inputmode="decimal" value="${r.values[cm]||''}"
         ${ro?'readonly':''} onchange="svIn(${r.row},this.value,this)"></div>`+note;}).join('');
 }
@@ -1002,11 +1039,30 @@ function openAdd(pc){
   document.getElementById('fDesc').value='';
   const n=new Date();
   document.getElementById('fDate').value=`${n.getFullYear()}-${P(n.getMonth()+1)}-${P(n.getDate())}`;
+  terms=1;rTp();
   document.getElementById('ovAdd').classList.add('on');
   setTimeout(()=>document.getElementById('fAmt').focus(),320);
 }
 function pk(e){sel=decodeURIComponent(e.dataset.c);
   document.querySelectorAll('.cb').forEach(b=>b.classList.toggle('sel',b===e));}
+
+/* ── 分幾個月 ── */
+const TERMS=[1,2,3,4,6,12];
+function rTp(){
+  document.getElementById('tp').innerHTML=TERMS.map(t=>
+    `<button class="tb2 ${t===terms?'sel':''}" onclick="pkTp(${t})">${t===1?'1次':t+'月'}</button>`).join('');
+  upTp();
+}
+function pkTp(t){terms=t;rTp();}
+function upTp(){
+  const a=parseFloat(document.getElementById('fAmt').value)||0;
+  const h=document.getElementById('tpHint');
+  if(terms===1){h.innerHTML='一次付清，就記在這個月';return;}
+  const per=a?Math.round(a/terms):0;
+  h.innerHTML=a
+    ? `會平均成每月 <b>${F(per)}</b>，連續 <b>${terms}</b> 個月，不會全部壓在這個月`
+    : `填金額後會自動平均成 ${terms} 個月`;
+}
 
 async function submitExp(){
   const a=parseFloat(document.getElementById('fAmt').value);
@@ -1018,10 +1074,59 @@ async function submitExp(){
   const[y,mo,dy]=dt.split('-');
   const b=document.getElementById('fBtn');b.disabled=true;b.textContent='儲存中…';
   try{
-    const j=await api({action:'addExpense',date:`${mo}/${dy}`,cat:sel,desc:d,amt:a,card:'現金',year:y});
-    D.expenses=j.expenses;saveCache();cm=parseInt(mo,10);rAll();cl('ovAdd');tst(`已記錄 ${F(a)}`);
+    let j;
+    if(terms>1){
+      // 分期：寫進「分期攤提」，不是支出記錄
+      j=await api({action:'addAmort',name:d||sel.slice(2).trim(),cat:sel,
+        total:a,start:`${y}/${parseInt(mo,10)}`,terms:terms,year:y});
+      D.expenses=j.expenses;D.amort=j.amort||[];
+      tst(`已分成 ${terms} 個月，每月 ${F(Math.round(a/terms))}`);
+    }else{
+      j=await api({action:'addExpense',date:`${mo}/${dy}`,cat:sel,desc:d,amt:a,card:'現金',year:y});
+      D.expenses=j.expenses;tst(`已記錄 ${F(a)}`);
+    }
+    saveCache();cm=parseInt(mo,10);rAll();cl('ovAdd');
   }catch(e){tst(e.message);}
   b.disabled=false;b.textContent='確認記錄';
+}
+
+/* ── 獎金內容 ── */
+function openBonus(){
+  document.getElementById('bDesc').value='';
+  document.getElementById('bAmt').value='';
+  rBnList();
+  document.getElementById('ovBonus').classList.add('on');
+  setTimeout(()=>document.getElementById('bDesc').focus(),320);
+}
+function rBnList(){
+  const bn=(D.bonus||{})[cm]||[];
+  const el=document.getElementById('bnList');
+  el.style.display=bn.length?'block':'none';
+  el.innerHTML=bn.map(b=>`<div class="dr">
+    <div class="dr-c"><div class="dr-t">${E(b.desc)}</div>
+      <div class="dr-m">${cm} 月</div></div>
+    ${b.amt?`<span class="dr-a">${F2(b.amt)}</span>`:''}
+    <button class="dr-x" onclick="delBonus(${b.row})">✕</button></div>`).join('');
+}
+async function submitBonus(){
+  const d=document.getElementById('bDesc').value.trim();
+  const a=parseFloat(document.getElementById('bAmt').value);
+  if(!d){tst('請填獎金內容');return;}
+  const b=document.getElementById('bBtn');b.disabled=true;b.textContent='儲存中…';
+  try{
+    const j=await api({action:'addBonus',month:cm,desc:d,amt:isNaN(a)?'':a,year:String(yr)});
+    D.bonus=j.bonus||{};saveCache();rIncome();rBnList();
+    document.getElementById('bDesc').value='';document.getElementById('bAmt').value='';
+    tst('已記下');
+  }catch(e){tst(e.message);}
+  b.disabled=false;b.textContent='新增';
+}
+async function delBonus(row){
+  if(!confirm('確定刪除這筆獎金說明？'))return;
+  try{
+    const j=await api({action:'delBonus',row,year:String(yr)});
+    D.bonus=j.bonus||{};saveCache();rIncome();rBnList();tst('已刪除');
+  }catch(e){tst(e.message);}
 }
 
 function rTips(){
