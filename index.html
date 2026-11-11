@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0F1E2E">
+<meta name="theme-color" content="#EDF5FC">
 <title>雅涵家的理財網</title>
 
 <!-- ── 加到手機主畫面的圖示與名稱 ── -->
@@ -20,40 +20,41 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
-  --ink:#0F1E2E;--ink2:#1C3350;--slate:#42566E;--mute:#8A9BAF;
-  --line:#E3E9F0;--bg:#F6F8FB;--card:#FFFFFF;
-  --gold:#C9A227;--teal:#0E7C7B;--rose:#B33A3A;--amber:#D48806;
-  --r:16px;--sh:0 1px 3px rgba(15,30,46,.06),0 8px 24px rgba(15,30,46,.05);
+  --ink:#16324C;--ink2:var(--ink2);--slate:#4C657E;--mute:#91A5BA;
+  --line:#E5EEF7;--bg:#F3F8FD;--card:#FFFFFF;
+  --gold:#2B7FC4;--teal:#17A398;--rose:#E2605F;--amber:#E8A33D;
+  --sky:#EAF3FB;--sky2:#D9E9F7;
+  --r:18px;--sh:0 1px 2px rgba(22,50,76,.04),0 10px 28px rgba(22,50,76,.06);
 }
 body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:var(--bg);color:var(--ink);
   min-height:100vh;padding-bottom:calc(76px + env(safe-area-inset-bottom));font-feature-settings:"tnum"}
 
-/* ── Header ── */
-.hd{background:linear-gradient(160deg,#0F1E2E 0%,#1C3350 100%);color:#fff;
-  padding:18px 20px 16px;position:sticky;top:0;z-index:90}
-.hd::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(201,162,39,.5),transparent)}
+/* ── Header（淺藍白）── */
+.hd{background:linear-gradient(168deg,#FFFFFF 0%,#EDF5FC 55%,#E2EFFA 100%);
+  color:var(--ink);padding:18px 20px 16px;position:sticky;top:0;z-index:90;
+  border-bottom:1px solid var(--line)}
 .hd-r{display:flex;align-items:flex-start;justify-content:space-between}
-.hd-t{font-size:15px;font-weight:700;letter-spacing:.04em}
-.hd-s{font-size:10px;color:rgba(255,255,255,.5);margin-top:3px;letter-spacing:.05em}
+.hd-t{font-size:15.5px;font-weight:800;letter-spacing:.02em;color:var(--ink)}
+.hd-s{font-size:10px;color:var(--mute);margin-top:3px;letter-spacing:.05em}
 .hd-a{display:flex;align-items:center;gap:8px}
-.bdg{font-size:9px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);
-  border-radius:20px;padding:4px 10px;color:rgba(255,255,255,.75);letter-spacing:.03em}
-.ib{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:#fff;
-  font-size:14px;width:32px;height:32px;border-radius:10px;cursor:pointer;
-  display:flex;align-items:center;justify-content:center}
-.ib:active{background:rgba(255,255,255,.2)}
-.ysel{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:#fff;
-  font-size:11px;font-weight:700;font-family:inherit;border-radius:9px;padding:5px 7px;
+.bdg{font-size:9px;background:#fff;border:1px solid var(--line);
+  border-radius:20px;padding:4px 10px;color:var(--mute);letter-spacing:.03em}
+.ib{background:#fff;border:1px solid var(--line);color:var(--ink2);
+  font-size:14px;width:32px;height:32px;border-radius:11px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;box-shadow:var(--sh)}
+.ib:active{background:var(--sky2)}
+.ysel{background:#fff;border:1px solid var(--line);color:var(--ink2);
+  font-size:11px;font-weight:800;font-family:inherit;border-radius:10px;padding:6px 8px;
   cursor:pointer;outline:none;letter-spacing:.02em;-webkit-appearance:none;appearance:none}
-.ysel option{color:#0F1E2E;background:#fff}
+.ysel option{color:var(--ink);background:#fff}
 
 /* Hero number */
-.hero{margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.08)}
-.hero-l{font-size:10px;color:rgba(255,255,255,.45);letter-spacing:.1em;text-transform:uppercase}
-.hero-v{font-size:30px;font-weight:900;letter-spacing:-.02em;margin-top:2px;line-height:1.1}
-.hero-m{font-size:11px;color:rgba(255,255,255,.55);margin-top:5px}
-.hero-m b{color:rgba(255,255,255,.85);font-weight:700}
+.hero{margin-top:14px;padding-top:14px;border-top:1px solid rgba(43,127,196,.14)}
+.hero-l{font-size:10px;color:var(--mute);letter-spacing:.1em;text-transform:uppercase}
+.hero-v{font-size:32px;font-weight:900;letter-spacing:-.025em;margin-top:2px;line-height:1.1;
+  color:var(--ink)}
+.hero-m{font-size:11px;color:var(--slate);margin-top:5px}
+.hero-m b{color:var(--ink);font-weight:800}
 
 /* ── Month bar ── */
 .mbar{display:flex;overflow-x:auto;gap:5px;padding:10px 16px;background:var(--card);
@@ -62,14 +63,14 @@ body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:va
 .mb{flex-shrink:0;min-width:40px;padding:6px 12px;border-radius:9px;border:1px solid var(--line);
   font-size:12px;font-weight:500;cursor:pointer;background:var(--card);color:var(--mute);
   transition:all .16s;font-family:inherit}
-.mb.has{color:var(--slate);border-color:#CBD7E4}
+.mb.has{color:var(--slate);border-color:#BFD6E9}
 .mb.on{background:var(--ink);color:#fff;border-color:var(--ink);font-weight:700}
 
 .wrap{padding:14px 14px 0;max-width:560px;margin:0 auto}
 .card{background:var(--card);border-radius:var(--r);padding:16px;box-shadow:var(--sh);margin-bottom:12px}
 .ct{font-size:10px;font-weight:700;color:var(--mute);letter-spacing:.12em;text-transform:uppercase;
   margin-bottom:13px;display:flex;justify-content:space-between;align-items:center}
-.ct em{font-style:normal;font-size:10px;color:#B8C4D2;letter-spacing:0;text-transform:none;font-weight:400}
+.ct em{font-style:normal;font-size:10px;color:#BFD6E9;letter-spacing:0;text-transform:none;font-weight:400}
 
 /* ── Stat grid ── */
 .sg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--line);
@@ -95,7 +96,7 @@ body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:va
 .env{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;margin-bottom:12px}
 .er{padding:14px 16px;border-bottom:1px solid var(--line);cursor:pointer;position:relative;transition:background .12s;overflow:hidden}
 .er:last-child{border-bottom:none}
-.er:active{background:#FAFCFE}
+.er:active{background:#F8FBFE}
 .er::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--ec,var(--line))}
 .er-h{display:flex;align-items:center;gap:9px;margin-bottom:8px}
 .er-i{font-size:16px;width:22px;text-align:center;flex-shrink:0}
@@ -104,12 +105,12 @@ body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:va
 .er-v{display:flex;align-items:baseline;gap:6px;margin-bottom:8px}
 .er-a{font-size:19px;font-weight:900;letter-spacing:-.02em}
 .er-b{font-size:10px;color:var(--mute)}
-.bar{height:3px;background:#EDF1F6;border-radius:2px;overflow:hidden}
+.bar{height:3px;background:#E8F1F9;border-radius:2px;overflow:hidden}
 .bar-f{height:100%;border-radius:2px;transition:width .5s cubic-bezier(.4,0,.2,1)}
-.er-x{max-height:0;overflow:hidden;transition:max-height .32s cubic-bezier(.4,0,.2,1);background:#FAFCFE;
+.er-x{max-height:0;overflow:hidden;transition:max-height .32s cubic-bezier(.4,0,.2,1);background:#F8FBFE;
   margin:0 -16px -14px;border-top:0 solid var(--line)}
 .er.open .er-x{max-height:2400px;border-top-width:1px;margin-top:12px}
-.xr{display:flex;align-items:center;gap:9px;padding:9px 16px;border-bottom:1px solid #EDF2F7}
+.xr{display:flex;align-items:center;gap:9px;padding:9px 16px;border-bottom:1px solid #E8F1F9}
 .xr:last-child{border-bottom:none}
 .xr-d{font-size:10px;color:var(--mute);width:34px;flex-shrink:0;font-weight:600}
 .xr-t{flex:1;font-size:11.5px;color:var(--slate);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -117,8 +118,8 @@ body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:va
 .xr-x{color:#DCE4EC;background:none;border:none;font-size:12px;cursor:pointer;padding:2px 3px;flex-shrink:0}
 .xr-x:active{color:var(--rose)}
 .xr-h{padding:8px 16px;font-size:9.5px;color:var(--mute);letter-spacing:.06em;
-  background:#F3F7FA;border-bottom:1px solid #EDF2F7;display:flex;justify-content:space-between}
-.er-ar{font-size:11px;color:#C5D0DB;transition:transform .25s;margin-left:6px;flex-shrink:0}
+  background:#F3F7FA;border-bottom:1px solid #E8F1F9;display:flex;justify-content:space-between}
+.er-ar{font-size:11px;color:#B4CBE0;transition:transform .25s;margin-left:6px;flex-shrink:0}
 .er.open .er-ar{transform:rotate(90deg)}
 .er-f{display:flex;justify-content:space-between;font-size:10px;color:var(--mute);margin-top:6px}
 .er-st{font-weight:700;letter-spacing:.02em}
@@ -138,30 +139,30 @@ body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:va
 .dr-x:active{color:var(--rose)}
 
 /* group header */
-.gh{background:#F9FBFD;padding:8px 15px;font-size:9.5px;font-weight:700;color:var(--mute);
+.gh{background:#F6FAFE;padding:8px 15px;font-size:9.5px;font-weight:700;color:var(--mute);
   letter-spacing:.1em;text-transform:uppercase;border-bottom:1px solid var(--line)}
 
 /* editable */
 .ed{display:flex;align-items:center;gap:9px;padding:11px 15px;border-bottom:1px solid var(--line)}
 .ed:last-child{border-bottom:none}
-.ed.sub{padding-left:30px;background:#FBFCFE}
+.ed.sub{padding-left:30px;background:#F8FBFE}
 .ed-n{flex:1;font-size:12px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--slate)}
 .ed-n b{color:var(--ink);font-weight:500}
 .ed-i{width:104px;border:1px solid var(--line);border-radius:9px;padding:8px 10px;
   font-size:13px;text-align:right;outline:none;font-weight:700;font-family:inherit;
   color:var(--ink);background:var(--card);transition:.15s}
 .ed-i:focus{border-color:var(--ink2);box-shadow:0 0 0 3px rgba(28,51,80,.07)}
-.ed-i[readonly]{background:#F4F7FA;color:var(--mute);font-weight:500}
+.ed-i[readonly]{background:#F1F7FD;color:var(--mute);font-weight:500}
 .ed-v{width:104px;text-align:right;font-size:13px;font-weight:700;color:var(--ink);padding:8px 10px}
 
 /* ── 存款準備 ── */
-.lock{background:linear-gradient(160deg,#12263A 0%,#1C3350 60%,#243F60 100%);
+.lock{background:linear-gradient(160deg,#1E4E7A 0%,#2E6DA4 60%,#3D86C4 100%);
   border-radius:var(--r);padding:20px 18px;color:#fff;margin-bottom:12px;
-  box-shadow:0 10px 28px rgba(15,30,46,.25);position:relative;overflow:hidden}
+  box-shadow:0 10px 28px rgba(22,50,76,.25);position:relative;overflow:hidden}
 .lock::after{content:'';position:absolute;right:-30px;top:-30px;width:130px;height:130px;
   border-radius:50%;background:rgba(201,162,39,.14)}
 .lock-l{font-size:9.5px;letter-spacing:.16em;color:rgba(255,255,255,.55);text-transform:uppercase}
-.lock-v{font-size:34px;font-weight:900;letter-spacing:-.025em;margin:6px 0 2px;color:#F2D98A}
+.lock-v{font-size:34px;font-weight:900;letter-spacing:-.025em;margin:6px 0 2px;color:#BFE0FA}
 .lock-m{font-size:11px;color:rgba(255,255,255,.7);line-height:1.6}
 .lock-m b{color:#fff;font-weight:700}
 .buk{display:flex;align-items:center;gap:11px;padding:13px 15px;border-bottom:1px solid var(--line)}
@@ -181,8 +182,8 @@ body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:va
 .yr-m{display:block;font-size:13px;font-weight:800;color:var(--ink)}
 .yr-y{display:block;font-size:9.5px;color:var(--mute);margin-top:2px}
 .due{display:inline-block;font-size:9px;font-weight:700;padding:2px 6px;border-radius:5px;
-  background:#FDF3DC;color:#946A00;margin-left:5px;letter-spacing:.02em}
-.due.mo{background:#E6F2F2;color:#0E6F6E}
+  background:#E8F2FB;color:#1B5E8C;margin-left:5px;letter-spacing:.02em}
+.due.mo{background:#E3F6F4;color:#12867E}
 .lay{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;margin-bottom:12px}
 .lay-h{display:flex;align-items:center;justify-content:space-between;padding:12px 15px;
   border-bottom:1px solid var(--line)}
@@ -190,16 +191,16 @@ body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:va
 .lay-d{width:9px;height:9px;border-radius:3px;flex-shrink:0}
 .lay-a{font-size:14px;font-weight:800;letter-spacing:-.01em}
 .lay-s{font-size:9.5px;color:var(--mute);padding:0 15px 10px;margin-top:-4px;line-height:1.6}
-.li{display:flex;align-items:center;gap:10px;padding:9px 15px 9px 32px;border-bottom:1px solid #F1F5F9;
-  background:#FBFCFE}
+.li{display:flex;align-items:center;gap:10px;padding:9px 15px 9px 32px;border-bottom:1px solid #EDF4FA;
+  background:#F8FBFE}
 .li:last-child{border-bottom:none}
 .li-t{flex:1;font-size:11.5px;color:var(--slate);min-width:0}
 .li-a{font-size:12px;font-weight:700;color:var(--ink);flex-shrink:0}
 .sbar{display:flex;height:9px;border-radius:5px;overflow:hidden;margin:2px 3px 14px;box-shadow:var(--sh)}
 .sbar i{display:block;height:100%}
-.note{background:#FFFCF2;border:1px solid #F0E3BE;border-radius:var(--r);padding:13px 15px;
-  font-size:11.5px;color:#6B5A2A;line-height:1.75;margin-bottom:12px}
-.note b{color:#4A3D14}
+.note{background:#F4FAFF;border:1px solid #D6E8F7;border-radius:var(--r);padding:13px 15px;
+  font-size:11.5px;color:#2F536E;line-height:1.75;margin-bottom:12px}
+.note b{color:#17324D}
 #pg-wallet .wrap{padding-bottom:104px}
 
 /* ── 錢的流向（預算↔存款的橋）── */
@@ -211,8 +212,8 @@ body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:va
 .flow-c{text-align:center;min-width:0}
 .flow-l{font-size:8.5px;color:var(--mute);letter-spacing:.03em;margin-bottom:3px}
 .flow-v{font-size:14px;font-weight:900;letter-spacing:-.025em}
-.flow-x{font-size:11px;color:#C5D0DB;font-weight:700}
-.flow-bar{display:flex;height:10px;border-radius:5px;overflow:hidden;margin:13px 0 8px;background:#EEF3F7}
+.flow-x{font-size:11px;color:#B4CBE0;font-weight:700}
+.flow-bar{display:flex;height:10px;border-radius:5px;overflow:hidden;margin:13px 0 8px;background:#E8F1F9}
 .flow-bar i{display:block;height:100%}
 .flow-f{display:flex;justify-content:space-between;font-size:10px;color:var(--mute)}
 .flow-f b{font-weight:800}
@@ -224,18 +225,18 @@ body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:va
   display:grid;grid-template-columns:1fr auto;gap:2px 8px;padding:14px 15px;text-align:left}
 .fold-t{font-size:12.5px;font-weight:700;color:var(--ink)}
 .fold-s{grid-column:1;font-size:9.5px;color:var(--mute);letter-spacing:.03em}
-.fold-ar{grid-column:2;grid-row:1/3;align-self:center;font-size:13px;color:#C5D0DB;
+.fold-ar{grid-column:2;grid-row:1/3;align-self:center;font-size:13px;color:#B4CBE0;
   transition:transform .25s}
 .fold.open .fold-ar{transform:rotate(90deg)}
 .fold-b{max-height:0;overflow:hidden;transition:max-height .35s ease;padding:0 13px}
 .fold.open .fold-b{max-height:4000px;padding-bottom:14px}
 .lk{display:inline-block;font-size:8.5px;font-weight:700;padding:2px 5px;border-radius:4px;
-  background:#EEF2F6;color:#73839A;margin-left:6px;letter-spacing:.02em;vertical-align:1px}
+  background:#EAF3FB;color:#8398AE;margin-left:6px;letter-spacing:.02em;vertical-align:1px}
 
 /* 績效獎金明細 */
-.bnote{background:#FFFBF0;border-bottom:1px solid var(--line);padding:7px 15px 9px 30px}
+.bnote{background:#F4FAFF;border-bottom:1px solid var(--line);padding:7px 15px 9px 30px}
 .bn-r{display:flex;justify-content:space-between;gap:10px;font-size:10.5px;
-  color:#8A6D1F;line-height:1.75}
+  color:#2B6FA8;line-height:1.75}
 .bn-d{flex:1;min-width:0}
 .bn-a{font-weight:800;flex-shrink:0}
 
@@ -256,12 +257,12 @@ body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:va
 /* ── FAB ── */
 .fab{position:fixed;bottom:calc(88px + env(safe-area-inset-bottom));right:18px;
   width:52px;height:52px;border-radius:17px;background:var(--ink);color:#fff;border:none;
-  font-size:22px;font-weight:300;box-shadow:0 4px 14px rgba(15,30,46,.28);cursor:pointer;z-index:95;
+  font-size:22px;font-weight:300;box-shadow:0 4px 14px rgba(22,50,76,.28);cursor:pointer;z-index:95;
   display:flex;align-items:center;justify-content:center}
 .fab:active{transform:scale(.93)}
 
 /* ── Sheet ── */
-.ov{display:none;position:fixed;inset:0;background:rgba(15,30,46,.5);z-index:300;
+.ov{display:none;position:fixed;inset:0;background:rgba(22,50,76,.5);z-index:300;
   align-items:flex-end;justify-content:center;backdrop-filter:blur(3px)}
 .ov.on{display:flex}
 .sh{background:var(--card);border-radius:22px 22px 0 0;padding:8px 18px calc(26px + env(safe-area-inset-bottom));
@@ -289,28 +290,55 @@ body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:va
 .tb2.sel{border-color:var(--gold);background:var(--gold);color:#fff}
 .hint{font-size:10.5px;color:var(--mute);margin-top:7px;line-height:1.6}
 .hint b{color:var(--ink);font-weight:700}
-.bplus{margin-left:8px;border:1px solid #EBD9A8;background:#FFFBF0;color:#9A7A1E;
+.cp2{display:flex;flex-wrap:wrap;gap:6px}
+.ch2{border:1px solid var(--line);background:var(--card);border-radius:999px;
+  padding:7px 13px;font-size:11.5px;font-weight:600;color:var(--slate);
+  font-family:inherit;cursor:pointer;transition:.14s}
+.ch2.sel{border-color:var(--ink);background:var(--ink);color:#fff}
+#flItem.off{display:none}
+/* 卡費對帳 */
+.cd{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);
+  padding:14px 15px;margin-bottom:10px}
+.cd-h{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px}
+.cd-n{font-size:13px;font-weight:700;color:var(--ink)}
+.cd-b{font-size:10px;color:var(--mute)}
+.cd-r{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.cd-l{font-size:10.5px;color:var(--mute);width:62px;flex-shrink:0}
+.cd-v{font-size:13.5px;font-weight:800;color:var(--ink);flex:1;text-align:right}
+.cd-i{flex:1;border:1px solid var(--line);border-radius:9px;padding:8px 10px;
+  font-size:13.5px;font-weight:700;font-family:inherit;text-align:right;
+  color:var(--ink);outline:none;min-width:0}
+.cd-i:focus{border-color:var(--gold)}
+.cd-ok{border:none;background:var(--ink);color:#fff;border-radius:9px;
+  width:38px;height:36px;font-size:14px;cursor:pointer;flex-shrink:0}
+.cd-d{margin-top:9px;padding-top:9px;border-top:1px solid var(--line);
+  font-size:11px;font-weight:700;display:flex;justify-content:space-between}
+.cd-w{margin-top:7px;font-size:10.5px;line-height:1.6;padding:7px 9px;border-radius:8px}
+.cd-w.bad{background:#FDECEC;color:#A33434}
+.cd-w.ok{background:#E6F6F3;color:#107A6C}
+.cd-w.na{background:#F1F7FD;color:#8398AE}
+.bplus{margin-left:8px;border:1px solid #CFE3F5;background:#F4FAFF;color:#2B6FA8;
   font-size:9.5px;font-weight:700;font-family:inherit;border-radius:7px;padding:3px 7px;
   cursor:pointer;vertical-align:1px}
-.bplus:active{background:#F6ECCF}
-.prac{margin-top:11px;padding:10px 12px;background:#F0F7F7;border:1px solid #CFE4E3;
-  border-radius:10px;font-size:10.5px;color:#2C5F5E;line-height:1.7}
-.prac b{color:#0E6F6E;font-weight:800}
+.bplus:active{background:#E3F0FB}
+.prac{margin-top:11px;padding:10px 12px;background:#EAF5FC;border:1px solid #CFE3F5;
+  border-radius:10px;font-size:10.5px;color:#265C85;line-height:1.7}
+.prac b{color:#12867E;font-weight:800}
 .br{display:flex;gap:8px;margin-top:16px}
 .btn{flex:1;padding:13px;border-radius:12px;border:none;font-size:14px;font-weight:700;
   cursor:pointer;font-family:inherit;letter-spacing:.02em}
-.bp{background:var(--ink);color:#fff}.bp:disabled{background:#B7C3D0}
+.bp{background:var(--ink);color:#fff}.bp:disabled{background:#AFC6DA}
 .bc{background:#EFF3F7;color:var(--slate)}
 
 .chw{position:relative;height:220px}
-.emp{text-align:center;padding:36px 18px;color:#B8C4D2;font-size:12.5px}
+.emp{text-align:center;padding:36px 18px;color:#BFD6E9;font-size:12.5px}
 .emp .ei{font-size:30px;margin-bottom:9px;opacity:.55}
 .spin{display:inline-block;animation:sp 1s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
 .toast{position:fixed;bottom:calc(92px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);
   background:var(--ink);color:#fff;font-size:12px;font-weight:500;padding:11px 19px;border-radius:11px;
   z-index:999;opacity:0;transition:opacity .28s;pointer-events:none;max-width:88vw;text-align:center;
-  box-shadow:0 6px 20px rgba(15,30,46,.25);letter-spacing:.02em}
+  box-shadow:0 6px 20px rgba(22,50,76,.25);letter-spacing:.02em}
 .toast.on{opacity:1}
 .errb{background:#FDF6F6;border-left:3px solid var(--rose);border-radius:var(--r);padding:14px 16px;margin-bottom:12px}
 .errb .t{font-weight:700;color:var(--rose);margin-bottom:5px;font-size:12.5px}
@@ -325,14 +353,14 @@ body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:va
 .tip-l li{font-size:12.5px;color:var(--slate);line-height:1.75;padding-left:18px;position:relative;margin-bottom:7px}
 .tip-l li::before{content:'▸';position:absolute;left:2px;color:var(--gold);font-size:11px}
 .tip-l li b{color:var(--ink);font-weight:700}
-.tip-goal{background:#F9FBFD;border-radius:11px;padding:12px 14px;margin-top:12px;
+.tip-goal{background:#F6FAFE;border-radius:11px;padding:12px 14px;margin-top:12px;
   font-size:12px;color:var(--slate);line-height:1.7}
 .tip-goal b{color:var(--teal);font-weight:700;font-size:14px}
 .sortbar{display:flex;gap:4px}
 .sb{border:1px solid var(--line);background:var(--card);color:var(--mute);border-radius:8px;
   padding:4px 10px;font-size:10px;font-weight:600;cursor:pointer;font-family:inherit;letter-spacing:.03em}
 .sb.on{background:var(--ink);color:#fff;border-color:var(--ink)}
-.ro{font-size:9px;color:var(--mute);background:#F4F7FA;border:1px solid var(--line);
+.ro{font-size:9px;color:var(--mute);background:#F1F7FD;border:1px solid var(--line);
   border-radius:6px;padding:2px 7px;letter-spacing:.04em;font-weight:500}
 </style>
 </head>
@@ -427,6 +455,25 @@ body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:va
   <div class="dl" id="accs"><div class="emp">載入中</div></div>
 </div></div>
 
+<!-- 卡費對帳 -->
+<div class="pg" id="pg-card"><div class="wrap">
+  <div class="ct" style="margin:4px 3px 10px">本月卡費對帳</div>
+  <div id="cardList"></div>
+  <div class="note" style="margin-top:4px">
+    收到帳單後填「實際帳單」，跟記帳的金額一比，<b>差太多就是有漏記</b>。<br>
+    填完點旁邊的勾勾存檔。
+  </div>
+
+  <div class="ct" style="margin:20px 3px 10px">每月固定支出</div>
+  <div class="dl" id="fixList"></div>
+  <button class="btn bp" style="width:100%;margin-top:12px" onclick="openFixed()">
+    ＋ 新增固定支出</button>
+  <div class="note" style="margin-top:12px">
+    車貸、訂閱、水電這種<b>每個月都一樣</b>的，設定一次就會自動出現在每一個月，
+    天天記帳那邊就不用再記了。
+  </div>
+</div></div>
+
 <!-- 投資＋保險 -->
 <div class="pg" id="pg-more"><div class="wrap">
   <div class="card">
@@ -456,6 +503,7 @@ body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:va
   <button class="tb" data-p="detail" onclick="go('detail')"><span class="ti">☰</span>明細</button>
   <button class="tb" data-p="income" onclick="go('income')"><span class="ti">◉</span>收入</button>
   <button class="tb" data-p="asset"  onclick="go('asset')"><span class="ti">▤</span>資產</button>
+  <button class="tb" data-p="card"   onclick="go('card')"><span class="ti">▭</span>卡費</button>
   <button class="tb" data-p="more"   onclick="go('more')"><span class="ti">◇</span>投資</button>
   <button class="tb" data-p="chart"  onclick="go('chart')"><span class="ti">◫</span>分析</button>
 </div>
@@ -466,6 +514,8 @@ body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:va
     <h3>記一筆支出</h3>
     <div class="fl"><label>類別</label><div class="cp" id="cp"></div></div>
     <div class="fl"><label>金額</label><input type="number" id="fAmt" placeholder="0" inputmode="decimal" oninput="upTp()"></div>
+    <div class="fl" id="flItem"><label>項目</label><div class="cp2" id="items2"></div></div>
+    <div class="fl"><label>付款方式</label><div class="cp2" id="cards2"></div></div>
     <div class="fl"><label>說明</label><input type="text" id="fDesc" placeholder="選填"></div>
     <div class="fl"><label>日期</label><input type="date" id="fDate"></div>
     <div class="fl">
@@ -497,18 +547,43 @@ body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:va
   </div>
 </div>
 
+<!-- 新增固定支出 -->
+<div class="ov" id="ovFixed" onclick="if(event.target===this)cl('ovFixed')">
+  <div class="sh">
+    <div class="sh-g"></div>
+    <h3>每月固定支出</h3>
+    <div class="fl"><label>項目名稱</label>
+      <input type="text" id="xName" placeholder="例：車貸、Netflix、水電"></div>
+    <div class="fl"><label>類別</label><div class="cp2" id="xCats"></div></div>
+    <div class="fl"><label>金額</label>
+      <input type="number" id="xAmt" placeholder="0" inputmode="decimal"></div>
+    <div class="fl"><label>每月幾號扣款</label>
+      <input type="number" id="xDay" value="1" min="1" max="28" inputmode="numeric"></div>
+    <div class="fl"><label>付款方式</label><div class="cp2" id="xCards"></div></div>
+    <div class="fl"><label>從哪個月開始</label>
+      <input type="month" id="xStart"></div>
+    <div class="fl"><label>到哪個月結束（不填＝一直）</label>
+      <input type="month" id="xEnd"></div>
+    <div class="br">
+      <button class="btn bc" onclick="cl('ovFixed')">取消</button>
+      <button class="btn bp" id="xBtn" onclick="submitFixed()">確認新增</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
 const API='https://script.google.com/macros/s/AKfycbwKHbmVj4vtex2u9zxPt8fS8UNuaVmpGI1pRSJCIZu1tDk9q8IWmp1xZnxI7w9EIJRQ/exec';
 
-const CL={'🍽️ 飲食':'#D4763C','🏠 居家開銷':'#0E7C7B','🚗 汽車':'#B33A3A',
-'🛍️ 娛樂血拚':'#7D5BA6','🏥 看醫生':'#2E6DA4','📚 終身學習':'#2E7D52',
-'🛡️ 保險':'#C9A227','👶 小孩學習':'#B4468E','📱 網路訂閱':'#14868C',
-'🧸 小孩日用品':'#C2557A','💬 其他':'#78899B','🚗 車貸':'#8C2F2F'};
+const CL={'🍽️ 飲食':'#D4763C','🏠 居家開銷':'var(--teal)','🚗 汽車':'var(--rose)',
+'🛍️ 娛樂血拚':'#7D5BA6','🏥 看醫生':'var(--ink2)','📚 終身學習':'#2E7D52',
+'🛡️ 保險':'var(--gold)','👶 小孩學習':'#B4468E','📱 網路訂閱':'#14868C',
+'🧸 小孩日用品':'#C2557A','💬 其他':'#8398AE','🚗 車貸':'#1C5C8F'};
 const MN=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
 const TT={wallet:['雅涵家的理財網','GOOGLE SHEETS · 即時同步'],detail:['支出明細','點右側 ✕ 可刪除'],
 income:['收入記錄','輸入後自動存回 SHEETS'],asset:['資產追蹤','輸入後自動存回 SHEETS'],
+card:['卡費對帳','帳單 vs 記帳 · 抓漏記'],
 more:['投資記錄','唯讀 · 請至 EXCEL 修改'],chart:['財務分析','全年趨勢概覽']};
 
 /* ══════════ 2027 換車後財務藍圖（貸款 120 萬 / 5 年）══════════
@@ -519,11 +594,11 @@ const PLAN={
   loanStart:'2027/1',                  // 車貸開始扣款的月份；在這之前 20,000 是「練習存款」
   groups:[
     {k:'fix', n:'固定支出', s:'每月金額幾乎不會變，簽約就定了',
-     c:'#B33A3A',
+     c:'var(--rose)',
      items:[['🚗 車貸（120萬/5年）',20000],['🛡️ 保險（全家年繳攤月）',13778],
             ['📱 網路訂閱＋電話',3580],['🏠 水電瓦斯',2000]]},
     {k:'semi',n:'半固定支出', s:'小孩的學費才藝＋汽車稅費，可預測但不是每月都付',
-     c:'#C9A227',
+     c:'var(--gold)',
      items:[['👦 哥哥 補習班',10000],['👧 妹妹 幼稚園月費',9100],
             ['👧 妹妹 幼稚園註冊費（攤月）',3000],['👦 哥哥 畫圖 575×4堂',2300],
             ['👧 妹妹 畫圖 475×4堂',1900],['👧 妹妹 跳舞 320×4堂',1280],
@@ -531,7 +606,7 @@ const PLAN={
             ['🚗 牌照稅（4月繳攤月）',2352],['🚗 車體險（年繳攤月）',2083],
             ['🚗 燃料稅（7月繳攤月）',515]]},
     {k:'var', n:'變動支出', s:'唯一能靠自己省下來的部分',
-     c:'#0E7C7B',
+     c:'var(--teal)',
      items:[['🍽️ 吃（含外食雜貨）',20000],['⛽ 加油',4500],
             ['🏠 家用日用品',3500],['💬 人情／節慶／廟裡',2500],
             ['🧼 洗車／定保',1000]]}
@@ -563,10 +638,10 @@ function inPractice(){
 const isLocked=c=>Object.prototype.hasOwnProperty.call(LOCKED,c);
 
 let D={expenses:{},income:{rows:[],months:{}},assets:{accounts:[],totals:{}},
-  budgets:{},invest:{rows:[],months:{},breakdown:{},divMonths:{}},bonus:{},years:[],amort:[]};
+  budgets:{},invest:{rows:[],months:{},breakdown:{},divMonths:{}},bonus:{},years:[],amort:[],fixed:[],cards:{months:{},cards:[]},items:{},cardList:['現金']};
 let cm=new Date().getMonth()+1,pg='wallet',sel=null,c1,c2,c3,sortBy='date',openEnv=null;
 const LSY='famBudgetYear';
-let terms=1;
+let terms=1,pick2=null,pickCard='現金';
 let yr=parseInt(localStorage.getItem(LSY)||'',10)||new Date().getFullYear();
 
 const F=n=>'NT$'+Math.round(n).toLocaleString('zh-TW');
@@ -622,6 +697,10 @@ function applyData(j){
   D.invest=j.invest||{rows:[],months:{},breakdown:{},divMonths:{}};
   D.bonus=j.bonus||{};
   D.amort=j.amort||[];
+  D.fixed=j.fixed||[];
+  D.cards=j.cards||{months:{},cards:[]};
+  D.items=j.items||{};
+  D.cardList=(j.cardList&&j.cardList.length)?j.cardList:['現金'];
   if(j.year) yr=j.year;
   D.years=(j.years&&j.years.length)?j.years:[yr];
   rYsel();
@@ -721,7 +800,8 @@ function mbar(){
 function rAll(){
   mbar();rHero();rFlow();rWallet();rSave();
   // 其他分頁延後渲染，讓首屏更快
-  requestAnimationFrame(()=>{rDetail();rIncome();rAsset();rMore();if(pg==='chart')draw();});
+  requestAnimationFrame(()=>{rDetail();rIncome();rAsset();rMore();rCard();
+    if(pg==='chart')draw();});
 }
 
 /* ══════════ 錢的流向：預算與存款的交集 ══════════ */
@@ -734,7 +814,7 @@ function rFlow(){
     .reduce((s,c)=>s+md[c].total,0);
   const pc=spend>0?used/spend:0;
   const rm=spend-used;
-  const col=pc>=1?'#B33A3A':pc>=.8?'#D48806':'#0E7C7B';
+  const col=pc>=1?'var(--rose)':pc>=.8?'var(--amber)':'var(--teal)';
 
   const prac=inPractice();
   document.getElementById('flow').innerHTML=
@@ -744,16 +824,117 @@ function rFlow(){
         <div class="flow-v">${F2(PLAN.income)}</div></div>
       <div class="flow-x">−</div>
       <div class="flow-c"><div class="flow-l">先鎖起來</div>
-        <div class="flow-v" style="color:#C9A227">${F2(res)}</div></div>
+        <div class="flow-v" style="color:var(--gold)">${F2(res)}</div></div>
       <div class="flow-x">=</div>
       <div class="flow-c"><div class="flow-l">這個月能花</div>
-        <div class="flow-v" style="color:#0E7C7B">${F2(spend)}</div></div>
+        <div class="flow-v" style="color:var(--teal)">${F2(spend)}</div></div>
     </div>
     <div class="flow-bar"><i style="width:${Math.min(100,pc*100).toFixed(1)}%;background:${col}"></i></div>
     <div class="flow-f"><span>${cm} 月已花 <b style="color:${col}">${F2(used)}</b></span>
       <span>${rm>=0?'還可以花':'已經超出'} <b style="color:${col}">${F2(Math.abs(rm))}</b></span></div>`+
    (prac?`<div class="prac">🏦 車貸還沒開始扣，這個月的 <b>${F2(PLAN.carLoan)}</b> 是
       <b>練習存款</b>——轉進專戶別動，交車時就是頭期款。</div>`:'');
+}
+
+/* ══════════ 卡費對帳 ══════════ */
+function rCard(){
+  const md=((D.cards||{}).months||{})[cm]||{};
+  const names=Object.keys(md).sort((a,b)=>(md[b].book||0)-(md[a].book||0));
+  const el=document.getElementById('cardList');
+
+  el.innerHTML=names.length?names.map(c=>{
+    const o=md[c], diff=(o.bill||0)-(o.book||0);
+    let w;
+    if(!o.bill) w=`<div class="cd-w na">帳單還沒填，填了才能比對</div>`;
+    else if(Math.abs(diff)<=50) w=`<div class="cd-w ok">✓ 對得起來，沒有漏記</div>`;
+    else if(diff>0) w=`<div class="cd-w bad">記帳比帳單<b>少 ${F2(diff)}</b>　→ 很可能有漏記，
+      去明細頁翻翻這個月的 ${E(c)}</div>`;
+    else w=`<div class="cd-w bad">記帳比帳單<b>多 ${F2(-diff)}</b>　→ 可能重複記，或有退款還沒入帳</div>`;
+    return `<div class="cd">
+      <div class="cd-h"><span class="cd-n">${E(c)}</span>
+        <span class="cd-b">${cm} 月${o.pay?' · 繳款 '+E(o.pay):''}</span></div>
+      <div class="cd-r"><span class="cd-l">記帳</span>
+        <span class="cd-v">${F2(o.book||0)}</span></div>
+      <div class="cd-r"><span class="cd-l">實際帳單</span>
+        <input class="cd-i" type="number" inputmode="decimal" value="${o.bill||''}"
+          placeholder="填帳單金額" id="bill_${encodeURIComponent(c)}">
+        <button class="cd-ok" onclick="svBill('${encodeURIComponent(c)}')">✓</button></div>
+      ${o.bill?`<div class="cd-d"><span>差額</span>
+        <span style="color:${Math.abs(diff)<=50?'#107A6C':'var(--rose)'}">
+        ${diff>=0?'+':'−'}${F2(Math.abs(diff))}</span></div>`:''}
+      ${w}</div>`;
+  }).join(''):`<div class="emp">這個月還沒有記錄</div>`;
+
+  // 固定支出清單
+  const fx=D.fixed||[];
+  const fl=document.getElementById('fixList');
+  fl.innerHTML=fx.length?fx.map(f=>`<div class="dr">
+    <div class="dr-c"><div class="dr-t">${E(f.name)}</div>
+      <div class="dr-m">每月 ${f.day} 號 · ${E(f.cat.slice(2).trim())}${
+        f.card?' · '+E(f.card):''}${f.end?' · 到 '+E(f.end.y+'/'+f.end.m):''}</div></div>
+    <span class="dr-a out">−${F2(f.amt)}</span>
+    <button class="dr-x" onclick="delFixed(${f.row})">✕</button></div>`).join('')
+    :`<div class="emp">還沒設定固定支出</div>`;
+}
+
+async function svBill(c){
+  c=decodeURIComponent(c);
+  const v=document.getElementById('bill_'+encodeURIComponent(c)).value;
+  try{
+    const j=await api({action:'setBill',month:cm,card:c,bill:v,year:String(yr)});
+    D.cards=j.cards||D.cards;saveCache();rCard();tst('已存檔');
+  }catch(e){tst(e.message);}
+}
+
+function openFixed(){
+  document.getElementById('xName').value='';
+  document.getElementById('xAmt').value='';
+  document.getElementById('xDay').value='1';
+  const d=new Date();
+  document.getElementById('xStart').value=
+    d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+  document.getElementById('xEnd').value='';
+  xSel=null;xCard='現金';rXCats();
+  document.getElementById('ovFixed').classList.add('on');
+}
+let xSel=null,xCard='現金';
+function rXCats(){
+  document.getElementById('xCats').innerHTML=Object.keys(D.budgets).map(c=>
+    `<button class="ch2 ${c===xSel?'sel':''}" onclick="pkX('${encodeURIComponent(c)}')">${
+      E(c.slice(2).trim())}</button>`).join('');
+  document.getElementById('xCards').innerHTML=(D.cardList||['現金']).map(c=>
+    `<button class="ch2 ${c===xCard?'sel':''}" onclick="pkXC('${encodeURIComponent(c)}')">${E(c)}</button>`).join('');
+}
+function pkX(c){xSel=decodeURIComponent(c);rXCats();}
+function pkXC(c){xCard=decodeURIComponent(c);rXCats();}
+
+async function submitFixed(){
+  const n=document.getElementById('xName').value.trim();
+  const a=parseFloat(document.getElementById('xAmt').value);
+  const dy=parseInt(document.getElementById('xDay').value,10)||1;
+  const st=document.getElementById('xStart').value;
+  const en=document.getElementById('xEnd').value;
+  if(!n){tst('請填項目名稱');return;}
+  if(!xSel){tst('請選類別');return;}
+  if(!a||a<=0){tst('請填金額');return;}
+  if(!st){tst('請選開始月份');return;}
+  const f=v=>v?(v.split('-')[0]+'/'+parseInt(v.split('-')[1],10)):'';
+  const b=document.getElementById('xBtn');b.disabled=true;b.textContent='儲存中…';
+  try{
+    const j=await api({action:'addFixed',name:n,cat:xSel,amt:a,day:dy,
+      card:xCard,start:f(st),end:f(en),year:String(yr)});
+    D.fixed=j.fixed||[];D.expenses=j.expenses||D.expenses;
+    saveCache();rAll();cl('ovFixed');tst('已設定，每月會自動帶入');
+  }catch(e){tst(e.message);}
+  b.disabled=false;b.textContent='確認新增';
+}
+async function delFixed(row){
+  if(!confirm('刪除這筆固定支出？每個月就不會再自動帶入了。'))return;
+  try{
+    const j=await api({action:'delFixed',row,year:String(yr)});
+    D.fixed=j.fixed||[];D.expenses=j.expenses||D.expenses;
+    saveCache();rAll();tst('已刪除');
+  }catch(e){tst(e.message);}
 }
 
 /* ══════════ 存款準備（收合在預算頁內）══════════ */
@@ -766,11 +947,11 @@ function rSave(){
   // ── 四個帳戶
   const prac=inPractice();
   const buks=[
-    {n:'1',c:prac?'#0E7C7B':'#B33A3A',t:prac?'車貸專戶（練習存款）':'車貸專戶',
+    {n:'1',c:prac?'var(--teal)':'var(--rose)',t:prac?'車貸專戶（練習存款）':'車貸專戶',
      s:prac?'車貸還沒開始扣，先存起來當頭期款':'每月自動扣款，絕對不能動',a:PLAN.carLoan},
-    {n:'2',c:'#C9A227',t:'年繳準備金',s:'保險・牌照稅・車險・燃料稅',a:annualNoLoan},
-    {n:'3',c:'#0E7C7B',t:'生活帳戶',s:'吃・加油・小孩・家用，花完就停',a:live},
-    {n:'4',c:'#2E6DA4',t:'月結餘',
+    {n:'2',c:'var(--gold)',t:'年繳準備金',s:'保險・牌照稅・車險・燃料稅',a:annualNoLoan},
+    {n:'3',c:'var(--teal)',t:'生活帳戶',s:'吃・加油・小孩・家用，花完就停',a:live},
+    {n:'4',c:'var(--ink2)',t:'月結餘',
      s:left>=0?(prac?`練習期實際可存 ${F2(left+PLAN.carLoan)}（含上面的 ${F2(PLAN.carLoan)}）`
                     :'可再投入投資或加速還款')
               :'缺口，需從變動支出擠出',a:left}
@@ -778,10 +959,10 @@ function rSave(){
   document.getElementById('buks').innerHTML=buks.map(b=>
     `<div class="buk"><span class="buk-n" style="background:${b.c}">${b.n}</span>
       <span class="buk-c"><span class="buk-t">${b.t}</span><span class="buk-s">${b.s}</span></span>
-      <span class="buk-a" style="color:${b.a<0?'#B33A3A':b.c}">${b.a>=0?'':'−'}${F(Math.abs(b.a))}</span>
+      <span class="buk-a" style="color:${b.a<0?'var(--rose)':b.c}">${b.a>=0?'':'−'}${F(Math.abs(b.a))}</span>
     </div>`).join('')+
-    `<div class="buk" style="background:#F7FAFC">
-      <span class="buk-n" style="background:#78899B">＝</span>
+    `<div class="buk" style="background:#F4F9FD">
+      <span class="buk-n" style="background:#8398AE">＝</span>
       <span class="buk-c"><span class="buk-t">月實收合計</span>
         <span class="buk-s">薪資 10 萬 ＋ 年終 20 萬攤提</span></span>
       <span class="buk-a">${F(inc)}</span></div>`;
@@ -797,9 +978,9 @@ function rSave(){
       <span class="yr-a"><span class="yr-m">${F(x.mo)}</span>
         <span class="yr-y">每月要存</span></span></div>`;
   }).join('')+
-  `<div class="yr" style="background:#F7FAFC"><span class="yr-c">
+  `<div class="yr" style="background:#F4F9FD"><span class="yr-c">
      <span class="yr-t">合計</span><span class="yr-s">一年 ${F2(PLAN.annual.reduce((a,x)=>a+x.year,0))}</span></span>
-     <span class="yr-a"><span class="yr-m" style="color:#C9A227">${F(res)}</span>
+     <span class="yr-a"><span class="yr-m" style="color:var(--gold)">${F(res)}</span>
      <span class="yr-y">每月要存</span></span></div>`;
 
   // ── 結構長條
@@ -811,7 +992,7 @@ function rSave(){
     const s=GSUM(g);
     return `<div class="lay">
       <div class="lay-h"><span class="lay-t"><span class="lay-d" style="background:${g.c}"></span>${g.n}
-        <span style="font-size:9.5px;color:#8A9BAF;font-weight:600">${(s/tot*100).toFixed(0)}%</span></span>
+        <span style="font-size:9.5px;color:var(--mute);font-weight:600">${(s/tot*100).toFixed(0)}%</span></span>
         <span class="lay-a" style="color:${g.c}">${F(s)}</span></div>
       <div class="lay-s">${g.s}</div>
       ${g.items.slice().sort((a,b)=>b[1]-a[1]).map(it=>
@@ -819,10 +1000,10 @@ function rSave(){
     </div>`;
   }).join('')+
   `<div class="lay"><div class="lay-h">
-     <span class="lay-t"><span class="lay-d" style="background:#0F1E2E"></span>每月總支出</span>
+     <span class="lay-t"><span class="lay-d" style="background:var(--ink)"></span>每月總支出</span>
      <span class="lay-a">${F(tot)}</span></div>
      <div class="lay-s">月實收 ${F2(inc)}　−　總支出 ${F2(tot)}　=
-       <b style="color:${left>=0?'#0E7C7B':'#B33A3A'}">${left>=0?'結餘 ':'缺口 '}${F2(Math.abs(left))}</b></div></div>`;
+       <b style="color:${left>=0?'var(--teal)':'var(--rose)'}">${left>=0?'結餘 ':'缺口 '}${F2(Math.abs(left))}</b></div></div>`;
 
   // ── 提醒
   const varS=GSUM(PG('var'));
@@ -870,8 +1051,8 @@ function rWallet(){
   if(!cs.length){el.innerHTML='<div class="emp"><div class="ei">◌</div>尚未設定預算</div>';return;}
   cs.forEach(c=>{
     const bg=D.budgets[c]||0,us=(md[c]||{total:0}).total,rm=bg-us,pc=bg>0?us/bg:0;
-    const col=CL[c]||'#8A9BAF';
-    const bc=pc>=1?'#B33A3A':pc>=.8?'#D48806':'#0E7C7B';
+    const col=CL[c]||'var(--mute)';
+    const bc=pc>=1?'var(--rose)':pc>=.8?'var(--amber)':'var(--teal)';
     const sc=pc>=1?'st-ov':pc>=.8?'st-wn':'st-ok';
     const st=pc>=1?`超支 ${F2(-rm)}`:pc>=.8?'接近上限':'正常';
     const items=(md[c]||{items:[]}).items||[];
@@ -892,16 +1073,17 @@ function rWallet(){
           <span class="xr-d">${t.date}</span>
           <span class="xr-t">${E(t.desc)||'—'}</span>
           <span class="xr-a" style="color:${col}">${F2(t.amt)}</span>
-          ${t.ro?`<span class="xr-x" style="opacity:.5">${t.card==='分期攤提'?'◷':'🛡️'}</span>`:
+          ${t.ro?`<span class="xr-x" style="opacity:.5">${
+            t.src==='固定支出'?'🔁':t.card==='分期攤提'?'◷':'🛡️'}</span>`:
             `<button class="xr-x" onclick="event.stopPropagation();delEx(${t.row})">✕</button>`}
         </div>`).join('')
-      : '<div style="padding:16px;text-align:center;font-size:11.5px;color:#B8C4D2">本月尚無消費</div>';
+      : '<div style="padding:16px;text-align:center;font-size:11.5px;color:#BFD6E9">本月尚無消費</div>';
 
     d.innerHTML=`<div class="er-h"><span class="er-i">${c.slice(0,2)}</span>
         <span class="er-n">${c.slice(2).trim()}${isLocked(c)?`<span class="lk">${LOCKED[c]}</span>`:''}</span>
         <span class="er-p">${tot?(us/tot*100).toFixed(0):0}%</span>
         <span class="er-ar">›</span></div>
-      <div class="er-v"><span class="er-a" style="color:${rm<0?'#B33A3A':'#0F1E2E'}">${F(rm)}</span>
+      <div class="er-v"><span class="er-a" style="color:${rm<0?'var(--rose)':'var(--ink)'}">${F(rm)}</span>
         <span class="er-b">／ ${F2(bg)}</span></div>
       <div class="bar"><div class="bar-f" style="width:${Math.min(100,pc*100)}%;background:${bc}"></div></div>
       <div class="er-f"><span>已用 ${F2(us)}${items.length?`（${items.length} 筆）`:''}</span>
@@ -950,9 +1132,11 @@ function rDetail(){
   el.innerHTML=all.map(t=>`<div class="dr">
     <span class="dr-i">${t.cat.slice(0,2)}</span>
     <div class="dr-c"><div class="dr-t">${E(t.desc)||t.cat.slice(2).trim()}</div>
-      <div class="dr-m">${t.ro?(t.card||'自動帶入'):t.date} · ${t.cat.slice(2).trim()}</div></div>
+      <div class="dr-m">${t.ro?(t.src||t.card||'自動帶入'):t.date} · ${
+        t.item?E(t.item):t.cat.slice(2).trim()}${t.card&&t.card!=='現金'&&!t.ro?' · '+E(t.card):''}</div></div>
     <span class="dr-a out">−${F2(t.amt)}</span>
-    ${t.ro?`<span class="dr-x" style="opacity:.45">${t.card==='分期攤提'?'◷':'🛡️'}</span>`:
+    ${t.ro?`<span class="dr-x" style="opacity:.45">${
+      t.src==='固定支出'?'🔁':t.card==='分期攤提'?'◷':'🛡️'}</span>`:
       `<button class="dr-x" onclick="delEx(${t.row})">✕</button>`}</div>`).join('');
 }
 
@@ -1062,12 +1246,31 @@ function openAdd(pc){
   document.getElementById('fDesc').value='';
   const n=new Date();
   document.getElementById('fDate').value=`${n.getFullYear()}-${P(n.getMonth()+1)}-${P(n.getDate())}`;
-  terms=1;rTp();
+  terms=1;rTp();pick2=null;rItems2();rCards2();
   document.getElementById('ovAdd').classList.add('on');
   setTimeout(()=>document.getElementById('fAmt').focus(),320);
 }
 function pk(e){sel=decodeURIComponent(e.dataset.c);
-  document.querySelectorAll('.cb').forEach(b=>b.classList.toggle('sel',b===e));}
+  document.querySelectorAll('.cb').forEach(b=>b.classList.toggle('sel',b===e));
+  pick2=null;rItems2();}
+
+/* ── 項目（二層分類）── */
+function rItems2(){
+  const box=document.getElementById('items2');
+  const wrap=document.getElementById('flItem');
+  const list=(D.items||{})[sel]||[];
+  wrap.classList.toggle('off',!list.length);
+  box.innerHTML=list.map(t=>
+    `<button class="ch2 ${t===pick2?'sel':''}" onclick="pkItem('${encodeURIComponent(t)}')">${E(t)}</button>`).join('');
+}
+function pkItem(t){t=decodeURIComponent(t);pick2=(pick2===t)?null:t;rItems2();}
+
+/* ── 付款方式 ── */
+function rCards2(){
+  document.getElementById('cards2').innerHTML=(D.cardList||['現金']).map(c=>
+    `<button class="ch2 ${c===pickCard?'sel':''}" onclick="pkCard('${encodeURIComponent(c)}')">${E(c)}</button>`).join('');
+}
+function pkCard(c){pickCard=decodeURIComponent(c);rCards2();}
 
 /* ── 分幾個月 ── */
 const TERMS=[1,2,3,4,6,12];
@@ -1100,12 +1303,13 @@ async function submitExp(){
     let j;
     if(terms>1){
       // 分期：寫進「分期攤提」，不是支出記錄
-      j=await api({action:'addAmort',name:d||sel.slice(2).trim(),cat:sel,
+      j=await api({action:'addAmort',name:d||pick2||sel.slice(2).trim(),cat:sel,
         total:a,start:`${y}/${parseInt(mo,10)}`,terms:terms,year:y});
       D.expenses=j.expenses;D.amort=j.amort||[];
       tst(`已分成 ${terms} 個月，每月 ${F(Math.round(a/terms))}`);
     }else{
-      j=await api({action:'addExpense',date:`${mo}/${dy}`,cat:sel,desc:d,amt:a,card:'現金',year:y});
+      j=await api({action:'addExpense',date:`${mo}/${dy}`,cat:sel,desc:d,amt:a,
+        card:pickCard,item:pick2||'',year:y});
       D.expenses=j.expenses;tst(`已記錄 ${F(a)}`);
     }
     saveCache();cm=parseInt(mo,10);rAll();cl('ovAdd');
@@ -1232,7 +1436,7 @@ function draw(){
   if(c1){c1.destroy();c1=null;}
   if(tt)c1=new Chart(document.getElementById('c1'),{type:'doughnut',
     data:{labels:cs.map(([c])=>c.slice(2).trim()),datasets:[{data:cs.map(([,v])=>v.total),
-      backgroundColor:cs.map(([c])=>CL[c]||'#8A9BAF'),borderColor:'#fff',borderWidth:2,hoverOffset:8}]},
+      backgroundColor:cs.map(([c])=>CL[c]||'var(--mute)'),borderColor:'#fff',borderWidth:2,hoverOffset:8}]},
     options:{responsive:1,maintainAspectRatio:0,cutout:'62%',
       plugins:{legend:{position:'bottom',labels:{boxWidth:8,boxHeight:8,font:{size:10,family:'Noto Sans TC'},padding:9,color:'#42566E'}},
         tooltip:{callbacks:{label:c=>` ${F(c.raw)}（${(c.raw/tt*100).toFixed(1)}%）`}}},
@@ -1243,23 +1447,23 @@ function draw(){
     eA.push(Object.values(D.expenses[m]||{}).reduce((s,c)=>s+c.total,0));}
   if(c2){c2.destroy();c2=null;}
   c2=new Chart(document.getElementById('c2'),{type:'bar',
-    data:{labels:MN,datasets:[{label:'收入',data:iA,backgroundColor:'#0E7C7B',borderRadius:3,barPercentage:.7},
-      {label:'支出',data:eA,backgroundColor:'#B33A3A',borderRadius:3,barPercentage:.7}]},
+    data:{labels:MN,datasets:[{label:'收入',data:iA,backgroundColor:'var(--teal)',borderRadius:3,barPercentage:.7},
+      {label:'支出',data:eA,backgroundColor:'var(--rose)',borderRadius:3,barPercentage:.7}]},
     options:{responsive:1,maintainAspectRatio:0,
       plugins:{legend:{position:'bottom',labels:{boxWidth:8,boxHeight:8,font:{size:10,family:'Noto Sans TC'},padding:9,color:'#42566E'}},
         tooltip:{callbacks:{label:c=>` ${c.dataset.label} ${F(c.raw)}`}}},
-      scales:{y:{grid:{color:'#EDF1F6'},ticks:{font:{size:9},color:'#8A9BAF',callback:v=>(v/1000)+'k'}},
-        x:{grid:{display:0},ticks:{font:{size:9},color:'#8A9BAF'}}}}});
+      scales:{y:{grid:{color:'#E8F1F9'},ticks:{font:{size:9},color:'var(--mute)',callback:v=>(v/1000)+'k'}},
+        x:{grid:{display:0},ticks:{font:{size:9},color:'var(--mute)'}}}}});
 
   const aA=[];for(let m=1;m<=12;m++)aA.push(D.assets.totals[m]||null);
   if(c3){c3.destroy();c3=null;}
   c3=new Chart(document.getElementById('c3'),{type:'line',
-    data:{labels:MN,datasets:[{data:aA,borderColor:'#1C3350',backgroundColor:'rgba(28,51,80,.07)',
-      fill:1,tension:.32,spanGaps:1,pointRadius:3,pointBackgroundColor:'#C9A227',borderWidth:2}]},
+    data:{labels:MN,datasets:[{data:aA,borderColor:'#2E6DA4',backgroundColor:'rgba(28,51,80,.07)',
+      fill:1,tension:.32,spanGaps:1,pointRadius:3,pointBackgroundColor:'var(--gold)',borderWidth:2}]},
     options:{responsive:1,maintainAspectRatio:0,
       plugins:{legend:{display:0},tooltip:{callbacks:{label:c=>' '+F(c.raw)}}},
-      scales:{y:{grid:{color:'#EDF1F6'},ticks:{font:{size:9},color:'#8A9BAF',callback:v=>(v/10000).toFixed(0)+'萬'}},
-        x:{grid:{display:0},ticks:{font:{size:9},color:'#8A9BAF'}}}}});
+      scales:{y:{grid:{color:'#E8F1F9'},ticks:{font:{size:9},color:'var(--mute)',callback:v=>(v/10000).toFixed(0)+'萬'}},
+        x:{grid:{display:0},ticks:{font:{size:9},color:'var(--mute)'}}}}});
 }
 
 function cl(i){document.getElementById(i).classList.remove('on');}
