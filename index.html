@@ -24,7 +24,7 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
-  --ink:#16324C;--ink2:var(--ink2);--slate:#4C657E;--mute:#91A5BA;
+  --ink:#16324C;--ink2:#2E6DA4;--slate:#4C657E;--mute:#91A5BA;
   --line:#E5EEF7;--bg:#F3F8FD;--card:#FFFFFF;
   --gold:#2B7FC4;--teal:#17A398;--rose:#E2605F;--amber:#E8A33D;
   --sky:#EAF3FB;--sky2:#D9E9F7;
@@ -327,6 +327,16 @@ body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:va
 .yb-b i{display:block;height:100%;border-radius:4px}
 .yb-f{font-size:10px;color:var(--mute)}
 .yb-f b{font-weight:800}
+/* 投資年度卡 */
+.iv2{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);
+  border-radius:var(--r);overflow:hidden;box-shadow:var(--sh)}
+.iv2 .si{background:var(--card);padding:15px 12px;text-align:center}
+.iv2 .si.wide{grid-column:1/3}
+.ivb{display:flex;height:9px;border-radius:5px;overflow:hidden;margin:3px 3px 12px;box-shadow:var(--sh)}
+.ivb i{display:block;height:100%}
+.leg{display:flex;flex-wrap:wrap;gap:4px 14px;margin:0 3px 14px;font-size:10px;color:var(--mute)}
+.leg span{display:flex;align-items:center;gap:5px}
+.leg i{width:8px;height:8px;border-radius:3px;display:block}
 .paid{width:100%;margin-top:9px;border:1px solid var(--line);background:#fff;
   color:var(--slate);font-family:inherit;font-size:11.5px;font-weight:700;
   padding:9px 0;border-radius:10px;cursor:pointer}
@@ -534,6 +544,15 @@ body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:va
   </div>
   <div class="ct" style="margin:16px 3px 10px">投資明細 <em>請至 Excel 修改</em></div>
   <div class="dl" id="invs"><div class="emp">載入中</div></div>
+
+  <div class="ct" style="margin:22px 3px 10px">今年總投資</div>
+  <div id="ivYear"></div>
+
+  <div class="ct" style="margin:22px 3px 10px">實際收到的股利＋利息</div>
+  <div id="ivCash"></div>
+
+  <div class="ct" style="margin:22px 3px 10px">標的分類（今年累計）</div>
+  <div class="tblw"><table class="tbl" id="ivTbl"></table></div>
 </div></div>
 
 <!-- 分析 -->
@@ -1315,7 +1334,8 @@ function rMore(){
 
   const ie=document.getElementById('invs');
   const ir=D.invest.rows.filter(r=>r.values[cm]);
-  if(!ir.length){ie.innerHTML='<div class="emp"><div class="ei">◌</div>本月無投資記錄</div>';return;}
+  if(!ir.length){ie.innerHTML='<div class="emp"><div class="ei">◌</div>本月無投資記錄</div>';
+    rInvYear();return;}
 
   // 自己出的錢在前，股利再投入在後
   const own=ir.filter(r=>!r.isDiv), div=ir.filter(r=>r.isDiv);
@@ -1331,6 +1351,97 @@ function rMore(){
         <span class="ed-v" style="color:var(--gold)">${F2(r.values[cm])}</span></div>`;});
   }
   ie.innerHTML=h;
+  rInvYear();
+}
+
+/* ══════════ 投資：今年總投資 / 現金流 / 標的分類 ══════════ */
+function rInvYear(){
+  // ── 今年總投資 ──
+  let own=0,div=0,kid=0,self=0;
+  for(let m=1;m<=12;m++){
+    own+=D.invest.months[m]||0;
+    div+=D.invest.divMonths[m]||0;
+    const bd=D.invest.breakdown[m]||{};
+    Object.keys(bd).forEach(k=>{
+      if(k.indexOf('子女')>-1||k.indexOf('教育')>-1)kid+=bd[k];else self+=bd[k];
+    });
+  }
+  const tot=own+div;
+  const nm=Object.keys(D.invest.months).filter(m=>D.invest.months[m]).length;
+  document.getElementById('ivYear').innerHTML=
+   `<div class="iv2">
+      <div class="si"><div class="sl">自己投入</div>
+        <div class="sv" style="font-size:19px">${own?F2(own):'—'}</div></div>
+      <div class="si"><div class="sl">股利再投入</div>
+        <div class="sv gold" style="font-size:19px">${div?F2(div):'—'}</div></div>
+      <div class="si wide" style="padding:16px 12px">
+        <div class="sl">今年總投入</div>
+        <div class="sv" style="font-size:26px;color:var(--ink2)">${F(tot)}</div>
+        <div class="yb-f" style="margin-top:5px">
+          ${nm?`有投入的 ${nm} 個月，平均每月 ${F2(Math.round(own/nm))}`:'今年還沒有投入'}</div></div>
+    </div>
+    ${(self||kid)?`<div class="ivb">
+      <i style="width:${(self/(self+kid)*100).toFixed(1)}%;background:var(--ink2)"></i>
+      <i style="width:${(kid/(self+kid)*100).toFixed(1)}%;background:var(--teal)"></i></div>
+     <div class="leg"><span><i style="background:var(--ink2)"></i>自己 ${F2(self)}</span>
+      <span><i style="background:var(--teal)"></i>子女教育 ${F2(kid)}</span></div>`:''}`;
+
+  // ── 實際收到的股利＋利息（來自收入記錄）──
+  const dv=[],it=[];
+  let dT=0,iT=0;
+  (D.income.rows||[]).forEach(r=>{
+    if(r.name.indexOf('合計')>-1)return;
+    let v=0;for(let m=1;m<=12;m++)v+=r.values[m]||0;
+    if(!v)return;
+    const nm2=r.name.replace(/^[└\s]+/,'').replace(/^📈\s*/,'');
+    if(r.name.indexOf('股利')>-1){dv.push([nm2,v]);dT+=v;}
+    else if(r.name.indexOf('利息')>-1){it.push([nm2,v]);iT+=v;}
+  });
+  dv.sort((a,b)=>b[1]-a[1]);it.sort((a,b)=>b[1]-a[1]);
+  const row=(n,v,c)=>`<div class="ed"><span class="ed-n">${E(n)}</span>
+    <span class="ed-v" style="color:${c}">${F2(v)}</span></div>`;
+  document.getElementById('ivCash').innerHTML=
+   `<div class="iv2" style="margin-bottom:12px">
+      <div class="si"><div class="sl">股利</div>
+        <div class="sv gold" style="font-size:19px">${dT?F2(dT):'—'}</div></div>
+      <div class="si"><div class="sl">銀行利息</div>
+        <div class="sv pos" style="font-size:19px">${iT?F2(iT):'—'}</div></div>
+      <div class="si wide" style="padding:15px 12px">
+        <div class="sl">今年收到合計</div>
+        <div class="sv" style="font-size:24px;color:var(--teal)">${F(dT+iT)}</div>
+        <div class="yb-f" style="margin-top:5px">${own
+          ?`等於今年投入金額的 ${(( dT+iT)/own*100).toFixed(1)}%`
+          :'這是真的進到戶頭的錢，不是帳面漲跌'}</div></div>
+    </div>
+    ${dv.length?`<div class="dl" style="margin-bottom:12px">
+      <div class="gh">股利明細</div>${dv.map(x=>row(x[0],x[1],'var(--gold)')).join('')}</div>`:''}
+    ${it.length?`<div class="dl">
+      <div class="gh">利息明細</div>${it.map(x=>row(x[0],x[1],'var(--teal)')).join('')}</div>`:''}`;
+
+  // ── 標的分類 ──
+  const byName={};
+  (D.invest.rows||[]).forEach(r=>{
+    let v=0;for(let m=1;m<=12;m++)v+=r.values[m]||0;
+    if(!v)return;
+    const k=r.name.replace(/\s*股利→加碼\s*/,'').trim();
+    if(!byName[k])byName[k]={own:0,div:0,src:r.src};
+    byName[k][r.isDiv?'div':'own']+=v;
+  });
+  const list=Object.entries(byName).sort((a,b)=>
+    (b[1].own+b[1].div)-(a[1].own+a[1].div));
+  const gt=list.reduce((s,[,o])=>s+o.own+o.div,0);
+  document.getElementById('ivTbl').innerHTML=list.length
+   ?`<tr><th>標的</th><th>自己投入</th><th>股利加碼</th><th>佔比</th></tr>`+
+    list.map(([n,o])=>{
+      const t2=o.own+o.div;
+      return `<tr><td>${E(n)}</td>
+        <td class="${o.own?'':'z'}">${o.own?F2(o.own):'–'}</td>
+        <td class="${o.div?'':'z'}" style="${o.div?'color:var(--gold)':''}">${o.div?F2(o.div):'–'}</td>
+        <td>${gt?(t2/gt*100).toFixed(1)+'%':'–'}</td></tr>`;}).join('')+
+    `<tr class="sum"><td>合計</td><td>${F2(own)}</td><td style="color:var(--gold)">${F2(div)}</td>
+     <td>100%</td></tr>`
+   :`<tr><td style="text-align:center;color:var(--mute);font-weight:500;padding:26px">
+      今年還沒有投資記錄</td></tr>`;
 }
 
 async function svIn(row,v,el){
