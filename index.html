@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#EDF5FC">
-<meta name="app-version" content="2026.11.12-a">
+<meta name="app-version" content="2026.11.12-b">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -206,6 +206,8 @@ body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:va
   font-size:11.5px;color:#2F536E;line-height:1.75;margin-bottom:12px}
 .note b{color:#17324D}
 #pg-wallet .wrap{padding-bottom:104px}
+@keyframes slL{from{opacity:.35;transform:translateX(26px)}to{opacity:1;transform:none}}
+@keyframes slR{from{opacity:.35;transform:translateX(-26px)}to{opacity:1;transform:none}}
 
 /* ── 錢的流向（預算↔存款的橋）── */
 .flow{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);
@@ -872,10 +874,53 @@ function mbar(){
     x.className='mb';x.textContent=l;
     if(Object.keys(D.expenses[m]||{}).length||D.income.months[m])x.classList.add('has');
     if(m===cm)x.classList.add('on');
-    x.onclick=()=>{cm=m;openEnv=null;rAll();};
+    x.onclick=()=>goMonth(m);
     b.appendChild(x);
   });
+  // 把選到的月份捲到看得見的地方
+  const on=b.querySelector('.mb.on');
+  if(on)on.scrollIntoView({block:'nearest',inline:'center',behavior:'smooth'});
 }
+
+/* ── 換月份（含左右滑動）── */
+function goMonth(m,dir){
+  m=Math.min(12,Math.max(1,m));
+  if(m===cm)return;
+  cm=m;openEnv=null;rAll();
+  if(dir){
+    const w=document.querySelector('#pg-'+pg+' .wrap');
+    if(w){w.style.animation='none';void w.offsetWidth;
+      w.style.animation=`sl${dir>0?'L':'R'} .22s ease`;}
+  }
+  // 換月後回到頁面頂端
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* 左右滑動切換月份 */
+(function(){
+  let x0=0,y0=0,t0=0,on=false;
+  const AREA=()=>['wallet','detail','income','asset','card','more'].indexOf(pg)>=0;
+  document.addEventListener('touchstart',e=>{
+    if(!AREA()||e.touches.length!==1)return;
+    // 在可橫向捲動的東西上面（月份列、表格）就不接手
+    let n=e.target;
+    while(n&&n!==document.body){
+      if(n.scrollWidth>n.clientWidth+4&&
+         getComputedStyle(n).overflowX!=='visible')return;
+      n=n.parentElement;
+    }
+    x0=e.touches[0].clientX;y0=e.touches[0].clientY;t0=Date.now();on=true;
+  },{passive:true});
+  document.addEventListener('touchend',e=>{
+    if(!on)return;on=false;
+    const t=e.changedTouches[0];
+    const dx=t.clientX-x0, dy=t.clientY-y0, dt=Date.now()-t0;
+    if(dt>600)return;                        // 太慢不算滑動
+    if(Math.abs(dx)<60)return;               // 距離不夠
+    if(Math.abs(dy)>Math.abs(dx)*0.6)return; // 比較像上下捲
+    goMonth(cm+(dx<0?1:-1), dx<0?1:-1);
+  },{passive:true});
+})();
 
 function rAll(){
   mbar();rHero();rFlow();rWallet();rSave();
@@ -1509,9 +1554,9 @@ function openEdit(row){
   document.getElementById('fDesc').value=f.desc||'';
   const mm=f.date.split('/')[0],dd=f.date.split('/')[1];
   document.getElementById('fDate').value=`${yr}-${mm}-${dd}`;
-  document.getElementById('cats').innerHTML=Object.keys(D.budgets).map(c=>
-    `<button class="cb ${c===sel?'sel':''}" data-c="${encodeURIComponent(c)}" onclick="pk(this)">
-      <span class="cbi">${c.slice(0,2)}</span><span class="cbn">${c.slice(2).trim()}</span></button>`).join('');
+  document.getElementById('cp').innerHTML=Object.keys(D.budgets).map(c=>
+    `<div class="cb ${c===sel?'sel':''}" data-c="${encodeURIComponent(c)}" onclick="pk(this)">
+      <span class="cbi">${c.slice(0,2)}</span><span class="cbn">${c.slice(2).trim()}</span></div>`).join('');
   rItems2();rCards2();rTp();
   document.querySelector('#ovAdd h3').textContent='修改這一筆';
   document.getElementById('fBtn').textContent='儲存修改';
