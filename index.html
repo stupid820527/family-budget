@@ -296,6 +296,40 @@ body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:va
   font-family:inherit;cursor:pointer;transition:.14s}
 .ch2.sel{border-color:var(--ink);background:var(--ink);color:#fff}
 #flItem.off{display:none}
+/* 年度表格 */
+.fsel{background:#fff;border:1px solid var(--line);border-radius:10px;padding:6px 9px;
+  font-size:11px;font-weight:700;font-family:inherit;color:var(--ink2);cursor:pointer;
+  outline:none;text-transform:none;letter-spacing:0;-webkit-appearance:none;appearance:none}
+.tblw{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{background:#F4F9FD;color:var(--mute);font-size:9.5px;font-weight:700;
+  letter-spacing:.06em;padding:9px 10px;text-align:right;border-bottom:1px solid var(--line)}
+.tbl th:first-child{text-align:left}
+.tbl td{padding:10px;text-align:right;border-bottom:1px solid #EDF4FA;
+  font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.tbl td:first-child{text-align:left;font-weight:600;color:var(--slate)}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr.now td{background:#EAF3FB}
+.tbl tr.sum td{background:#F4F9FD;border-top:2px solid var(--line);font-weight:900}
+.tbl .in{color:var(--teal)}.tbl .out{color:var(--rose)}.tbl .z{color:#C3D2E0;font-weight:500}
+/* 年預算條 */
+.yb{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);
+  padding:13px 15px;margin-bottom:9px}
+.yb-h{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.yb-n{font-size:12.5px;font-weight:700;color:var(--ink)}
+.yb-v{font-size:12.5px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+.yb-v s{color:var(--mute);font-weight:600;text-decoration:none;font-size:11px}
+.yb-b{height:7px;border-radius:4px;background:#EDF4FA;margin:8px 0 6px;overflow:hidden}
+.yb-b i{display:block;height:100%;border-radius:4px}
+.yb-f{font-size:10px;color:var(--mute)}
+.yb-f b{font-weight:800}
+.paid{width:100%;margin-top:9px;border:1px solid var(--line);background:#fff;
+  color:var(--slate);font-family:inherit;font-size:11.5px;font-weight:700;
+  padding:9px 0;border-radius:10px;cursor:pointer}
+.paid.on{background:#E6F6F3;border-color:#B9E5DD;color:#107A6C}
+.pgx{flex-shrink:0;font-size:9.5px;font-weight:800;padding:3px 8px;border-radius:6px;
+  background:#FDF3E3;color:#9A6B18;margin-left:8px}
+.pgx.on{background:#E6F6F3;color:#107A6C}
 /* 卡費對帳 */
 .cd{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);
   padding:14px 15px;margin-bottom:10px}
@@ -461,8 +495,18 @@ body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:va
   <div id="cardList"></div>
   <div class="note" style="margin-top:4px">
     收到帳單後填「實際帳單」，跟記帳的金額一比，<b>差太多就是有漏記</b>。<br>
-    填完點旁邊的勾勾存檔。
+    填完點 ✓ 存檔，繳了錢再點「已繳」。
   </div>
+
+  <div class="ct" style="margin:20px 3px 10px;display:flex;align-items:center;
+    justify-content:space-between;gap:10px">
+    <span>全年卡費紀錄</span>
+    <select class="fsel" id="fcard" onchange="rCard()"></select>
+  </div>
+  <div class="tblw"><table class="tbl" id="cardTbl"></table></div>
+
+  <div class="ct" style="margin:20px 3px 10px">繳納紀錄</div>
+  <div class="dl" id="payLog"></div>
 
   <div class="ct" style="margin:20px 3px 10px">每月固定支出</div>
   <div class="dl" id="fixList"></div>
@@ -490,10 +534,16 @@ body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:va
 
 <!-- 分析 -->
 <div class="pg" id="pg-chart"><div class="wrap">
-  <div id="tips"></div>
-  <div class="card"><div class="ct">這個月錢花去哪</div><div class="chw"><canvas id="c1"></canvas></div></div>
-  <div class="card"><div class="ct">每月賺多少 vs 花多少</div><div class="chw"><canvas id="c2"></canvas></div></div>
-  <div class="card"><div class="ct">存款有沒有變多</div><div class="chw"><canvas id="c3"></canvas></div></div>
+  <div id="yrTop"></div>
+  <div class="ct" style="margin:18px 3px 10px;display:flex;align-items:center;
+    justify-content:space-between;gap:10px">
+    <span>各月支出</span>
+    <select class="fsel" id="fcat" onchange="rYear()"></select>
+  </div>
+  <div class="tblw"><table class="tbl" id="yrTbl"></table></div>
+  <div class="ct" style="margin:20px 3px 10px">年預算與剩餘額度</div>
+  <div id="yrBud"></div>
+  <div id="tips" style="margin-top:18px"></div>
 </div></div>
 
 <button class="fab" id="fab" onclick="openAdd()">＋</button>
@@ -518,7 +568,7 @@ body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:va
     <div class="fl"><label>付款方式</label><div class="cp2" id="cards2"></div></div>
     <div class="fl"><label>說明</label><input type="text" id="fDesc" placeholder="選填"></div>
     <div class="fl"><label>日期</label><input type="date" id="fDate"></div>
-    <div class="fl">
+    <div class="fl" id="flTp">
       <label>這筆錢涵蓋幾個月？</label>
       <div class="tp" id="tp"></div>
       <div class="hint" id="tpHint">一次付清，就記在這個月</div>
@@ -581,7 +631,7 @@ const CL={'🍽️ 飲食':'#D4763C','🏠 居家開銷':'var(--teal)','🚗 汽
 '🛡️ 保險':'var(--gold)','👶 小孩學習':'#B4468E','📱 網路訂閱':'#14868C',
 '🧸 小孩日用品':'#C2557A','💬 其他':'#8398AE','🚗 車貸':'#1C5C8F'};
 const MN=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
-const TT={wallet:['雅涵家的理財網','GOOGLE SHEETS · 即時同步'],detail:['支出明細','點右側 ✕ 可刪除'],
+const TT={wallet:['雅涵家的理財網','GOOGLE SHEETS · 即時同步'],detail:['支出明細','✎ 修改　✕ 刪除'],
 income:['收入記錄','輸入後自動存回 SHEETS'],asset:['資產追蹤','輸入後自動存回 SHEETS'],
 card:['卡費對帳','帳單 vs 記帳 · 抓漏記'],
 more:['投資記錄','唯讀 · 請至 EXCEL 修改'],chart:['財務分析','全年趨勢概覽']};
@@ -641,7 +691,9 @@ let D={expenses:{},income:{rows:[],months:{}},assets:{accounts:[],totals:{}},
   budgets:{},invest:{rows:[],months:{},breakdown:{},divMonths:{}},bonus:{},years:[],amort:[],fixed:[],cards:{months:{},cards:[]},items:{},cardList:['現金']};
 let cm=new Date().getMonth()+1,pg='wallet',sel=null,c1,c2,c3,sortBy='date',openEnv=null;
 const LSY='famBudgetYear';
-let terms=1,pick2=null,pickCard='現金';
+let terms=1,pick2=null,pickCard='現金',editRow=0;
+const PAYS=['現金','國泰 CUBE','Richart 台新','中國信託 老婆','中國信託 老公',
+            '轉帳 台新','轉帳 國泰','轉帳 華南'];
 let yr=parseInt(localStorage.getItem(LSY)||'',10)||new Date().getFullYear();
 
 const F=n=>'NT$'+Math.round(n).toLocaleString('zh-TW');
@@ -862,8 +914,54 @@ function rCard(){
       ${o.bill?`<div class="cd-d"><span>差額</span>
         <span style="color:${Math.abs(diff)<=50?'#107A6C':'var(--rose)'}">
         ${diff>=0?'+':'−'}${F2(Math.abs(diff))}</span></div>`:''}
-      ${w}</div>`;
+      ${w}
+      ${o.bill?`<button class="paid ${o.paid?'on':''}"
+        onclick="tgPaid('${encodeURIComponent(c)}',${o.paid?0:1})">${
+        o.paid?'✓ 已繳清':'標記為已繳'}</button>`:''}</div>`;
   }).join(''):`<div class="emp">這個月還沒有記錄</div>`;
+
+  // ── 全年卡費紀錄（依卡別）──
+  const all=(D.cards||{}).cards||[];
+  const fs=document.getElementById('fcard');
+  if(fs.dataset.n!==String(all.length)){
+    const cur=fs.value||'';
+    fs.innerHTML=all.map(c=>`<option value="${encodeURIComponent(c)}">${E(c)}</option>`).join('')
+      ||`<option value="">（還沒有卡別）</option>`;
+    fs.dataset.n=String(all.length);
+    if(cur&&all.indexOf(decodeURIComponent(cur))>=0)fs.value=cur;
+  }
+  const pick=fs.value?decodeURIComponent(fs.value):(all[0]||'');
+  const MS=((D.cards||{}).months)||{};
+  let rows='',sb=0,sk=0;
+  for(let m=1;m<=12;m++){
+    const o=(MS[m]||{})[pick]||{book:0,bill:0,paid:false};
+    sk+=o.book;sb+=o.bill;
+    const df=o.bill?o.bill-o.book:0;
+    rows+=`<tr class="${m===cm?'now':''}"><td>${m} 月${o.paid?' ✓':''}</td>
+      <td class="${o.book?'':'z'}">${o.book?F2(o.book):'–'}</td>
+      <td class="${o.bill?'':'z'}">${o.bill?F2(o.bill):'–'}</td>
+      <td class="${!o.bill?'z':(Math.abs(df)<=50?'in':'out')}">${
+        o.bill?((df>=0?'+':'−')+F2(Math.abs(df))):'–'}</td></tr>`;
+  }
+  document.getElementById('cardTbl').innerHTML=
+    `<tr><th>月份</th><th>記帳</th><th>實際帳單</th><th>差額</th></tr>${rows}
+     <tr class="sum"><td>合計</td><td>${F2(sk)}</td><td>${F2(sb)}</td>
+     <td class="${Math.abs(sb-sk)<=50?'in':'out'}">${sb-sk>=0?'+':'−'}${F2(Math.abs(sb-sk))}</td></tr>`;
+
+  // ── 繳納紀錄 ──
+  const logs=[];
+  for(let m=12;m>=1;m--)
+    for(const c in (MS[m]||{})){
+      const o=MS[m][c];
+      if(o.bill)logs.push({m,c,o});
+    }
+  document.getElementById('payLog').innerHTML=logs.length?logs.map(x=>
+    `<div class="dr"><div class="dr-c">
+      <div class="dr-t">${E(x.c)}</div>
+      <div class="dr-m">${x.m} 月${x.o.pay?' · 繳款日 '+E(x.o.pay):''}</div></div>
+      <span class="dr-a" style="color:${x.o.paid?'var(--teal)':'var(--amber)'}">${F2(x.o.bill)}</span>
+      <span class="pgx ${x.o.paid?'on':''}">${x.o.paid?'已繳':'未繳'}</span></div>`).join('')
+    :`<div class="emp">還沒有帳單紀錄</div>`;
 
   // 固定支出清單
   const fx=D.fixed||[];
@@ -875,6 +973,14 @@ function rCard(){
     <span class="dr-a out">−${F2(f.amt)}</span>
     <button class="dr-x" onclick="delFixed(${f.row})">✕</button></div>`).join('')
     :`<div class="emp">還沒設定固定支出</div>`;
+}
+
+async function tgPaid(c,v){
+  c=decodeURIComponent(c);
+  try{
+    const j=await api({action:'setPaid',month:cm,card:c,paid:String(v),year:String(yr)});
+    D.cards=j.cards||D.cards;saveCache();rCard();tst(v?'已標記繳清':'改回未繳');
+  }catch(e){tst(e.message);}
 }
 
 async function svBill(c){
@@ -1067,7 +1173,7 @@ function rWallet(){
     const detail=items.length?
       `<div class="xr-h"><span>共 ${items.length} 筆</span><span>${
         (md[c]||{}).ro?'自動帶入 · 請至保險月曆修改':
-          (items.some(x=>x.ro)?'◷ 為分期攤提，自動帶入':'點 ✕ 可刪除')}</span></div>`+
+          (items.some(x=>x.ro)?'◷ 自動帶入 · 其餘可 ✎ 改 ✕ 刪':'✎ 修改　✕ 刪除')}</span></div>`+
       items.slice().sort((a,b)=>b.amt-a.amt).map(t=>
         `<div class="xr">
           <span class="xr-d">${t.date}</span>
@@ -1075,7 +1181,8 @@ function rWallet(){
           <span class="xr-a" style="color:${col}">${F2(t.amt)}</span>
           ${t.ro?`<span class="xr-x" style="opacity:.5">${
             t.src==='固定支出'?'🔁':t.card==='分期攤提'?'◷':'🛡️'}</span>`:
-            `<button class="xr-x" onclick="event.stopPropagation();delEx(${t.row})">✕</button>`}
+            `<button class="xr-x" onclick="event.stopPropagation();openEdit(${t.row})">✎</button>
+             <button class="xr-x" onclick="event.stopPropagation();delEx(${t.row})">✕</button>`}
         </div>`).join('')
       : '<div style="padding:16px;text-align:center;font-size:11.5px;color:#BFD6E9">本月尚無消費</div>';
 
@@ -1137,7 +1244,8 @@ function rDetail(){
     <span class="dr-a out">−${F2(t.amt)}</span>
     ${t.ro?`<span class="dr-x" style="opacity:.45">${
       t.src==='固定支出'?'🔁':t.card==='分期攤提'?'◷':'🛡️'}</span>`:
-      `<button class="dr-x" onclick="delEx(${t.row})">✕</button>`}</div>`).join('');
+      `<button class="dr-x" onclick="openEdit(${t.row})">✎</button>
+       <button class="dr-x" onclick="delEx(${t.row})">✕</button>`}</div>`).join('');
 }
 
 function rIncome(){
@@ -1246,7 +1354,10 @@ function openAdd(pc){
   document.getElementById('fDesc').value='';
   const n=new Date();
   document.getElementById('fDate').value=`${n.getFullYear()}-${P(n.getMonth()+1)}-${P(n.getDate())}`;
-  terms=1;rTp();pick2=null;rItems2();rCards2();
+  editRow=0;terms=1;rTp();pick2=null;pickCard='現金';rItems2();rCards2();
+  document.querySelector('#ovAdd h3').textContent='記一筆支出';
+  document.getElementById('fBtn').textContent='確認記錄';
+  document.getElementById('flTp').style.display='';
   document.getElementById('ovAdd').classList.add('on');
   setTimeout(()=>document.getElementById('fAmt').focus(),320);
 }
@@ -1265,12 +1376,46 @@ function rItems2(){
 }
 function pkItem(t){t=decodeURIComponent(t);pick2=(pick2===t)?null:t;rItems2();}
 
+/* ── 編輯一筆（從明細／預算點 ✎）── */
+function openEdit(row){
+  row=parseInt(row,10);
+  let f=null,fc=null;
+  for(const c in (D.expenses[cm]||{}))
+    for(const t of (D.expenses[cm][c].items||[]))
+      if(t.row===row){f=t;fc=c;}
+  if(!f){tst('找不到這筆');return;}
+  editRow=row;sel=fc;pick2=f.item||null;pickCard=f.card||'現金';terms=1;
+  document.getElementById('fAmt').value=f.amt;
+  document.getElementById('fDesc').value=f.desc||'';
+  const mm=f.date.split('/')[0],dd=f.date.split('/')[1];
+  document.getElementById('fDate').value=`${yr}-${mm}-${dd}`;
+  document.getElementById('cats').innerHTML=Object.keys(D.budgets).map(c=>
+    `<button class="cb ${c===sel?'sel':''}" data-c="${encodeURIComponent(c)}" onclick="pk(this)">
+      <span class="cbi">${c.slice(0,2)}</span><span class="cbn">${c.slice(2).trim()}</span></button>`).join('');
+  rItems2();rCards2();rTp();
+  document.querySelector('#ovAdd h3').textContent='修改這一筆';
+  document.getElementById('fBtn').textContent='儲存修改';
+  document.getElementById('flTp').style.display='none';
+  document.getElementById('ovAdd').classList.add('on');
+}
+
 /* ── 付款方式 ── */
+function payList(){
+  const ex=(D.cardList||[]).filter(c=>PAYS.indexOf(c)<0);
+  return PAYS.concat(ex);
+}
 function rCards2(){
-  document.getElementById('cards2').innerHTML=(D.cardList||['現金']).map(c=>
-    `<button class="ch2 ${c===pickCard?'sel':''}" onclick="pkCard('${encodeURIComponent(c)}')">${E(c)}</button>`).join('');
+  const l=payList();
+  if(l.indexOf(pickCard)<0) l.push(pickCard);
+  document.getElementById('cards2').innerHTML=l.map(c=>
+    `<button class="ch2 ${c===pickCard?'sel':''}" onclick="pkCard('${encodeURIComponent(c)}')">${E(c)}</button>`).join('')
+    +`<button class="ch2" onclick="otherPay()">其他…</button>`;
 }
 function pkCard(c){pickCard=decodeURIComponent(c);rCards2();}
+function otherPay(){
+  const v=prompt('付款方式（自己打）','');
+  if(v&&v.trim()){pickCard=v.trim();rCards2();}
+}
 
 /* ── 分幾個月 ── */
 const TERMS=[1,2,3,4,6,12];
@@ -1301,6 +1446,13 @@ async function submitExp(){
   const b=document.getElementById('fBtn');b.disabled=true;b.textContent='儲存中…';
   try{
     let j;
+    if(editRow){
+      j=await api({action:'editExpense',row:editRow,date:`${mo}/${dy}`,cat:sel,desc:d,
+        amt:a,card:pickCard,item:pick2||'',year:y});
+      D.expenses=j.expenses;tst('已修改');
+      saveCache();cm=parseInt(mo,10);rAll();cl('ovAdd');
+      b.disabled=false;b.textContent='確認記錄';return;
+    }
     if(terms>1){
       // 分期：寫進「分期攤提」，不是支出記錄
       j=await api({action:'addAmort',name:d||pick2||sel.slice(2).trim(),cat:sel,
@@ -1428,42 +1580,104 @@ function rTips(){
   </div>`;
 }
 
-function draw(){
-  rTips();
-  const md=D.expenses[cm]||{};
-  const cs=Object.entries(md).sort((a,b)=>b[1].total-a[1].total);
-  const tt=cs.reduce((s,[,v])=>s+v.total,0);
-  if(c1){c1.destroy();c1=null;}
-  if(tt)c1=new Chart(document.getElementById('c1'),{type:'doughnut',
-    data:{labels:cs.map(([c])=>c.slice(2).trim()),datasets:[{data:cs.map(([,v])=>v.total),
-      backgroundColor:cs.map(([c])=>CL[c]||'var(--mute)'),borderColor:'#fff',borderWidth:2,hoverOffset:8}]},
-    options:{responsive:1,maintainAspectRatio:0,cutout:'62%',
-      plugins:{legend:{position:'bottom',labels:{boxWidth:8,boxHeight:8,font:{size:10,family:'Noto Sans TC'},padding:9,color:'#42566E'}},
-        tooltip:{callbacks:{label:c=>` ${F(c.raw)}（${(c.raw/tt*100).toFixed(1)}%）`}}},
-      onClick:(e,i)=>{if(i.length)go('detail');}}});
+function draw(){ rYear(); rTips(); }
 
-  const iA=[],eA=[];
-  for(let m=1;m<=12;m++){iA.push(D.income.months[m]||0);
-    eA.push(Object.values(D.expenses[m]||{}).reduce((s,c)=>s+c.total,0));}
-  if(c2){c2.destroy();c2=null;}
-  c2=new Chart(document.getElementById('c2'),{type:'bar',
-    data:{labels:MN,datasets:[{label:'收入',data:iA,backgroundColor:'var(--teal)',borderRadius:3,barPercentage:.7},
-      {label:'支出',data:eA,backgroundColor:'var(--rose)',borderRadius:3,barPercentage:.7}]},
-    options:{responsive:1,maintainAspectRatio:0,
-      plugins:{legend:{position:'bottom',labels:{boxWidth:8,boxHeight:8,font:{size:10,family:'Noto Sans TC'},padding:9,color:'#42566E'}},
-        tooltip:{callbacks:{label:c=>` ${c.dataset.label} ${F(c.raw)}`}}},
-      scales:{y:{grid:{color:'#E8F1F9'},ticks:{font:{size:9},color:'var(--mute)',callback:v=>(v/1000)+'k'}},
-        x:{grid:{display:0},ticks:{font:{size:9},color:'var(--mute)'}}}}});
+/* ══════════ 年度分析（表格版，無線圖）══════════ */
+function mTot(m){ return Object.values(D.expenses[m]||{}).reduce((s,c)=>s+c.total,0); }
 
-  const aA=[];for(let m=1;m<=12;m++)aA.push(D.assets.totals[m]||null);
-  if(c3){c3.destroy();c3=null;}
-  c3=new Chart(document.getElementById('c3'),{type:'line',
-    data:{labels:MN,datasets:[{data:aA,borderColor:'#2E6DA4',backgroundColor:'rgba(28,51,80,.07)',
-      fill:1,tension:.32,spanGaps:1,pointRadius:3,pointBackgroundColor:'var(--gold)',borderWidth:2}]},
-    options:{responsive:1,maintainAspectRatio:0,
-      plugins:{legend:{display:0},tooltip:{callbacks:{label:c=>' '+F(c.raw)}}},
-      scales:{y:{grid:{color:'#E8F1F9'},ticks:{font:{size:9},color:'var(--mute)',callback:v=>(v/10000).toFixed(0)+'萬'}},
-        x:{grid:{display:0},ticks:{font:{size:9},color:'var(--mute)'}}}}});
+function rYear(){
+  // 類別下拉
+  const fs=document.getElementById('fcat');
+  const cats=Object.keys(D.budgets);
+  if(!fs.dataset.built||fs.dataset.n!==String(cats.length)){
+    const cur=fs.value||'';
+    fs.innerHTML=`<option value="">全部類別</option>`+
+      cats.map(c=>`<option value="${encodeURIComponent(c)}">${E(c.slice(2).trim())}</option>`).join('');
+    fs.dataset.built='1';fs.dataset.n=String(cats.length);
+    if(cur)fs.value=cur;
+  }
+  const fc=fs.value?decodeURIComponent(fs.value):'';
+
+  // ── 年度總計 ──
+  let eT=0,iT=0,n=0;
+  for(let m=1;m<=12;m++){
+    const e=mTot(m),i=D.income.months[m]||0;
+    eT+=e;iT+=i;if(e||i)n++;
+  }
+  document.getElementById('yrTop').innerHTML=
+   `<div class="card" style="padding:18px 16px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div><div class="sl">全年支出</div>
+          <div style="font-size:23px;font-weight:900;color:var(--rose);letter-spacing:-.02em">
+            ${F(eT)}</div>
+          <div class="yb-f" style="margin-top:3px">平均每月 ${F2(n?Math.round(eT/n):0)}</div></div>
+        <div style="text-align:right"><div class="sl">全年收入</div>
+          <div style="font-size:23px;font-weight:900;color:var(--teal);letter-spacing:-.02em">
+            ${F(iT)}</div>
+          <div class="yb-f" style="margin-top:3px">平均每月 ${F2(n?Math.round(iT/n):0)}</div></div>
+      </div>
+      <div style="margin-top:14px;padding-top:13px;border-top:1px solid var(--line);
+        display:flex;justify-content:space-between;align-items:baseline">
+        <span class="yb-f">淨結餘（收入 − 支出）</span>
+        <span style="font-size:17px;font-weight:900;color:${iT-eT>=0?'var(--teal)':'var(--rose)'}">
+          ${iT-eT>=0?'+':'−'}${F(Math.abs(iT-eT))}</span></div>
+      <div class="yb-f" style="margin-top:5px">依有記帳的 ${n} 個月計算平均</div>
+    </div>`;
+
+  // ── 各月表格 ──
+  const t=document.getElementById('yrTbl');
+  const now=new Date().getMonth()+1;
+  if(!fc){
+    let rows='',se=0,si=0;
+    for(let m=1;m<=12;m++){
+      const e=mTot(m),i=D.income.months[m]||0;
+      se+=e;si+=i;
+      rows+=`<tr class="${m===cm?'now':''}"><td>${m} 月</td>
+        <td class="${e?'out':'z'}">${e?F2(e):'–'}</td>
+        <td class="${i?'in':'z'}">${i?F2(i):'–'}</td>
+        <td class="${(i-e)>=0?'in':'out'}">${(e||i)?((i-e>=0?'+':'−')+F2(Math.abs(i-e))):'–'}</td></tr>`;
+    }
+    t.innerHTML=`<tr><th>月份</th><th>支出</th><th>收入</th><th>淨支出</th></tr>${rows}
+      <tr class="sum"><td>合計</td><td class="out">${F2(se)}</td>
+      <td class="in">${F2(si)}</td>
+      <td class="${si-se>=0?'in':'out'}">${si-se>=0?'+':'−'}${F2(Math.abs(si-se))}</td></tr>`;
+  }else{
+    const bud=D.budgets[fc]||0;
+    let rows='',sv=0;
+    for(let m=1;m<=12;m++){
+      const v=((D.expenses[m]||{})[fc]||{total:0}).total;
+      sv+=v;
+      const rm=bud-v;
+      rows+=`<tr class="${m===cm?'now':''}"><td>${m} 月</td>
+        <td class="${v?'':'z'}">${v?F2(v):'–'}</td>
+        <td class="z" style="font-weight:600">${bud?F2(bud):'–'}</td>
+        <td class="${rm>=0?'in':'out'}">${bud?((rm>=0?'':'−')+F2(Math.abs(rm))):'–'}</td></tr>`;
+    }
+    const sb=bud*12;
+    t.innerHTML=`<tr><th>月份</th><th>${E(fc.slice(2).trim())}</th><th>月預算</th><th>剩餘</th></tr>${rows}
+      <tr class="sum"><td>合計</td><td>${F2(sv)}</td><td>${F2(sb)}</td>
+      <td class="${sb-sv>=0?'in':'out'}">${sb-sv>=0?'':'−'}${F2(Math.abs(sb-sv))}</td></tr>`;
+  }
+
+  // ── 年預算與剩餘額度 ──
+  const used={};
+  for(let m=1;m<=12;m++)
+    for(const c in (D.expenses[m]||{})) used[c]=(used[c]||0)+D.expenses[m][c].total;
+  const list=cats.filter(c=>D.budgets[c]>0)
+    .sort((a,b)=>(used[b]||0)/(D.budgets[b]*12)-(used[a]||0)/(D.budgets[a]*12));
+  const left=12-now;
+  document.getElementById('yrBud').innerHTML=list.map(c=>{
+    const yb=D.budgets[c]*12,u=used[c]||0,pc=yb?u/yb:0;
+    const col=pc>=1?'var(--rose)':pc>=.85?'var(--amber)':'var(--teal)';
+    const rm=yb-u;
+    return `<div class="yb">
+      <div class="yb-h"><span class="yb-n">${E(c.slice(2).trim())}</span>
+        <span class="yb-v">${F2(u)} <s>/ ${F2(yb)} · ${(pc*100).toFixed(0)}%</s></span></div>
+      <div class="yb-b"><i style="width:${Math.min(100,pc*100).toFixed(1)}%;background:${col}"></i></div>
+      <div class="yb-f">${rm>=0
+        ?`剩 <b style="color:${col}">${F2(rm)}</b>　今年還有 ${left} 個月，每月可用 ${F2(left>0?Math.round(rm/left):rm)}`
+        :`<b style="color:var(--rose)">超出 ${F2(-rm)}</b>`}</div></div>`;
+  }).join('')||`<div class="emp">還沒設定年預算</div>`;
 }
 
 function cl(i){document.getElementById(i).classList.remove('on');}
