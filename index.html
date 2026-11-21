@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#EDF5FC">
-<meta name="app-version" content="2026.11.12-b">
+<meta name="app-version" content="2026.11.21-a">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -463,6 +463,23 @@ body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:va
       <div class="note" id="snote"></div>
     </div>
   </div>
+
+  <!-- 每月固定支出（收合） -->
+  <div class="fold" id="foldFix">
+    <button class="fold-h" onclick="document.getElementById('foldFix').classList.toggle('open')">
+      <span class="fold-t">🔁 每月固定支出</span>
+      <span class="fold-s">車貸・訂閱・水電，設一次每月自動帶入</span>
+      <span class="fold-ar">›</span>
+    </button>
+    <div class="fold-b">
+      <div class="dl" id="fixList" style="margin-top:12px"></div>
+      <button class="btn bp" style="width:100%;margin-top:12px" onclick="openFixed()">
+        ＋ 新增固定支出</button>
+      <div class="note" style="margin-top:12px;margin-bottom:0">
+        設定在這裡的，記帳時就<b>不用再記一次</b>，每個月會自己出現在預算和明細裡。
+      </div>
+    </div>
+  </div>
 </div></div>
 
 <!-- 明細 -->
@@ -503,35 +520,6 @@ body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:va
   </div>
   <div class="ct" style="margin:16px 3px 10px">帳戶餘額 <em>輸入即存檔</em></div>
   <div class="dl" id="accs"><div class="emp">載入中</div></div>
-</div></div>
-
-<!-- 卡費對帳 -->
-<div class="pg" id="pg-card"><div class="wrap">
-  <div class="ct" style="margin:4px 3px 10px">本月卡費對帳</div>
-  <div id="cardList"></div>
-  <div class="note" style="margin-top:4px">
-    收到帳單後填「實際帳單」，跟記帳的金額一比，<b>差太多就是有漏記</b>。<br>
-    填完點 ✓ 存檔，繳了錢再點「已繳」。
-  </div>
-
-  <div class="ct" style="margin:20px 3px 10px;display:flex;align-items:center;
-    justify-content:space-between;gap:10px">
-    <span>全年卡費紀錄</span>
-    <select class="fsel" id="fcard" onchange="rCard()"></select>
-  </div>
-  <div class="tblw"><table class="tbl" id="cardTbl"></table></div>
-
-  <div class="ct" style="margin:20px 3px 10px">繳納紀錄</div>
-  <div class="dl" id="payLog"></div>
-
-  <div class="ct" style="margin:20px 3px 10px">每月固定支出</div>
-  <div class="dl" id="fixList"></div>
-  <button class="btn bp" style="width:100%;margin-top:12px" onclick="openFixed()">
-    ＋ 新增固定支出</button>
-  <div class="note" style="margin-top:12px">
-    車貸、訂閱、水電這種<b>每個月都一樣</b>的，設定一次就會自動出現在每一個月，
-    天天記帳那邊就不用再記了。
-  </div>
 </div></div>
 
 <!-- 投資＋保險 -->
@@ -578,7 +566,6 @@ body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:va
   <button class="tb" data-p="detail" onclick="go('detail')"><span class="ti">☰</span>明細</button>
   <button class="tb" data-p="income" onclick="go('income')"><span class="ti">◉</span>收入</button>
   <button class="tb" data-p="asset"  onclick="go('asset')"><span class="ti">▤</span>資產</button>
-  <button class="tb" data-p="card"   onclick="go('card')"><span class="ti">▭</span>卡費</button>
   <button class="tb" data-p="more"   onclick="go('more')"><span class="ti">◇</span>投資</button>
   <button class="tb" data-p="chart"  onclick="go('chart')"><span class="ti">◫</span>分析</button>
 </div>
@@ -658,7 +645,6 @@ const CL={'🍽️ 飲食':'#D4763C','🏠 居家開銷':'var(--teal)','🚗 汽
 const MN=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
 const TT={wallet:['雅涵家的理財網','GOOGLE SHEETS · 即時同步'],detail:['支出明細','✎ 修改　✕ 刪除'],
 income:['收入記錄','輸入後自動存回 SHEETS'],asset:['資產追蹤','輸入後自動存回 SHEETS'],
-card:['卡費對帳','帳單 vs 記帳 · 抓漏記'],
 more:['投資記錄','唯讀 · 請至 EXCEL 修改'],chart:['財務分析','全年趨勢概覽']};
 
 /* ══════════ 2027 換車後財務藍圖（貸款 120 萬 / 5 年）══════════
@@ -962,107 +948,25 @@ function rFlow(){
 }
 
 /* ══════════ 卡費對帳 ══════════ */
+/* ══════════ 每月固定支出清單 ══════════ */
 function rCard(){
-  const md=((D.cards||{}).months||{})[cm]||{};
-  const names=Object.keys(md).sort((a,b)=>(md[b].book||0)-(md[a].book||0));
-  const el=document.getElementById('cardList');
-
-  el.innerHTML=names.length?names.map(c=>{
-    const o=md[c], diff=(o.bill||0)-(o.book||0);
-    let w;
-    if(!o.bill) w=`<div class="cd-w na">帳單還沒填，填了才能比對</div>`;
-    else if(Math.abs(diff)<=50) w=`<div class="cd-w ok">✓ 對得起來，沒有漏記</div>`;
-    else if(diff>0) w=`<div class="cd-w bad">記帳比帳單<b>少 ${F2(diff)}</b>　→ 很可能有漏記，
-      去明細頁翻翻這個月的 ${E(c)}</div>`;
-    else w=`<div class="cd-w bad">記帳比帳單<b>多 ${F2(-diff)}</b>　→ 可能重複記，或有退款還沒入帳</div>`;
-    return `<div class="cd">
-      <div class="cd-h"><span class="cd-n">${E(c)}</span>
-        <span class="cd-b">${cm} 月${o.pay?' · 繳款 '+E(o.pay):''}</span></div>
-      <div class="cd-r"><span class="cd-l">記帳</span>
-        <span class="cd-v">${F2(o.book||0)}</span></div>
-      <div class="cd-r"><span class="cd-l">實際帳單</span>
-        <input class="cd-i" type="number" inputmode="decimal" value="${o.bill||''}"
-          placeholder="填帳單金額" id="bill_${encodeURIComponent(c)}">
-        <button class="cd-ok" onclick="svBill('${encodeURIComponent(c)}')">✓</button></div>
-      ${o.bill?`<div class="cd-d"><span>差額</span>
-        <span style="color:${Math.abs(diff)<=50?'#107A6C':'var(--rose)'}">
-        ${diff>=0?'+':'−'}${F2(Math.abs(diff))}</span></div>`:''}
-      ${w}
-      ${o.bill?`<button class="paid ${o.paid?'on':''}"
-        onclick="tgPaid('${encodeURIComponent(c)}',${o.paid?0:1})">${
-        o.paid?'✓ 已繳清':'標記為已繳'}</button>`:''}</div>`;
-  }).join(''):`<div class="emp">這個月還沒有記錄</div>`;
-
-  // ── 全年卡費紀錄（依卡別）──
-  const all=(D.cards||{}).cards||[];
-  const fs=document.getElementById('fcard');
-  if(fs.dataset.n!==String(all.length)){
-    const cur=fs.value||'';
-    fs.innerHTML=all.map(c=>`<option value="${encodeURIComponent(c)}">${E(c)}</option>`).join('')
-      ||`<option value="">（還沒有卡別）</option>`;
-    fs.dataset.n=String(all.length);
-    if(cur&&all.indexOf(decodeURIComponent(cur))>=0)fs.value=cur;
-  }
-  const pick=fs.value?decodeURIComponent(fs.value):(all[0]||'');
-  const MS=((D.cards||{}).months)||{};
-  let rows='',sb=0,sk=0;
-  for(let m=1;m<=12;m++){
-    const o=(MS[m]||{})[pick]||{book:0,bill:0,paid:false};
-    sk+=o.book;sb+=o.bill;
-    const df=o.bill?o.bill-o.book:0;
-    rows+=`<tr class="${m===cm?'now':''}"><td>${m} 月${o.paid?' ✓':''}</td>
-      <td class="${o.book?'':'z'}">${o.book?F2(o.book):'–'}</td>
-      <td class="${o.bill?'':'z'}">${o.bill?F2(o.bill):'–'}</td>
-      <td class="${!o.bill?'z':(Math.abs(df)<=50?'in':'out')}">${
-        o.bill?((df>=0?'+':'−')+F2(Math.abs(df))):'–'}</td></tr>`;
-  }
-  document.getElementById('cardTbl').innerHTML=
-    `<tr><th>月份</th><th>記帳</th><th>實際帳單</th><th>差額</th></tr>${rows}
-     <tr class="sum"><td>合計</td><td>${F2(sk)}</td><td>${F2(sb)}</td>
-     <td class="${Math.abs(sb-sk)<=50?'in':'out'}">${sb-sk>=0?'+':'−'}${F2(Math.abs(sb-sk))}</td></tr>`;
-
-  // ── 繳納紀錄 ──
-  const logs=[];
-  for(let m=12;m>=1;m--)
-    for(const c in (MS[m]||{})){
-      const o=MS[m][c];
-      if(o.bill)logs.push({m,c,o});
-    }
-  document.getElementById('payLog').innerHTML=logs.length?logs.map(x=>
-    `<div class="dr"><div class="dr-c">
-      <div class="dr-t">${E(x.c)}</div>
-      <div class="dr-m">${x.m} 月${x.o.pay?' · 繳款日 '+E(x.o.pay):''}</div></div>
-      <span class="dr-a" style="color:${x.o.paid?'var(--teal)':'var(--amber)'}">${F2(x.o.bill)}</span>
-      <span class="pgx ${x.o.paid?'on':''}">${x.o.paid?'已繳':'未繳'}</span></div>`).join('')
-    :`<div class="emp">還沒有帳單紀錄</div>`;
-
-  // 固定支出清單
   const fx=D.fixed||[];
   const fl=document.getElementById('fixList');
+  if(!fl)return;
   fl.innerHTML=fx.length?fx.map(f=>`<div class="dr">
     <div class="dr-c"><div class="dr-t">${E(f.name)}</div>
       <div class="dr-m">每月 ${f.day} 號 · ${E(f.cat.slice(2).trim())}${
-        f.card?' · '+E(f.card):''}${f.end?' · 到 '+E(f.end.y+'/'+f.end.m):''}</div></div>
+        f.card&&f.card!=='現金'?' · '+E(f.card):''}${
+        f.start?' · 從 '+E(f.start.y+'/'+f.start.m):''}${
+        f.end?' 到 '+E(f.end.y+'/'+f.end.m):''}</div></div>
     <span class="dr-a out">−${F2(f.amt)}</span>
     <button class="dr-x" onclick="delFixed(${f.row})">✕</button></div>`).join('')
+    +`<div class="dr" style="background:#F4F9FD">
+       <div class="dr-c"><div class="dr-t">每月合計</div>
+       <div class="dr-m">這些不用手動記帳</div></div>
+       <span class="dr-a out">−${F2(fx.reduce((s,f)=>s+f.amt,0))}</span>
+       <span class="dr-x" style="opacity:.3">🔁</span></div>`
     :`<div class="emp">還沒設定固定支出</div>`;
-}
-
-async function tgPaid(c,v){
-  c=decodeURIComponent(c);
-  try{
-    const j=await api({action:'setPaid',month:cm,card:c,paid:String(v),year:String(yr)});
-    D.cards=j.cards||D.cards;saveCache();rCard();tst(v?'已標記繳清':'改回未繳');
-  }catch(e){tst(e.message);}
-}
-
-async function svBill(c){
-  c=decodeURIComponent(c);
-  const v=document.getElementById('bill_'+encodeURIComponent(c)).value;
-  try{
-    const j=await api({action:'setBill',month:cm,card:c,bill:v,year:String(yr)});
-    D.cards=j.cards||D.cards;saveCache();rCard();tst('已存檔');
-  }catch(e){tst(e.message);}
 }
 
 function openFixed(){
