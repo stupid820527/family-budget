@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#EDF5FC">
-<meta name="app-version" content="2026.11.21-a">
+<meta name="app-version" content="2026.11.22-a">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -236,6 +236,7 @@ body{font-family:'Noto Sans TC',-apple-system,system-ui,sans-serif;background:va
 .fold.open .fold-ar{transform:rotate(90deg)}
 .fold-b{max-height:0;overflow:hidden;transition:max-height .35s ease;padding:0 13px}
 .fold.open .fold-b{max-height:4000px;padding-bottom:14px}
+.st-nb{background:#EEF4FA;color:#8398AE}
 .lk{display:inline-block;font-size:8.5px;font-weight:700;padding:2px 5px;border-radius:4px;
   background:#EAF3FB;color:#8398AE;margin-left:6px;letter-spacing:.02em;vertical-align:1px}
 
@@ -764,9 +765,20 @@ function applyData(j){
   D.cards=j.cards||{months:{},cards:[]};
   D.items=j.items||{};
   D.cardList=(j.cardList&&j.cardList.length)?j.cardList:['現金'];
+  syncCats();
   if(j.year) yr=j.year;
   D.years=(j.years&&j.years.length)?j.years:[yr];
   rYsel();
+}
+
+/* ── 記帳裡有、但⚙️設定沒設預算的類別，自動補進來（預算 0）── */
+function syncCats(){
+  D.autoCat={};
+  for(const m in D.expenses)
+    for(const c in D.expenses[m]){
+      if(c in D.budgets)continue;
+      D.budgets[c]=0;D.autoCat[c]=1;
+    }
 }
 
 /* ── 年份切換 ── */
@@ -800,7 +812,7 @@ async function loadAll(m){
   if(!booted){
     const c=loadCache();
     if(c){
-      D=c.d;
+      D=c.d;syncCats();
       const ms=Object.keys(D.expenses).map(Number).filter(x=>Object.keys(D.expenses[x]||{}).length);
       if(ms.length)cm=Math.max(...ms);
       rAll();
@@ -1134,10 +1146,11 @@ function rWallet(){
   if(!cs.length){el.innerHTML='<div class="emp"><div class="ei">◌</div>尚未設定預算</div>';return;}
   cs.forEach(c=>{
     const bg=D.budgets[c]||0,us=(md[c]||{total:0}).total,rm=bg-us,pc=bg>0?us/bg:0;
-    const col=CL[c]||'var(--mute)';
-    const bc=pc>=1?'var(--rose)':pc>=.8?'var(--amber)':'var(--teal)';
-    const sc=pc>=1?'st-ov':pc>=.8?'st-wn':'st-ok';
-    const st=pc>=1?`超支 ${F2(-rm)}`:pc>=.8?'接近上限':'正常';
+    const nb=!bg;                                   // 沒設預算
+    const col=CL[c]||'var(--ink2)';
+    const bc=nb?'var(--mute)':pc>=1?'var(--rose)':pc>=.8?'var(--amber)':'var(--teal)';
+    const sc=nb?'st-nb':pc>=1?'st-ov':pc>=.8?'st-wn':'st-ok';
+    const st=nb?'未設預算':pc>=1?`超支 ${F2(-rm)}`:pc>=.8?'接近上限':'正常';
     const items=(md[c]||{items:[]}).items||[];
     const key=encodeURIComponent(c);
 
@@ -1167,9 +1180,10 @@ function rWallet(){
         <span class="er-n">${c.slice(2).trim()}${isLocked(c)?`<span class="lk">${LOCKED[c]}</span>`:''}</span>
         <span class="er-p">${tot?(us/tot*100).toFixed(0):0}%</span>
         <span class="er-ar">›</span></div>
-      <div class="er-v"><span class="er-a" style="color:${rm<0?'var(--rose)':'var(--ink)'}">${F(rm)}</span>
-        <span class="er-b">／ ${F2(bg)}</span></div>
-      <div class="bar"><div class="bar-f" style="width:${Math.min(100,pc*100)}%;background:${bc}"></div></div>
+      <div class="er-v"><span class="er-a" style="color:${nb?'var(--ink)':rm<0?'var(--rose)':'var(--ink)'}">${
+          nb?F(us):F(rm)}</span>
+        <span class="er-b">${nb?'本月花費':'／ '+F2(bg)}</span></div>
+      <div class="bar"><div class="bar-f" style="width:${nb?(tot?Math.min(100,us/tot*100):0):Math.min(100,pc*100)}%;background:${bc}"></div></div>
       <div class="er-f"><span>已用 ${F2(us)}${items.length?`（${items.length} 筆）`:''}</span>
         <span class="er-st ${sc}">${st}</span></div>
       <div class="er-x">${detail}</div>`;
